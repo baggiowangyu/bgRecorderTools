@@ -197,7 +197,7 @@ void CbgTCConnecterDlg::OnBnClickedBtnStart()
 		return;
 	}
 
-	CFileDialog file_dlg(FALSE, _T(".ts"), NULL, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, NULL, NULL);
+	CFileDialog file_dlg(FALSE, _T("ts"), _T(""), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, NULL, this);
 
 	INT_PTR ret = file_dlg.DoModal();
 	if (ret == IDOK)
@@ -218,6 +218,7 @@ void CbgTCConnecterDlg::OnBnClickedBtnStart()
 
 DWORD WINAPI CbgTCConnecterDlg::WorkingThread(LPVOID lpParam)
 {
+	TCHAR msg[4096] = {0};
 	CbgTCConnecterDlg *dlg = (CbgTCConnecterDlg *)lpParam;
 	CWnd *pCwnd = dlg->GetDlgItem(IDC_BTN_START);
 
@@ -264,6 +265,9 @@ DWORD WINAPI CbgTCConnecterDlg::WorkingThread(LPVOID lpParam)
 		HANDLE hFile = CreateFile(path, GENERIC_ALL, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 		if (hFile == INVALID_HANDLE_VALUE)
 			continue;
+
+		_stprintf_s(msg, 4096, _T("正在合并文件：%s"), path.GetString());
+		dlg->m_cState.SetWindowText(msg);
 
 		unsigned char buffer[4096] = {0};
 		DWORD readed = 0, written = 0;
