@@ -203,31 +203,119 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="解包插件"
+			Name="数据包解析"
 			>
 			<File
 				RelativePath=".\bgBasePacketParse.h"
 				>
 			</File>
 			<Filter
-				Name="HTTP"
+				Name="以太包分析"
 				>
+				<File
+					RelativePath=".\bgProtocolEthernetII.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\bgProtocolEthernetII.h"
+					>
+				</File>
 				<Filter
-					Name="M3U8"
+					Name="IPv4"
+					>
+					<File
+						RelativePath=".\bgProtocolIPv4.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\bgProtocolIPv4.h"
+						>
+					</File>
+					<Filter
+						Name="UDP"
+						>
+					</Filter>
+					<Filter
+						Name="ICMP"
+						>
+					</Filter>
+					<Filter
+						Name="TCP"
+						>
+						<File
+							RelativePath=".\bgProtocolTCP.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\bgProtocolTCP.h"
+							>
+						</File>
+						<Filter
+							Name="HTTP"
+							>
+							<File
+								RelativePath=".\bgProtocolHttp.cpp"
+								>
+							</File>
+							<File
+								RelativePath=".\bgProtocolHttp.h"
+								>
+							</File>
+							<Filter
+								Name="M3U8"
+								>
+							</Filter>
+							<Filter
+								Name="FLV"
+								>
+							</Filter>
+							<Filter
+								Name="MP4"
+								>
+							</Filter>
+						</Filter>
+						<Filter
+							Name="RTMP"
+							>
+							<File
+								RelativePath=".\bgProtocolRtmp.cpp"
+								>
+							</File>
+							<File
+								RelativePath=".\bgProtocolRtmp.h"
+								>
+							</File>
+						</Filter>
+					</Filter>
+					<Filter
+						Name="IGMP"
+						>
+					</Filter>
+				</Filter>
+				<Filter
+					Name="ARP"
 					>
 				</Filter>
 				<Filter
-					Name="FLV"
+					Name="RARP"
 					>
 				</Filter>
 				<Filter
-					Name="MP4"
+					Name="SNMP"
 					>
 				</Filter>
-			</Filter>
-			<Filter
-				Name="RTMP"
-				>
+				<Filter
+					Name="IPX"
+					>
+				</Filter>
+				<Filter
+					Name="IPv6"
+					>
+				</Filter>
+				<Filter
+					Name="PPP"
+					>
+				</Filter>
 			</Filter>
 		</Filter>
 		<Filter

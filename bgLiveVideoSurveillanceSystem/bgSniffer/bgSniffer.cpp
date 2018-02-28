@@ -203,6 +203,28 @@ DWORD bgSniffer::WorkingThread(LPVOID lpParam)
 		OutputDebugStringA(trace_msg);
 
 		// 从原始包中提取出TCP包
+		struct bgEthernetII *ethernet_ii_header = (struct bgEthernetII *)pkt_data;
+
+		switch (ethernet_ii_header->type_)
+		{
+		case ETHERTYPE_IPV4:
+			// 解析IPv4数据包
+			break;
+		case ETHERTYPE_ARP:
+			break;
+		case ETHERTYPE_RARP:
+			break;
+		case ETHERTYPE_SNMP:
+			break;
+		case ETHERTYPE_IPX:
+			break;
+		case ETHERTYPE_IPV6:
+			break;
+		case ETHERTYPE_PPP:
+			break;
+		default:
+			break;
+		}
 
 		// 将数据包分别扔进包分析模块
 		errCode = sniffer->DispatchPacket(pkt_data, header->len);
