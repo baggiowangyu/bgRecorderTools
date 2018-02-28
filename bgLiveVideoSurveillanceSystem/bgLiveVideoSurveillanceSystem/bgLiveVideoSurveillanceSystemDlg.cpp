@@ -61,6 +61,7 @@ void CbgLiveVideoSurveillanceSystemDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_LIST_NETWORK_DEVICES, m_cNetworkDevices);
 	DDX_Control(pDX, IDC_LIST_SNIFFER_URLS, m_cSnifferURL);
 	DDX_Control(pDX, IDC_LIST_RECORDS, m_cRecordURL);
+	DDX_Control(pDX, IDC_EDIT_SAVEPATH, m_cSavePath);
 }
 
 BEGIN_MESSAGE_MAP(CbgLiveVideoSurveillanceSystemDlg, CDialog)
@@ -68,6 +69,8 @@ BEGIN_MESSAGE_MAP(CbgLiveVideoSurveillanceSystemDlg, CDialog)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	//}}AFX_MSG_MAP
+	ON_BN_CLICKED(IDC_BTN_START_MONITOR, &CbgLiveVideoSurveillanceSystemDlg::OnBnClickedBtnStartMonitor)
+	ON_BN_CLICKED(IDC_BTN_STOP_MONITOR, &CbgLiveVideoSurveillanceSystemDlg::OnBnClickedBtnStopMonitor)
 END_MESSAGE_MAP()
 
 
@@ -110,8 +113,11 @@ BOOL CbgLiveVideoSurveillanceSystemDlg::OnInitDialog()
 
 	// 初始化三个列表
 	m_cNetworkDevices.SetExtendedStyle(m_cNetworkDevices.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
-	m_cNetworkDevices.InsertColumn(0, _T("网卡名称"), 0, 310);
-	m_cNetworkDevices.InsertColumn(1, _T("网卡描述"), 0, 310);
+	m_cNetworkDevices.InsertColumn(0, _T("网卡名称"), 0, 210);
+	m_cNetworkDevices.InsertColumn(1, _T("网卡描述"), 0, 210);
+	m_cNetworkDevices.InsertColumn(2, _T("网段"), 0, 100);
+	m_cNetworkDevices.InsertColumn(3, _T("网卡路径"), 0, 200);
+	m_cNetworkDevices.InsertColumn(4, _T("掩码"), 0, 200);
 
 	m_cSnifferURL.SetExtendedStyle(m_cSnifferURL.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 	m_cSnifferURL.InsertColumn(0, _T("视频源"), 0, 620);
@@ -120,6 +126,25 @@ BOOL CbgLiveVideoSurveillanceSystemDlg::OnInitDialog()
 	m_cRecordURL.InsertColumn(0, _T("文件名"), 0, 250);
 	m_cRecordURL.InsertColumn(1, _T("录制大小"), 0, 100);
 	m_cRecordURL.InsertColumn(2, _T("视频源"), 0, 270);
+
+	// 默认使用程序所在目录作为录像存储根路径
+#ifdef UNICODE
+	std::wstring cpp;
+	std::wstring current_dir;
+#else
+	std::string cpp;
+	std::string current_dir;
+#endif
+
+	TCHAR current_prog_path[MAX_PATH] = {0};
+	GetModuleFileName(NULL, current_prog_path, MAX_PATH);
+	cpp = current_prog_path;
+	int pos = cpp.find_last_of(_T("\\"));
+	current_dir = cpp.substr(0, pos);
+	m_cSavePath.SetWindowText(current_dir.c_str());
+
+	// 枚举当前网卡
+	EnumNetworkDevices();
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -219,4 +244,58 @@ CString CbgLiveVideoSurveillanceSystemDlg::GetMyVersion()
 	}
 
 	return _T("");
+}
+
+void CbgLiveVideoSurveillanceSystemDlg::EnumNetworkDevices()
+{
+	m_cNetworkDevices.DeleteAllItems();
+
+	int dev_count = 0;
+	PNETWORK_DEVICE_DESC dev_desc = NULL;
+	int errCode = sniffer_.EnumAllNetworkDevices(dev_count, dev_desc);
+
+	dev_desc = new NETWORK_DEVICE_DESC[dev_count];
+	errCode = sniffer_.EnumAllNetworkDevices(dev_count, dev_desc);
+
+	PNETWORK_DEVICE_DESC dev = dev_desc;
+	for (int index = 0; index < dev_count; ++index)
+	{
+		int item_count = m_cNetworkDevices.GetItemCount();
+
+		USES_CONVERSION;
+		m_cNetworkDevices.InsertItem(item_count, A2T(dev_desc[index].sys_name_.c_str()));
+		m_cNetworkDevices.SetItemText(item_count, 1, A2T(dev_desc[index].descript_.c_str()));
+		m_cNetworkDevices.SetItemText(item_count, 2, A2T(dev_desc[index].net_ip_.c_str()));
+		m_cNetworkDevices.SetItemText(item_count, 3, A2T(dev_desc[index].name_.c_str()));
+		TCHAR buffer[32] = {0};
+		m_cNetworkDevices.SetItemText(item_count, 4, _itot(dev_desc[index].mask_ip_, buffer, 10));
+	}
+}
+
+
+void CbgLiveVideoSurveillanceSystemDlg::OnBnClickedBtnStartMonitor()
+{
+	// 点击了开始监控，打开网卡，然后启动工作线程
+	POSITION pos = m_cNetworkDevices.GetFirstSelectedItemPosition();
+	if (pos == NULL)
+		return ;
+
+	int selected_item = m_cNetworkDevices.GetNextSelectedItem(pos);
+	CString dev_path = m_cNetworkDevices.GetItemText(selected_item, 3);
+	CString mask_ip = m_cNetworkDevices.GetItemText(selected_item, 4);
+
+	USES_CONVERSION;
+	int errCode = sniffer_.OpenNetworkDevice(T2A(dev_path.GetBuffer(0)), _ttoi(mask_ip.GetBuffer(0)));
+	if (errCode != 0)
+		m_cState.SetWindowText(_T("打开网卡出错！"));
+	
+}
+
+void CbgLiveVideoSurveillanceSystemDlg::OnBnClickedBtnStopMonitor()
+{
+	// 点击了停止监控
+	sniffer_.CloseNetworkDevice();
+
+	// 重新遍历一遍网络设备
+	//EnumNetworkDevices();
 }

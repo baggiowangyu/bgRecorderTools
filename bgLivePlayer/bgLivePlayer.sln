@@ -3,6 +3,10 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bgLivePlayer", "bgLivePlayer\bgLivePlayer.vcproj", "{BF59D8F0-9D52-4F76-B0DF-C0F113CB395F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OCX框架范例", "OCX框架范例", "{AC4C0094-96BD-4FD1-8486-9E2F25F31931}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bgOCXDemo", "bgOCXDemo\bgOCXDemo.vcproj", "{3DDF005E-7A2A-4169-A03D-5EC80777641F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -13,8 +17,15 @@ Global
 		{BF59D8F0-9D52-4F76-B0DF-C0F113CB395F}.Debug|Win32.Build.0 = Debug|Win32
 		{BF59D8F0-9D52-4F76-B0DF-C0F113CB395F}.Release|Win32.ActiveCfg = Release|Win32
 		{BF59D8F0-9D52-4F76-B0DF-C0F113CB395F}.Release|Win32.Build.0 = Release|Win32
+		{3DDF005E-7A2A-4169-A03D-5EC80777641F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3DDF005E-7A2A-4169-A03D-5EC80777641F}.Debug|Win32.Build.0 = Debug|Win32
+		{3DDF005E-7A2A-4169-A03D-5EC80777641F}.Release|Win32.ActiveCfg = Release|Win32
+		{3DDF005E-7A2A-4169-A03D-5EC80777641F}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3DDF005E-7A2A-4169-A03D-5EC80777641F} = {AC4C0094-96BD-4FD1-8486-9E2F25F31931}
 	EndGlobalSection
 EndGlobal

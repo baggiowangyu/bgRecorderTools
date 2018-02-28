@@ -6,6 +6,8 @@
 #include "afxwin.h"
 #include "afxcmn.h"
 
+#include "bgSniffer.h"
+
 
 // CbgLiveVideoSurveillanceSystemDlg 对话框
 class CbgLiveVideoSurveillanceSystemDlg : public CDialog
@@ -33,7 +35,13 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 public:
+	// 获取程序版本号
 	CString GetMyVersion();
+
+	// 枚举网卡设备
+	void EnumNetworkDevices();
+	// 加载包解析插件
+	void LoadPacketParsePlugins();
 
 public:
 	CEdit m_cScreen;
@@ -41,4 +49,12 @@ public:
 	CListCtrl m_cNetworkDevices;
 	CListCtrl m_cSnifferURL;
 	CListCtrl m_cRecordURL;
+
+public:
+	bgSniffer sniffer_;
+
+public:
+	afx_msg void OnBnClickedBtnStartMonitor();
+	afx_msg void OnBnClickedBtnStopMonitor();
+	CEdit m_cSavePath;
 };

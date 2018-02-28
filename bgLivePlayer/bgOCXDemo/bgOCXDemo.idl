@@ -1,0 +1,50 @@
+// bgOCXDemo.idl : ActiveX 控件项目的类型库源。
+
+// 此文件将由 MIDL 编译器工具处理以
+// 产生类型库(bgOCXDemo.tlb)，该类型库将成为
+// bgOCXDemo.ocx.
+
+#include <olectl.h>
+#include <idispids.h>
+
+[ uuid(854CA030-C862-456F-BCD7-37E14574FB5E), version(1.0),
+  helpfile("bgOCXDemo.hlp"),
+  helpstring("bgOCXDemo ActiveX 控件模块"),
+  control ]
+library bgOCXDemoLib
+{
+	importlib(STDOLE_TLB);
+
+	//  CbgOCXDemoCtrl 的主调度接口
+
+	[ uuid(2A4A9DFA-DEE6-438B-B2C6-D2D9574391C2),
+	  helpstring("bgOCXDemo Control 的调度接口")]
+	dispinterface _DbgOCXDemo
+	{
+		properties:
+		methods:
+	};
+
+	//  CbgOCXDemoCtrl 的事件调度接口
+
+	[ uuid(CEE45F56-68A6-40CB-8605-B3FB43923933),
+	  helpstring("bgOCXDemo Control 的事件接口") ]
+	dispinterface _DbgOCXDemoEvents
+	{
+		properties:
+			//  事件接口没有任何属性
+
+		methods:
+	};
+
+	//  CbgOCXDemoCtrl 的类信息
+
+	[ uuid(0074D9F2-F690-4F1F-BED6-D44288374196),
+	  helpstring("bgOCXDemo Control"), control ]
+	coclass bgOCXDemo
+	{
+		[default] dispinterface _DbgOCXDemo;
+		[default, source] dispinterface _DbgOCXDemoEvents;
+	};
+
+};

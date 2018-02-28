@@ -2,11 +2,11 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="bgSniffer"
-	ProjectGUID="{2227094A-B5D5-4841-A81C-7E11E683E1E7}"
-	RootNamespace="bgSniffer"
-	Keyword="Win32Proj"
-	TargetFrameworkVersion="131072"
+	Name="bgOCXDemo"
+	ProjectGUID="{3DDF005E-7A2A-4169-A03D-5EC80777641F}"
+	RootNamespace="bgOCXDemo"
+	Keyword="MFCActiveXProj"
+	TargetFrameworkVersion="196613"
 	>
 	<Platforms>
 		<Platform
@@ -20,7 +20,8 @@
 			Name="Debug|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="4"
+			ConfigurationType="2"
+			UseOfMFC="1"
 			CharacterSet="1"
 			>
 			<Tool
@@ -37,12 +38,16 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="false"
+				TypeLibraryName="$(IntDir)/bgOCXDemo.tlb"
+				HeaderFileName="$(ProjectName)idl.h"
+				ValidateParameters="true"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\ext\Winpcap\Include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
+				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;_USRDLL"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -55,15 +60,28 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="2052"
+				AdditionalIncludeDirectories="$(IntDir)"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLibrarianTool"
+				Name="VCLinkerTool"
+				RegisterOutput="true"
+				OutputFile="$(OutDir)\$(ProjectName).ocx"
+				LinkIncremental="2"
+				ModuleDefinitionFile=".\bgOCXDemo.def"
+				GenerateDebugInformation="true"
+				SubSystem="2"
+				TargetMachine="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -75,6 +93,9 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -82,7 +103,8 @@
 			Name="Release|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="4"
+			ConfigurationType="2"
+			UseOfMFC="2"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -100,12 +122,18 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="false"
+				TypeLibraryName="$(IntDir)/bgOCXDemo.tlb"
+				HeaderFileName="$(ProjectName)idl.h"
+				ValidateParameters="true"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;_USRDLL"
+				MinimalRebuild="false"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="2"
@@ -117,15 +145,30 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="2052"
+				AdditionalIncludeDirectories="$(IntDir)"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLibrarianTool"
+				Name="VCLinkerTool"
+				RegisterOutput="true"
+				OutputFile="$(OutDir)\$(ProjectName).ocx"
+				LinkIncremental="1"
+				ModuleDefinitionFile=".\bgOCXDemo.def"
+				GenerateDebugInformation="true"
+				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				TargetMachine="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -135,6 +178,9 @@
 			/>
 			<Tool
 				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -149,6 +195,26 @@
 			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
+			<File
+				RelativePath=".\bgOCXDemo.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\bgOCXDemo.def"
+				>
+			</File>
+			<File
+				RelativePath=".\bgOCXDemo.idl"
+				>
+			</File>
+			<File
+				RelativePath=".\bgOCXDemoCtrl.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\bgOCXDemoPropPage.cpp"
+				>
+			</File>
 			<File
 				RelativePath=".\stdafx.cpp"
 				>
@@ -176,6 +242,22 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath=".\bgOCXDemo.h"
+				>
+			</File>
+			<File
+				RelativePath=".\bgOCXDemoCtrl.h"
+				>
+			</File>
+			<File
+				RelativePath=".\bgOCXDemoPropPage.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Resource.h"
+				>
+			</File>
+			<File
 				RelativePath=".\stdafx.h"
 				>
 			</File>
@@ -189,52 +271,12 @@
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
-		</Filter>
-		<Filter
-			Name="网络嗅探器"
-			>
 			<File
-				RelativePath=".\bgSniffer.cpp"
+				RelativePath=".\bgOCXDemo.rc"
 				>
 			</File>
 			<File
-				RelativePath=".\bgSniffer.h"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="解包插件"
-			>
-			<File
-				RelativePath=".\bgBasePacketParse.h"
-				>
-			</File>
-			<Filter
-				Name="HTTP"
-				>
-				<Filter
-					Name="M3U8"
-					>
-				</Filter>
-				<Filter
-					Name="FLV"
-					>
-				</Filter>
-				<Filter
-					Name="MP4"
-					>
-				</Filter>
-			</Filter>
-			<Filter
-				Name="RTMP"
-				>
-			</Filter>
-		</Filter>
-		<Filter
-			Name="网络协议结构定义"
-			>
-			<File
-				RelativePath=".\bgNetworkProtocolStruct.h"
+				RelativePath=".\bgOCXDemoCtrl.bmp"
 				>
 			</File>
 		</Filter>

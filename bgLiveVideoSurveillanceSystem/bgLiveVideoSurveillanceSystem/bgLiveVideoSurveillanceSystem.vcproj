@@ -45,6 +45,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories="..\bgSniffer"
 				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -67,8 +68,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Version.lib"
+				AdditionalDependencies="Version.lib shlwapi.lib Packet.lib wpcap.lib bgSniffer.lib"
 				LinkIncremental="2"
+				AdditionalLibraryDirectories="..\Debug;..\..\ext\Winpcap\Lib"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				TargetMachine="1"
