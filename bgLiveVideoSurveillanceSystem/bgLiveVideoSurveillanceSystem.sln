@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bgLiveVideoSurveillanceSystem", "bgLiveVideoSurveillanceSystem\bgLiveVideoSurveillanceSystem.vcproj", "{5211A95D-54C4-4181-A97D-18597D5BF1E1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2227094A-B5D5-4841-A81C-7E11E683E1E7} = {2227094A-B5D5-4841-A81C-7E11E683E1E7}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bgSniffer", "bgSniffer\bgSniffer.vcproj", "{2227094A-B5D5-4841-A81C-7E11E683E1E7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5211A95D-54C4-4181-A97D-18597D5BF1E1}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5211A95D-54C4-4181-A97D-18597D5BF1E1}.Debug|Win32.Build.0 = Debug|Win32
+		{5211A95D-54C4-4181-A97D-18597D5BF1E1}.Release|Win32.ActiveCfg = Release|Win32
+		{5211A95D-54C4-4181-A97D-18597D5BF1E1}.Release|Win32.Build.0 = Release|Win32
+		{2227094A-B5D5-4841-A81C-7E11E683E1E7}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2227094A-B5D5-4841-A81C-7E11E683E1E7}.Debug|Win32.Build.0 = Debug|Win32
+		{2227094A-B5D5-4841-A81C-7E11E683E1E7}.Release|Win32.ActiveCfg = Release|Win32
+		{2227094A-B5D5-4841-A81C-7E11E683E1E7}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
