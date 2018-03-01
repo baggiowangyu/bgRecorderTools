@@ -8,6 +8,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bgLiveVideoSurveillanceSyst
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bgSniffer", "bgSniffer\bgSniffer.vcproj", "{2227094A-B5D5-4841-A81C-7E11E683E1E7}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bgStreamRecorder", "bgStreamRecorder\bgStreamRecorder.vcproj", "{E2C432BF-0131-4310-A6BD-2C884A5A196D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -22,6 +24,10 @@ Global
 		{2227094A-B5D5-4841-A81C-7E11E683E1E7}.Debug|Win32.Build.0 = Debug|Win32
 		{2227094A-B5D5-4841-A81C-7E11E683E1E7}.Release|Win32.ActiveCfg = Release|Win32
 		{2227094A-B5D5-4841-A81C-7E11E683E1E7}.Release|Win32.Build.0 = Release|Win32
+		{E2C432BF-0131-4310-A6BD-2C884A5A196D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E2C432BF-0131-4310-A6BD-2C884A5A196D}.Debug|Win32.Build.0 = Debug|Win32
+		{E2C432BF-0131-4310-A6BD-2C884A5A196D}.Release|Win32.ActiveCfg = Release|Win32
+		{E2C432BF-0131-4310-A6BD-2C884A5A196D}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
