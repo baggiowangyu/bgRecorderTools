@@ -105,7 +105,8 @@ int bgSniffer::OpenNetworkDevice(const char *device_name, unsigned int mask_ip /
 	{
 		// 编译过滤器
 		struct bpf_program fcode;
-		char packet_filter[] = "ip and tcp";
+		//char packet_filter[] = "ip and tcp";
+		char packet_filter[] = "tcp dst port 80";
 
 		if(pcap_compile((pcap_t *)adapter_handle_, &fcode, packet_filter, 1, mask_ip) < 0)
 			return -2;  
@@ -114,11 +115,6 @@ int bgSniffer::OpenNetworkDevice(const char *device_name, unsigned int mask_ip /
 		if(pcap_setfilter((pcap_t *)adapter_handle_, &fcode) < 0)
 			return -3;
 	}
-
-	// 设备成功打开，加载各个插件
-	// 1. 加载HTTP协议解析插件
-	// 2. 加载RTMP协议解析插件
-	// 2. 加载RTSP协议解析插件
 
 	// 插件加载完成，启动工作线程
 	HANDLE hThread = CreateThread(NULL, 0, bgSniffer::WorkingThread, this, 0, NULL);
@@ -178,56 +174,8 @@ DWORD bgSniffer::WorkingThread(LPVOID lpParam)
 		if (errCode == 0)
 			continue;
 
-		// 先调试打印数据包基本信息
-
-		// 将时间戳转换成可识别的格式
-		char timestr[16] = {0};
-		time_t local_tv_sec = header->ts.tv_sec;
-		struct tm *ltime = localtime(&local_tv_sec);
-		strftime(timestr, sizeof(timestr), "%H:%M:%S", ltime);
-		ip_header *ih = (ip_header *)(pkt_data + 14); //以太网头部长度
-
-		char trace_msg[4096] = {0};
-		sprintf_s(trace_msg, 4096, "%s.%.6d\tlength:%d\t%d.%d.%d.%d >>> %d.%d.%d.%d\n",
-			timestr,
-			header->ts.tv_usec,
-			header->len,
-			ih->saddr.byte1,  
-			ih->saddr.byte2,  
-			ih->saddr.byte3,  
-			ih->saddr.byte4,  
-			ih->daddr.byte1,  
-			ih->daddr.byte2,  
-			ih->daddr.byte3,  
-			ih->daddr.byte4);
-		OutputDebugStringA(trace_msg);
-
-		// 从原始包中提取出TCP包
-		struct bgEthernetII *ethernet_ii_header = (struct bgEthernetII *)pkt_data;
-
-		switch (ethernet_ii_header->type_)
-		{
-		case ETHERTYPE_IPV4:
-			// 解析IPv4数据包
-			break;
-		case ETHERTYPE_ARP:
-			break;
-		case ETHERTYPE_RARP:
-			break;
-		case ETHERTYPE_SNMP:
-			break;
-		case ETHERTYPE_IPX:
-			break;
-		case ETHERTYPE_IPV6:
-			break;
-		case ETHERTYPE_PPP:
-			break;
-		default:
-			break;
-		}
-
-		// 将数据包分别扔进包分析模块
-		errCode = sniffer->DispatchPacket(pkt_data, header->len);
+		// 以太包分析
+		errCode = sniffer->ethernetii_.Parse((unsigned char *)header, pkt_data, 0);
 	}
 
 	SetEvent(sniffer->thread_exited_);

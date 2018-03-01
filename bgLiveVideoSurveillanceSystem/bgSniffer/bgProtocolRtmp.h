@@ -10,7 +10,7 @@ public:
 	~bgProtocolRtmp();
 
 public:
-	virtual int Parse(unsigned char *data, int size);
+	virtual int Parse(unsigned char *header, const unsigned char *data, int size);
 };
 
 #endif//_BG_PROTOCOL_RTMP_H_

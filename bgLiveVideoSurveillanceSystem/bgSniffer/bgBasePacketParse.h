@@ -6,7 +6,7 @@
 class bgBasePacketParse
 {
 public:
-	virtual int Parse(unsigned char *header, unsigned char *data, int size) = 0;
+	virtual int Parse(unsigned char *header, const unsigned char *data, int size) = 0;
 };
 
 #endif//_BG_BASE_PACKET_PARSE_H_

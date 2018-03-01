@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "bgProtocolRtmp.h"
+#include "bgNetworkProtocolStruct.h"
 
 
 bgProtocolRtmp::bgProtocolRtmp()
@@ -12,7 +13,11 @@ bgProtocolRtmp::~bgProtocolRtmp()
 
 }
 
-int bgProtocolRtmp::Parse(unsigned char *data, int size)
+int bgProtocolRtmp::Parse(unsigned char *header, const unsigned char *data, int size)
 {
-	return 0;
+	int errCode = -6002;
+
+	// 
+
+	return errCode;
 }

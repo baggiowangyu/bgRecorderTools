@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 #include "bgBasePacketParse.h"
-
+#include "bgProtocolEthernetII.h"
 
 
 typedef struct _NETWORK_DEVICE_DESC_
@@ -43,6 +43,7 @@ public:
 
 public:
 	void *adapter_handle_;
+	bgProtocolEthernetII ethernetii_;
 	std::vector<bgBasePacketParse*> plugins_;
 	bool thread_exit_;
 	HANDLE thread_exited_;
