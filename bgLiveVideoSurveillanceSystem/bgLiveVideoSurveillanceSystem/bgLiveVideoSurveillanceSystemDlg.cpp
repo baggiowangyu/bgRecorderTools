@@ -6,6 +6,7 @@
 #include "bgLiveVideoSurveillanceSystem.h"
 #include "bgLiveVideoSurveillanceSystemDlg.h"
 
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -49,8 +50,15 @@ END_MESSAGE_MAP()
 
 CbgLiveVideoSurveillanceSystemDlg::CbgLiveVideoSurveillanceSystemDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CbgLiveVideoSurveillanceSystemDlg::IDD, pParent)
+	, sniffer_(new bgSniffer(this))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+}
+
+CbgLiveVideoSurveillanceSystemDlg::~CbgLiveVideoSurveillanceSystemDlg()
+{
+	delete sniffer_;
+	sniffer_ = NULL;
 }
 
 void CbgLiveVideoSurveillanceSystemDlg::DoDataExchange(CDataExchange* pDX)
@@ -252,10 +260,10 @@ void CbgLiveVideoSurveillanceSystemDlg::EnumNetworkDevices()
 
 	int dev_count = 0;
 	PNETWORK_DEVICE_DESC dev_desc = NULL;
-	int errCode = sniffer_.EnumAllNetworkDevices(dev_count, dev_desc);
+	int errCode = sniffer_->EnumAllNetworkDevices(dev_count, dev_desc);
 
 	dev_desc = new NETWORK_DEVICE_DESC[dev_count];
-	errCode = sniffer_.EnumAllNetworkDevices(dev_count, dev_desc);
+	errCode = sniffer_->EnumAllNetworkDevices(dev_count, dev_desc);
 
 	PNETWORK_DEVICE_DESC dev = dev_desc;
 	for (int index = 0; index < dev_count; ++index)
@@ -288,7 +296,7 @@ void CbgLiveVideoSurveillanceSystemDlg::OnBnClickedBtnStartMonitor()
 	CString mask_ip = m_cNetworkDevices.GetItemText(selected_item, 4);
 
 	USES_CONVERSION;
-	int errCode = sniffer_.OpenNetworkDevice(T2A(dev_path.GetBuffer(0)), _ttoi(mask_ip.GetBuffer(0)));
+	int errCode = sniffer_->OpenNetworkDevice(T2A(dev_path.GetBuffer(0)), _ttoi(mask_ip.GetBuffer(0)));
 	if (errCode != 0)
 		m_cState.SetWindowText(_T("打开网卡出错！"));
 	
@@ -297,8 +305,18 @@ void CbgLiveVideoSurveillanceSystemDlg::OnBnClickedBtnStartMonitor()
 void CbgLiveVideoSurveillanceSystemDlg::OnBnClickedBtnStopMonitor()
 {
 	// 点击了停止监控
-	sniffer_.CloseNetworkDevice();
+	sniffer_->CloseNetworkDevice();
 
 	// 重新遍历一遍网络设备
 	//EnumNetworkDevices();
+}
+
+int CbgLiveVideoSurveillanceSystemDlg::SnifferResultReport(const char *protocol, const char *value)
+{
+	int item_count = m_cSnifferURL.GetItemCount();
+
+	USES_CONVERSION;
+	m_cSnifferURL.InsertItem(item_count, A2T(value));
+
+	return 0;
 }

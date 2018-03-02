@@ -6,15 +6,17 @@
 #include "afxwin.h"
 #include "afxcmn.h"
 
+#include "bgNetworkProtocolStruct.h"
 #include "bgSniffer.h"
-
+class bgSnifferNotifer;
 
 // CbgLiveVideoSurveillanceSystemDlg 对话框
-class CbgLiveVideoSurveillanceSystemDlg : public CDialog
+class CbgLiveVideoSurveillanceSystemDlg : public CDialog, bgSnifferNotifer
 {
 // 构造
 public:
 	CbgLiveVideoSurveillanceSystemDlg(CWnd* pParent = NULL);	// 标准构造函数
+	~CbgLiveVideoSurveillanceSystemDlg();
 
 // 对话框数据
 	enum { IDD = IDD_BGLIVEVIDEOSURVEILLANCESYSTEM_DIALOG };
@@ -51,10 +53,14 @@ public:
 	CListCtrl m_cRecordURL;
 
 public:
-	bgSniffer sniffer_;
+	bgSniffer *sniffer_;
+	virtual int SnifferResultReport(const char *protocol, const char *value);
 
 public:
 	afx_msg void OnBnClickedBtnStartMonitor();
 	afx_msg void OnBnClickedBtnStopMonitor();
 	CEdit m_cSavePath;
+
+public:
+
 };

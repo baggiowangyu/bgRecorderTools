@@ -23,7 +23,7 @@ int bgProtocolIPv4::Parse(unsigned char *header, const unsigned char *data, int 
 		ipv4_header_->des_ip_[1],
 		ipv4_header_->des_ip_[2],
 		ipv4_header_->des_ip_[3]);
-	OutputDebugStringA(trace_msg);
+	//OutputDebugStringA(trace_msg);
 
 	// 计算出IPv4包的数据域
 	int ipv4_header_len_ = (ipv4_header_->header_len_) * 4;
@@ -35,7 +35,7 @@ int bgProtocolIPv4::Parse(unsigned char *header, const unsigned char *data, int 
 	switch (val)
 	{
 	case TCP_PROTOCAL:
-		errCode = tcp_.Parse(header, ipv4_data, ipv4_data_len_);
+		errCode = tcp_->Parse(header, ipv4_data, ipv4_data_len_);
 		break;
 	default:
 		break;

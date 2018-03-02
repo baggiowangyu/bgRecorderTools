@@ -21,7 +21,7 @@ int bgProtocolEthernetII::Parse(unsigned char *header, const unsigned char *data
 		pcap_header->ts.tv_usec,
 		pcap_header->len
 		);
-	OutputDebugStringA(trace_msg);
+	//OutputDebugStringA(trace_msg);
 
 	if (pcap_header->len < 200)
 		return 0;
@@ -36,7 +36,7 @@ int bgProtocolEthernetII::Parse(unsigned char *header, const unsigned char *data
 	{
 	case ETHERTYPE_IPV4:
 		// 解析IPv4数据包
-		ipv4_.Parse(header, ethernetii_data, size);
+		ipv4_->Parse(header, ethernetii_data, size);
 		break;
 	case ETHERTYPE_ARP:
 		break;

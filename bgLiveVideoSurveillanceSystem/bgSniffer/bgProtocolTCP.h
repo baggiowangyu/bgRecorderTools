@@ -9,9 +9,10 @@
 class bgProtocolTCP : public bgBasePacketParse
 {
 public:
-	bgProtocolTCP()
-		: http_(new bgProtocolHttp())
-		, rtmp_(new bgProtocolRtmp())
+	bgProtocolTCP(bgSnifferNotifer *notifer)
+		: http_(new bgProtocolHttp(notifer))
+		, rtmp_(new bgProtocolRtmp(notifer))
+		, notifer_(notifer)
 	{
 		parses_.push_back(http_);
 		parses_.push_back(rtmp_);
@@ -24,6 +25,8 @@ public:
 
 		http_ = NULL;
 		rtmp_ = NULL;
+
+		notifer_ = NULL;
 	}
 
 public:
@@ -34,6 +37,9 @@ private:
 	bgProtocolRtmp *rtmp_;
 
 	std::vector<bgBasePacketParse *> parses_;
+
+private:
+	bgSnifferNotifer *notifer_;
 };
 
 #endif//_BG_PROTOCOL_TCP_H_

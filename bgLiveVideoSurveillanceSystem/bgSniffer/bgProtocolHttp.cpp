@@ -3,14 +3,15 @@
 #include "bgProtocolHttp.h"
 
 
-bgProtocolHttp::bgProtocolHttp()
+bgProtocolHttp::bgProtocolHttp(bgSnifferNotifer *notifer)
+: notifer_(notifer)
 {
 
 }
 
 bgProtocolHttp::~bgProtocolHttp()
 {
-
+	notifer_ = NULL;
 }
 
 int bgProtocolHttp::Parse(unsigned char *header, const unsigned char *data, int size)
@@ -53,14 +54,18 @@ int bgProtocolHttp::Parse(unsigned char *header, const unsigned char *data, int 
 		{
 			// 没找到请求报文中的元素，接下来检查是否是应答报文
 			verb_pos = http_data.find(version[0]);
-			if (verb_pos >= 0)
+			if (verb_pos == 0)
 			{
+				// 这是应答报文
 				is_http_data = true;
+				break;
 			}
-
-			break;
+			
+			// 有版本号，但是位置不在开头，说明应该是其他的请求类型
+			continue;
 		}
 
+		// 找到了Verb
 		verb_pos = http_data.find(version[0]);
 		if (verb_pos > 0)
 		{
@@ -107,18 +112,23 @@ int bgProtocolHttp::Parse(unsigned char *header, const unsigned char *data, int 
 				pure_object = object.substr(0, pos - 1);
 			else
 				pure_object = object;
-			
-			pos = pure_object.find(".flv");
-			if (pos >= 0)
+
+			int exts_count = 3;
+			const char *exts[] = {
+				{".flv"}, 
+				{".m3u8"}, 
+				{".jpg"}, 
+				{""}
+			};
+
+			for (int ext_index = 0; ext_index < exts_count; ++ext_index)
 			{
-				// 这个URL是可用的，发送消息抛出去
-			}
-			else
-			{
-				pos = pure_object.find(".m3u8");
+				pos = pure_object.find(exts[ext_index]);
 				if (pos >= 0)
 				{
 					// 这个URL是可用的，发送消息抛出去
+					notifer_->SnifferResultReport("http", url.c_str());
+					break;
 				}
 			}
 

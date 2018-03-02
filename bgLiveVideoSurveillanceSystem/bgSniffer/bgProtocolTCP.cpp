@@ -14,7 +14,7 @@ int bgProtocolTCP::Parse(unsigned char *header, const unsigned char *data, int s
 	char trace_msg[4096] = {0};
 	sprintf_s(trace_msg, 4096, "源端口：%d\t目标端口：%d\n",
 		ntohs(tcp_header_->src_port_), ntohs(tcp_header_->des_port_));
-	OutputDebugStringA(trace_msg);
+	//OutputDebugStringA(trace_msg);
 
 	// 计算TCP数据域
 	int tcp_header_len = 0;

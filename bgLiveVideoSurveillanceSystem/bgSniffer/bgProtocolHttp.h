@@ -6,14 +6,19 @@
 #include <map>
 
 
+class bgSnifferNotifer;
+
 class bgProtocolHttp : public bgBasePacketParse
 {
 public:
-	bgProtocolHttp();
+	bgProtocolHttp(bgSnifferNotifer *notifer);
 	~bgProtocolHttp();
 
 public:
 	virtual int Parse(unsigned char *header, const unsigned char *data, int size);
+
+private:
+	bgSnifferNotifer *notifer_;
 };
 
 

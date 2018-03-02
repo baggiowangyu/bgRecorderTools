@@ -261,18 +261,6 @@
 								RelativePath=".\bgProtocolHttp.h"
 								>
 							</File>
-							<Filter
-								Name="M3U8"
-								>
-							</Filter>
-							<Filter
-								Name="FLV"
-								>
-							</Filter>
-							<Filter
-								Name="MP4"
-								>
-							</Filter>
 						</Filter>
 						<Filter
 							Name="RTMP"

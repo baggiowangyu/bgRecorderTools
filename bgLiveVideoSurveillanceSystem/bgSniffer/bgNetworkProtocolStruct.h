@@ -3,6 +3,7 @@
 
 #include <string>
 #include <WinSock2.h>
+#include "..\bgBase\amf.h"
 
 
 #define ETHERTYPE_IPV4		0x0800 /* ip protocol */
@@ -192,6 +193,24 @@ typedef struct bgDHCP
 } bgDHCP;
 
 
+//
+// RTMP协议
+// 相关字段解析，参考http://www.360doc.com/content/12/0110/16/11192_178547459.shtml
+typedef struct bgRTMP
+{
+	struct bgRtmpHeader
+	{
+		u_char header_type_;	// 前2字节与0xC0进行&计算可得得到包头的长度；后6字节和stream_id_决定了channel_id：stream_id_ = (channel_id - 4) / 5 + 1
+		u_char timestamp_[3];	// 时间戳
+		u_char body_size_[3];	// AMFSize 数据大小
+		u_char type_id_;		// AMFType 数据类型
+		u_int stream_id_;		// 流ID
+	} header_;
+
+	u_char body_[1];
+} bgRTMP;
+
+
 // 用户保存4字节的IP地址  
 typedef struct ip_address {  
 	u_char byte1;  
@@ -217,5 +236,14 @@ typedef struct ip_header {
 }ip_header;  
 
 #pragma pack()
+
+
+
+class bgSnifferNotifer
+{
+public:
+	virtual int SnifferResultReport(const char *protocol, const char *value) = 0;
+};
+
 
 #endif//_BG_NETWORK_PROTOCOL_STRUCT_H_

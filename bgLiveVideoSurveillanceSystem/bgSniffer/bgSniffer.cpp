@@ -9,16 +9,19 @@
 #define HAVE_REMOTE
 #include "remote-ext.h"
 
-bgSniffer::bgSniffer()
+bgSniffer::bgSniffer(bgSnifferNotifer *notifer)
 : adapter_handle_(NULL)
 , thread_exit_(true)
+, notifer_(notifer)
+, ethernetii_(new bgProtocolEthernetII(notifer))
 {
 
 }
 
 bgSniffer::~bgSniffer()
 {
-
+	delete ethernetii_;
+	ethernetii_ = NULL;
 }
 
 int bgSniffer::EnumAllNetworkDevices(int &count, PNETWORK_DEVICE_DESC device_descs)
@@ -106,7 +109,9 @@ int bgSniffer::OpenNetworkDevice(const char *device_name, unsigned int mask_ip /
 		// 编译过滤器
 		struct bpf_program fcode;
 		//char packet_filter[] = "ip and tcp";
-		char packet_filter[] = "tcp dst port 80";
+		//char packet_filter[] = "tcp dst port 80";
+		//char packet_filter[] = "tcp port 80";
+		char packet_filter[] = "tcp dst port 1935";
 
 		if(pcap_compile((pcap_t *)adapter_handle_, &fcode, packet_filter, 1, mask_ip) < 0)
 			return -2;  
@@ -142,19 +147,19 @@ void bgSniffer::CloseNetworkDevice()
 	WaitForSingleObject(thread_exited_, INFINITE);
 
 	// 清理工作插件
-	plugins_.clear();
+	//plugins_.clear();
 }
 
-int bgSniffer::LoadDataParsePlugins(bgBasePacketParse *plugin)
-{
-	plugins_.push_back(plugin);
-	return 0;
-}
-
-int bgSniffer::DispatchPacket(const unsigned char *data, int len)
-{
-	return 0;
-}
+//int bgSniffer::LoadDataParsePlugins(bgBasePacketParse *plugin)
+//{
+//	plugins_.push_back(plugin);
+//	return 0;
+//}
+//
+//int bgSniffer::DispatchPacket(const unsigned char *data, int len)
+//{
+//	return 0;
+//}
 
 DWORD bgSniffer::WorkingThread(LPVOID lpParam)
 {
@@ -175,7 +180,7 @@ DWORD bgSniffer::WorkingThread(LPVOID lpParam)
 			continue;
 
 		// 以太包分析
-		errCode = sniffer->ethernetii_.Parse((unsigned char *)header, pkt_data, 0);
+		errCode = sniffer->ethernetii_->Parse((unsigned char *)header, pkt_data, 0);
 	}
 
 	SetEvent(sniffer->thread_exited_);
