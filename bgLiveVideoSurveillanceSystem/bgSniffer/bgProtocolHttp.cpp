@@ -102,6 +102,8 @@ int bgProtocolHttp::Parse(unsigned char *header, const unsigned char *data, int 
 			// 3. 如果有，则截断“?”后面的数据，再按照 2 的逻辑进行处理
 			std::string object = http_header_.GetObject();
 
+			// 
+			// 这里需要判断使用的是http还是https
 			std::string url = "http://";
 			url += http_header_.GetHeadFieldValue("Host");
 			url += object;
@@ -109,11 +111,11 @@ int bgProtocolHttp::Parse(unsigned char *header, const unsigned char *data, int 
 			std::string pure_object;
 			int pos = object.find('?');
 			if (pos >= 0)
-				pure_object = object.substr(0, pos - 1);
+				pure_object = object.substr(0, pos);
 			else
 				pure_object = object;
 
-			int exts_count = 3;
+			int exts_count = 2;
 			const char *exts[] = {
 				{".flv"}, 
 				{".m3u8"}, 
@@ -126,6 +128,14 @@ int bgProtocolHttp::Parse(unsigned char *header, const unsigned char *data, int 
 				pos = pure_object.find(exts[ext_index]);
 				if (pos >= 0)
 				{
+					// 如果是m3u8，那么我们就传不带查询字符串的URL
+					if (_stricmp(exts[ext_index], ".m3u8") == 0)
+					{
+						url = "http://";
+						url += http_header_.GetHeadFieldValue("Host");
+						url += pure_object;
+					}
+
 					// 这个URL是可用的，发送消息抛出去
 					notifer_->SnifferResultReport("http", url.c_str());
 					break;

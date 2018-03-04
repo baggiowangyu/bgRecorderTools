@@ -51,6 +51,8 @@ END_MESSAGE_MAP()
 CbgLiveVideoSurveillanceSystemDlg::CbgLiveVideoSurveillanceSystemDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CbgLiveVideoSurveillanceSystemDlg::IDD, pParent)
 	, sniffer_(new bgSniffer(this))
+	, stream_mgr_(new bgStreamManager(this))
+	, recoder_(new bgStreamRecorder(this))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -79,6 +81,14 @@ BEGIN_MESSAGE_MAP(CbgLiveVideoSurveillanceSystemDlg, CDialog)
 	//}}AFX_MSG_MAP
 	ON_BN_CLICKED(IDC_BTN_START_MONITOR, &CbgLiveVideoSurveillanceSystemDlg::OnBnClickedBtnStartMonitor)
 	ON_BN_CLICKED(IDC_BTN_STOP_MONITOR, &CbgLiveVideoSurveillanceSystemDlg::OnBnClickedBtnStopMonitor)
+	ON_NOTIFY(NM_RCLICK, IDC_LIST_SNIFFER_URLS, &CbgLiveVideoSurveillanceSystemDlg::OnNMRClickListSnifferUrls)
+	ON_NOTIFY(NM_RCLICK, IDC_LIST_RECORDS, &CbgLiveVideoSurveillanceSystemDlg::OnNMRClickListRecords)
+	ON_COMMAND(ID_SNIFFER_MENU_DEL, &CbgLiveVideoSurveillanceSystemDlg::OnSnifferMenuDel)
+	ON_COMMAND(ID_SNIFFER_MENU_COPY, &CbgLiveVideoSurveillanceSystemDlg::OnSnifferMenuCopy)
+	ON_COMMAND(ID_SNIFFER_MENU_PLAY, &CbgLiveVideoSurveillanceSystemDlg::OnSnifferMenuPlay)
+	ON_COMMAND(ID_SNIFFER_MENU_RECORD, &CbgLiveVideoSurveillanceSystemDlg::OnSnifferMenuRecord)
+	ON_COMMAND(ID_SNIFFER_MENU_DEL_ALL, &CbgLiveVideoSurveillanceSystemDlg::OnSnifferMenuDelAll)
+	ON_COMMAND(ID_SNIFFER_MENU_COPY_ALL, &CbgLiveVideoSurveillanceSystemDlg::OnSnifferMenuCopyAll)
 END_MESSAGE_MAP()
 
 
@@ -116,7 +126,7 @@ BOOL CbgLiveVideoSurveillanceSystemDlg::OnInitDialog()
 	// TODO: 在此添加额外的初始化代码
 	CString v = GetMyVersion();
 	TCHAR version[4096] = {0};
-	_stprintf_s(version, 4096, _T("WLR视频监控系统 %s"), v.GetBuffer(0));
+	_stprintf_s(version, 4096, _T("网络直播视频监控平台 V%s"), v.GetBuffer(0));
 	SetWindowText(version);
 
 	// 初始化三个列表
@@ -128,11 +138,13 @@ BOOL CbgLiveVideoSurveillanceSystemDlg::OnInitDialog()
 	m_cNetworkDevices.InsertColumn(4, _T("掩码"), 0, 200);
 
 	m_cSnifferURL.SetExtendedStyle(m_cSnifferURL.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
-	m_cSnifferURL.InsertColumn(0, _T("视频源"), 0, 620);
+	m_cSnifferURL.InsertColumn(0, _T("抓取的视频源"), 0, 620);
+
+	m_cSnifferURL.InsertItem(0, _T("http://www.163.com/"));
 
 	m_cRecordURL.SetExtendedStyle(m_cRecordURL.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
-	m_cRecordURL.InsertColumn(0, _T("文件名"), 0, 250);
-	m_cRecordURL.InsertColumn(1, _T("录制大小"), 0, 100);
+	m_cRecordURL.InsertColumn(0, _T("录制文件名"), 0, 250);
+	m_cRecordURL.InsertColumn(1, _T("已录制大小"), 0, 100);
 	m_cRecordURL.InsertColumn(2, _T("视频源"), 0, 270);
 
 	// 默认使用程序所在目录作为录像存储根路径
@@ -319,4 +331,164 @@ int CbgLiveVideoSurveillanceSystemDlg::SnifferResultReport(const char *protocol,
 	m_cSnifferURL.InsertItem(item_count, A2T(value));
 
 	return 0;
+}
+void CbgLiveVideoSurveillanceSystemDlg::OnNMRClickListSnifferUrls(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+	// TODO: 在此添加控件通知处理程序代码
+	*pResult = 0;
+
+	NM_LISTVIEW* pNMListView = (NM_LISTVIEW*)pNMHDR;
+	if (pNMListView->iItem != -1)
+	{
+		DWORD dwPos = GetMessagePos();
+		CPoint point(LOWORD(dwPos), HIWORD(dwPos));
+		CMenu menu;
+		//添加线程操作
+		VERIFY(menu.LoadMenu(IDR_MENU_SNIFFER));           //这里是我们在1中定义的MENU的文件名称
+		CMenu* popup = menu.GetSubMenu(0);
+		ASSERT(popup != NULL);
+		popup->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);
+
+		//下面的两行代码主要是为了后面的操作为准备的
+		//获取列表视图控件中第一个被选择项的位置
+		POSITION m_pstion = m_cSnifferURL.GetFirstSelectedItemPosition();
+		//该函数获取由pos指定的列表项的索引，然后将pos设置为下一个位置的POSITION值
+		int m_nIndex =  m_cSnifferURL.GetNextSelectedItem(m_pstion);
+
+	}
+}
+
+void CbgLiveVideoSurveillanceSystemDlg::OnNMRClickListRecords(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+	// TODO: 在此添加控件通知处理程序代码
+	*pResult = 0;
+
+	NM_LISTVIEW* pNMListView = (NM_LISTVIEW*)pNMHDR;
+	if (pNMListView->iItem != -1)
+	{
+		DWORD dwPos = GetMessagePos();
+		CPoint point(LOWORD(dwPos), HIWORD(dwPos));
+		CMenu menu;
+		//添加线程操作
+		VERIFY(menu.LoadMenu(IDR_MENU_RECORD));           //这里是我们定义的MENU的文件名称
+		CMenu* popup = menu.GetSubMenu(0);
+		ASSERT(popup != NULL);
+		popup->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);
+
+		//下面的两行代码主要是为了后面的操作为准备的
+		//获取列表视图控件中第一个被选择项的位置
+		POSITION m_pstion = m_cSnifferURL.GetFirstSelectedItemPosition();
+		//该函数获取由pos指定的列表项的索引，然后将pos设置为下一个位置的POSITION值
+		int m_nIndex =  m_cSnifferURL.GetNextSelectedItem(m_pstion);
+
+	}
+}
+
+void CbgLiveVideoSurveillanceSystemDlg::OnSnifferMenuDel()
+{
+	// 
+	POSITION m_pstion = m_cSnifferURL.GetFirstSelectedItemPosition();
+	int m_nIndex =  m_cSnifferURL.GetNextSelectedItem(m_pstion);
+	m_cSnifferURL.DeleteItem(m_nIndex);
+}
+
+void CbgLiveVideoSurveillanceSystemDlg::OnSnifferMenuDelAll()
+{
+	m_cSnifferURL.DeleteAllItems();
+}
+
+void CbgLiveVideoSurveillanceSystemDlg::OnSnifferMenuCopy()
+{
+	// 
+	POSITION m_pstion = m_cSnifferURL.GetFirstSelectedItemPosition();
+	int m_nIndex =  m_cSnifferURL.GetNextSelectedItem(m_pstion);
+	CString url = m_cSnifferURL.GetItemText(m_nIndex, 0);
+
+	// 写入系统剪贴板
+	BOOL bret = OpenClipboard();
+	if (!bret)
+		m_cState.SetWindowText(_T("复制视频源地址到剪贴板失败！"));
+
+	// 申请剪贴板内存
+	HANDLE hClip = GlobalAlloc(GMEM_MOVEABLE, (url.GetLength() + 1) * sizeof(TCHAR));
+	char *pBuf = (char *)GlobalLock(hClip);
+	memcpy(pBuf, url.GetBuffer(0), url.GetLength() * sizeof(TCHAR));
+	GlobalUnlock(hClip);
+
+	EmptyClipboard();
+	SetClipboardData(CF_UNICODETEXT, hClip);
+	CloseClipboard();
+}
+
+void CbgLiveVideoSurveillanceSystemDlg::OnSnifferMenuCopyAll()
+{
+	// TODO: 在此添加命令处理程序代码
+	CString all_urls;
+	int item_count = m_cSnifferURL.GetItemCount();
+	for (int index = 0; index < item_count; ++index)
+	{
+		CString url = m_cSnifferURL.GetItemText(index, 0);
+		all_urls += url;
+		all_urls += _T("\r\n");
+	}
+
+	// 写入系统剪贴板
+	BOOL bret = OpenClipboard();
+	if (!bret)
+		m_cState.SetWindowText(_T("复制视频源地址到剪贴板失败！"));
+
+	// 申请剪贴板内存
+	HANDLE hClip = GlobalAlloc(GMEM_MOVEABLE, (all_urls.GetLength() + 1) * sizeof(TCHAR));
+	char *pBuf = (char *)GlobalLock(hClip);
+	memcpy(pBuf, all_urls.GetBuffer(0), all_urls.GetLength() * sizeof(TCHAR));
+	GlobalUnlock(hClip);
+
+	EmptyClipboard();
+	SetClipboardData(CF_UNICODETEXT, hClip);
+	CloseClipboard();
+}
+
+void CbgLiveVideoSurveillanceSystemDlg::OnSnifferMenuPlay()
+{
+	// 
+	POSITION m_pstion = m_cSnifferURL.GetFirstSelectedItemPosition();
+	int m_nIndex =  m_cSnifferURL.GetNextSelectedItem(m_pstion);
+	CString url = m_cSnifferURL.GetItemText(m_nIndex, 0);
+
+	stream_mgr_->HandleURL(url.GetString(), true, false);
+}
+
+void CbgLiveVideoSurveillanceSystemDlg::OnSnifferMenuRecord()
+{
+	// 
+	POSITION m_pstion = m_cSnifferURL.GetFirstSelectedItemPosition();
+	int m_nIndex =  m_cSnifferURL.GetNextSelectedItem(m_pstion);
+	CString url = m_cSnifferURL.GetItemText(m_nIndex, 0);
+	m_cSnifferURL.DeleteItem(m_nIndex);
+
+	// 将此url交给录制模块
+	stream_mgr_->HandleURL(url.GetString(), false, true);
+}
+
+
+int CbgLiveVideoSurveillanceSystemDlg::StreamNotifer(enum STREAM_NOTIFY_TYPE msg_type, const char *url)
+{
+	int errCode = 0;
+
+	switch (msg_type)
+	{
+	case StreamSave:
+		// 需要保存这个流，将流地址从Sniffer列表中移除，加入到录像列表
+		// 然后将URL扔给录像模块
+		errCode = recoder_->StartRecord(url);
+		break;
+	case StreamPlay:
+		break;
+	default:
+		break;
+	}
+
+	return errCode;
 }

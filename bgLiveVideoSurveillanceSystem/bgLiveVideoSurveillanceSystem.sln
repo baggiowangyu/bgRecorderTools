@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bgLiveVideoSurveillanceSystem", "bgLiveVideoSurveillanceSystem\bgLiveVideoSurveillanceSystem.vcproj", "{5211A95D-54C4-4181-A97D-18597D5BF1E1}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LVSS", "bgLiveVideoSurveillanceSystem\bgLiveVideoSurveillanceSystem.vcproj", "{5211A95D-54C4-4181-A97D-18597D5BF1E1}"
 	ProjectSection(ProjectDependencies) = postProject
 		{2227094A-B5D5-4841-A81C-7E11E683E1E7} = {2227094A-B5D5-4841-A81C-7E11E683E1E7}
 	EndProjectSection
@@ -14,6 +14,10 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bgStreamRecorder", "bgStreamRecorder\bgStreamRecorder.vcproj", "{E2C432BF-0131-4310-A6BD-2C884A5A196D}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bgBase", "bgBase\bgBase.vcproj", "{45640805-FC40-4F42-9317-8E65D9BD5E13}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bgStreamManager", "bgStreamManager\bgStreamManager.vcproj", "{6ACB3AF1-8AA4-49DE-AEC8-7BB7574B9537}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bgMediaPlayer", "bgMediaPlayer\bgMediaPlayer.vcproj", "{E00998B6-6688-4E8E-87B1-39E7684E8BB8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,6 +41,14 @@ Global
 		{45640805-FC40-4F42-9317-8E65D9BD5E13}.Debug|Win32.Build.0 = Debug|Win32
 		{45640805-FC40-4F42-9317-8E65D9BD5E13}.Release|Win32.ActiveCfg = Release|Win32
 		{45640805-FC40-4F42-9317-8E65D9BD5E13}.Release|Win32.Build.0 = Release|Win32
+		{6ACB3AF1-8AA4-49DE-AEC8-7BB7574B9537}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6ACB3AF1-8AA4-49DE-AEC8-7BB7574B9537}.Debug|Win32.Build.0 = Debug|Win32
+		{6ACB3AF1-8AA4-49DE-AEC8-7BB7574B9537}.Release|Win32.ActiveCfg = Release|Win32
+		{6ACB3AF1-8AA4-49DE-AEC8-7BB7574B9537}.Release|Win32.Build.0 = Release|Win32
+		{E00998B6-6688-4E8E-87B1-39E7684E8BB8}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E00998B6-6688-4E8E-87B1-39E7684E8BB8}.Debug|Win32.Build.0 = Debug|Win32
+		{E00998B6-6688-4E8E-87B1-39E7684E8BB8}.Release|Win32.ActiveCfg = Release|Win32
+		{E00998B6-6688-4E8E-87B1-39E7684E8BB8}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

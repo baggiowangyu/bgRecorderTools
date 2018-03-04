@@ -79,11 +79,11 @@ IDR_MAINFRAME           ICON                    "res\\bgLiveVideoSurveillanceSys
 
 IDD_ABOUTBOX DIALOGEX 0, 0, 170, 62
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "关于 bgLiveVideoSurveillanceSystem"
+CAPTION "关于 LVSS"
 FONT 9, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
-    ICON            IDR_MAINFRAME,IDC_STATIC,14,14,21,20
-    LTEXT           "bgLiveVideoSurveillanceSystem，1.0 版",IDC_STATIC,42,14,114,8,SS_NOPREFIX
+    ICON            IDR_MAINFRAME,IDC_STATIC,14,14,20,20
+    LTEXT           "网络直播视频监控平台，1.1 版",IDC_STATIC,42,14,114,8,SS_NOPREFIX
     LTEXT           "Copyright (C) 2018",IDC_STATIC,42,26,114,8
     DEFPUSHBUTTON   "确定",IDOK,113,41,50,14,WS_GROUP
 END
@@ -115,8 +115,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,0,1
- PRODUCTVERSION 1,0,0,1
+ FILEVERSION 1,1,0,1
+ PRODUCTVERSION 1,1,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -131,14 +131,10 @@ BEGIN
     BEGIN
         BLOCK "080403a8"
         BEGIN
-            VALUE "CompanyName", "TODO: <公司名>"
-            VALUE "FileDescription", "TODO: <文件说明>"
-            VALUE "FileVersion", "1.0.0.1"
-            VALUE "InternalName", "bgLiveVideoSurveillanceSystem.exe"
-            VALUE "LegalCopyright", "TODO: (C) <公司名>。保留所有权利。"
-            VALUE "OriginalFilename", "bgLiveVideoSurveillanceSystem.exe"
-            VALUE "ProductName", "TODO: <产品名>"
-            VALUE "ProductVersion", "1.0.0.1"
+            VALUE "FileVersion", "1.1.0.1"
+            VALUE "InternalName", "网络直播视频监控平台.exe"
+            VALUE "OriginalFilename", "网络直播视频监控平台.exe"
+            VALUE "ProductVersion", "1.1.0.1"
         END
     END
     BLOCK "VarFileInfo"
@@ -177,12 +173,42 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 //
+// Menu
+//
+
+IDR_MENU_SNIFFER MENU 
+BEGIN
+    POPUP "嗅探列表菜单"
+    BEGIN
+        MENUITEM "删除选中视频源",                     ID_SNIFFER_MENU_DEL
+        MENUITEM "删除所有视频源",                     ID_SNIFFER_MENU_DEL_ALL
+        MENUITEM SEPARATOR
+        MENUITEM "复制选中的视频源",                    ID_SNIFFER_MENU_COPY
+        MENUITEM "复制所有视频源",                     ID_SNIFFER_MENU_COPY_ALL
+        MENUITEM "播放视频源",                       ID_SNIFFER_MENU_PLAY
+        MENUITEM "录制视频源",                       ID_SNIFFER_MENU_RECORD
+    END
+END
+
+IDR_MENU_RECORD MENU 
+BEGIN
+    POPUP "录制列表菜单"
+    BEGIN
+        MENUITEM "停止录制",                        ID_32777
+        MENUITEM "移除记录",                        ID_32778
+        MENUITEM "播放",                          ID_32779
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
 // String Table
 //
 
 STRINGTABLE 
 BEGIN
-    IDS_ABOUTBOX            "关于 bgLiveVideoSurveillanceSystem(&A)..."
+    IDS_ABOUTBOX            "关于 LVSS(&A)..."
 END
 
 #endif    // 中文(中华人民共和国) resources

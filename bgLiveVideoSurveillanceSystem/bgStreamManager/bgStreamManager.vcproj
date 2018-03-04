@@ -2,11 +2,11 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="bgBase"
-	ProjectGUID="{45640805-FC40-4F42-9317-8E65D9BD5E13}"
-	RootNamespace="bgBase"
+	Name="bgStreamManager"
+	ProjectGUID="{6ACB3AF1-8AA4-49DE-AEC8-7BB7574B9537}"
+	RootNamespace="bgStreamManager"
 	Keyword="Win32Proj"
-	TargetFrameworkVersion="196613"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -190,14 +190,14 @@
 			>
 		</Filter>
 		<Filter
-			Name="AMF"
+			Name="Á÷¹ÜÀí"
 			>
 			<File
-				RelativePath=".\amf.cpp"
+				RelativePath=".\bgStreamManager.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\amf.h"
+				RelativePath=".\bgStreamManager.h"
 				>
 			</File>
 		</Filter>

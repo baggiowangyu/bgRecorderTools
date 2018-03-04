@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="bgLiveVideoSurveillanceSystem"
+	Name="LVSS"
 	ProjectGUID="{5211A95D-54C4-4181-A97D-18597D5BF1E1}"
 	RootNamespace="bgLiveVideoSurveillanceSystem"
 	Keyword="MFCProj"
@@ -69,6 +69,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="Version.lib shlwapi.lib Packet.lib wpcap.lib bgBase.lib bgSniffer.lib"
+				OutputFile="$(OutDir)\LVSS.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\Debug;..\..\ext\Winpcap\Lib"
 				GenerateDebugInformation="true"
@@ -128,6 +129,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
+				AdditionalIncludeDirectories="..\bgSniffer"
 				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG"
 				MinimalRebuild="false"
 				RuntimeLibrary="0"
@@ -150,7 +152,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="Version.lib shlwapi.lib Packet.lib wpcap.lib bgBase.lib bgSniffer.lib"
 				LinkIncremental="1"
+				AdditionalLibraryDirectories="..\Release;..\..\ext\Winpcap\Lib"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"

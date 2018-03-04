@@ -8,10 +8,14 @@
 
 #include "bgNetworkProtocolStruct.h"
 #include "bgSniffer.h"
+#include "bgStreamManager.h"
+#include "bgStreamRecorder.h"
+
 class bgSnifferNotifer;
+class bgStreamManager;
 
 // CbgLiveVideoSurveillanceSystemDlg 对话框
-class CbgLiveVideoSurveillanceSystemDlg : public CDialog, bgSnifferNotifer
+class CbgLiveVideoSurveillanceSystemDlg : public CDialog, bgSnifferNotifer, bgStreamNotifer, bgStreamRecorderNotifer
 {
 // 构造
 public:
@@ -57,10 +61,26 @@ public:
 	virtual int SnifferResultReport(const char *protocol, const char *value);
 
 public:
+	bgStreamManager *stream_mgr_;
+	virtual int StreamNotifer(enum STREAM_NOTIFY_TYPE msg_type, const char *url);
+
+public:
+	bgStreamRecorder *recoder_;
+	virtual int RecoderNotifer(const char *url, enum StreamRecordEvent event, unsigned char *info);
+
+public:
 	afx_msg void OnBnClickedBtnStartMonitor();
 	afx_msg void OnBnClickedBtnStopMonitor();
 	CEdit m_cSavePath;
 
 public:
 
+	afx_msg void OnNMRClickListSnifferUrls(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnNMRClickListRecords(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnSnifferMenuDel();
+	afx_msg void OnSnifferMenuCopy();
+	afx_msg void OnSnifferMenuPlay();
+	afx_msg void OnSnifferMenuRecord();
+	afx_msg void OnSnifferMenuDelAll();
+	afx_msg void OnSnifferMenuCopyAll();
 };
