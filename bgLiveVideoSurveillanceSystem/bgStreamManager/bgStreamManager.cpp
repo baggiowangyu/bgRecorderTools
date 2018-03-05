@@ -35,6 +35,7 @@ int bgStreamManager::Stop(const char *url)
 int bgStreamManager::SaveStream(const char *url)
 {
 	// 扔到流记录模块，开始流记录
+	return 0;
 }
 
 int bgStreamManager::InsertStreamUrl(const char *url)

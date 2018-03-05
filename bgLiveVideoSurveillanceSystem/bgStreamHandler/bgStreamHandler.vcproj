@@ -2,11 +2,11 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="bgMediaPlayer"
-	ProjectGUID="{E00998B6-6688-4E8E-87B1-39E7684E8BB8}"
-	RootNamespace="bgMediaPlayer"
+	Name="bgStreamHandler"
+	ProjectGUID="{59ECE1CF-65BE-4FFD-AE8A-2D54A004A12F}"
+	RootNamespace="bgStreamHandler"
 	Keyword="Win32Proj"
-	TargetFrameworkVersion="131072"
+	TargetFrameworkVersion="196613"
 	>
 	<Platforms>
 		<Platform
@@ -45,7 +45,7 @@
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="1"
+				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				DebugInformationFormat="4"
@@ -106,7 +106,7 @@
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
-				RuntimeLibrary="0"
+				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
@@ -191,22 +191,14 @@
 			>
 		</Filter>
 		<Filter
-			Name="解码渲染播放"
+			Name="流处理模块"
 			>
 			<File
-				RelativePath=".\bgMediaPlayer.cpp"
+				RelativePath=".\bgStreamHandler.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\bgMediaPlayer.h"
-				>
-			</File>
-			<File
-				RelativePath=".\bgMediaPlayerSubScreen.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\bgMediaPlayerSubScreen.h"
+				RelativePath=".\bgStreamHandler.h"
 				>
 			</File>
 		</Filter>

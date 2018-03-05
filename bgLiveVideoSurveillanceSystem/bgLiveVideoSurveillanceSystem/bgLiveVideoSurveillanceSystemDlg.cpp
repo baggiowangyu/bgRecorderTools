@@ -140,7 +140,7 @@ BOOL CbgLiveVideoSurveillanceSystemDlg::OnInitDialog()
 	m_cSnifferURL.SetExtendedStyle(m_cSnifferURL.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 	m_cSnifferURL.InsertColumn(0, _T("抓取的视频源"), 0, 620);
 
-	m_cSnifferURL.InsertItem(0, _T("http://www.163.com/"));
+	m_cSnifferURL.InsertItem(0, _T("rtmp://live.hkstv.hk.lxdns.com/live/hks"));
 
 	m_cRecordURL.SetExtendedStyle(m_cRecordURL.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 	m_cRecordURL.InsertColumn(0, _T("录制文件名"), 0, 250);
@@ -162,6 +162,16 @@ BOOL CbgLiveVideoSurveillanceSystemDlg::OnInitDialog()
 	int pos = cpp.find_last_of(_T("\\"));
 	current_dir = cpp.substr(0, pos);
 	m_cSavePath.SetWindowText(current_dir.c_str());
+
+	// 初始化播放器
+	RECT r;
+	m_cScreen.GetRect(&r);
+	int errCode = player_->Initialize(r.right - r.left, r.bottom - r.top, 1, m_cScreen.GetSafeHwnd());
+	if (errCode != 0)
+	{
+		m_cState.SetWindowText(_T("初始化播放组件失败！"));
+		return TRUE;
+	}
 
 	// 枚举当前网卡
 	EnumNetworkDevices();
@@ -457,7 +467,8 @@ void CbgLiveVideoSurveillanceSystemDlg::OnSnifferMenuPlay()
 	int m_nIndex =  m_cSnifferURL.GetNextSelectedItem(m_pstion);
 	CString url = m_cSnifferURL.GetItemText(m_nIndex, 0);
 
-	stream_mgr_->HandleURL(url.GetString(), true, false);
+	USES_CONVERSION;
+	stream_mgr_->HandleURL(T2A(url.GetString()), true, false);
 }
 
 void CbgLiveVideoSurveillanceSystemDlg::OnSnifferMenuRecord()
@@ -469,7 +480,8 @@ void CbgLiveVideoSurveillanceSystemDlg::OnSnifferMenuRecord()
 	m_cSnifferURL.DeleteItem(m_nIndex);
 
 	// 将此url交给录制模块
-	stream_mgr_->HandleURL(url.GetString(), false, true);
+	USES_CONVERSION;
+	stream_mgr_->HandleURL(T2A(url.GetString()), false, true);
 }
 
 
@@ -485,6 +497,37 @@ int CbgLiveVideoSurveillanceSystemDlg::StreamNotifer(enum STREAM_NOTIFY_TYPE msg
 		errCode = recoder_->StartRecord(url);
 		break;
 	case StreamPlay:
+		errCode = player_->Play(url);
+		break;
+	default:
+		break;
+	}
+
+	return errCode;
+}
+
+int CbgLiveVideoSurveillanceSystemDlg::PlayNotifer(const char *url, enum bgMediaPlayerEvent event, const unsigned char *data, int data_len)
+{
+	int errCode = 0;
+
+	switch (event)
+	{
+	case 0:
+		break;
+	default:
+		break;
+	}
+
+	return errCode;
+}
+
+int CbgLiveVideoSurveillanceSystemDlg::RecoderNotifer(const char *url, enum StreamRecordEvent event, unsigned char *info)
+{
+	int errCode = 0;
+
+	switch (event)
+	{
+	case 0:
 		break;
 	default:
 		break;

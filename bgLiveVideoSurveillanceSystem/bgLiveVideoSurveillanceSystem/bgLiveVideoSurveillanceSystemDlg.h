@@ -8,14 +8,12 @@
 
 #include "bgNetworkProtocolStruct.h"
 #include "bgSniffer.h"
-#include "bgStreamManager.h"
-#include "bgStreamRecorder.h"
-
-class bgSnifferNotifer;
-class bgStreamManager;
+#include "..\bgStreamManager\bgStreamManager.h"
+#include "..\bgStreamRecorder\bgStreamRecorder.h"
+#include "..\bgMediaPlayer\bgMediaPlayer.h"
 
 // CbgLiveVideoSurveillanceSystemDlg 对话框
-class CbgLiveVideoSurveillanceSystemDlg : public CDialog, bgSnifferNotifer, bgStreamNotifer, bgStreamRecorderNotifer
+class CbgLiveVideoSurveillanceSystemDlg : public CDialog, bgSnifferNotifer, bgStreamNotifer, bgStreamRecorderNotifer, bgMediaPlayerNotifer
 {
 // 构造
 public:
@@ -67,6 +65,10 @@ public:
 public:
 	bgStreamRecorder *recoder_;
 	virtual int RecoderNotifer(const char *url, enum StreamRecordEvent event, unsigned char *info);
+
+public:
+	bgMediaPlayer *player_;
+	virtual int PlayNotifer(const char *url, enum bgMediaPlayerEvent event, const unsigned char *data, int data_len);
 
 public:
 	afx_msg void OnBnClickedBtnStartMonitor();

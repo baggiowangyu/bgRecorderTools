@@ -19,6 +19,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bgStreamManager", "bgStream
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bgMediaPlayer", "bgMediaPlayer\bgMediaPlayer.vcproj", "{E00998B6-6688-4E8E-87B1-39E7684E8BB8}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bgStreamHandler", "bgStreamHandler\bgStreamHandler.vcproj", "{59ECE1CF-65BE-4FFD-AE8A-2D54A004A12F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -49,6 +51,10 @@ Global
 		{E00998B6-6688-4E8E-87B1-39E7684E8BB8}.Debug|Win32.Build.0 = Debug|Win32
 		{E00998B6-6688-4E8E-87B1-39E7684E8BB8}.Release|Win32.ActiveCfg = Release|Win32
 		{E00998B6-6688-4E8E-87B1-39E7684E8BB8}.Release|Win32.Build.0 = Release|Win32
+		{59ECE1CF-65BE-4FFD-AE8A-2D54A004A12F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{59ECE1CF-65BE-4FFD-AE8A-2D54A004A12F}.Debug|Win32.Build.0 = Debug|Win32
+		{59ECE1CF-65BE-4FFD-AE8A-2D54A004A12F}.Release|Win32.ActiveCfg = Release|Win32
+		{59ECE1CF-65BE-4FFD-AE8A-2D54A004A12F}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -4,7 +4,6 @@
 #include <string>
 #include <map>
 #include <Windows.h>
-#include "bgStreamNotifer.h"
 
 
 enum StreamRecordEvent
@@ -21,7 +20,7 @@ struct bgRecordInfo
 {
 	std::string save_path_;		// 保存路径
 	__int64 record_data_len_;	// 已录制长度
-} bgRecordInfo;
+};
 
 
 class bgStreamRecorderNotifer
