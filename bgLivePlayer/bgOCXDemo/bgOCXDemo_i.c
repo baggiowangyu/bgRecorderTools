@@ -6,7 +6,7 @@
 
 
  /* File created by MIDL compiler version 7.00.0555 */
-/* at Wed Feb 28 15:19:25 2018
+/* at Fri Mar 02 15:00:30 2018
  */
 /* Compiler settings for .\bgOCXDemo.idl:
     Oicf, W1, Zp8, env=Win32 (32b run), target_arch=X86 7.00.0555 

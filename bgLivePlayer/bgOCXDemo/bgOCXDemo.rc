@@ -1,11 +1,11 @@
-//Microsoft Visual C++ 生成的资源脚本。
+// Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
 /////////////////////////////////////////////////////////////////////////////
 //
-// 从 TEXTINCLUDE 2 资源生成。
+// Generated from the TEXTINCLUDE 2 resource.
 //
 #ifndef APSTUDIO_INVOKED
 #include "targetver.h"
@@ -15,39 +15,47 @@
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
 
+/////////////////////////////////////////////////////////////////////////////
+// 中文(中华人民共和国) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+#ifdef _WIN32
+LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
+#pragma code_page(936)
+#endif //_WIN32
+
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
 //
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE
+1 TEXTINCLUDE 
 BEGIN
-	"resource.h\0"
+    "resource.h\0"
 END
 
-2 TEXTINCLUDE
+2 TEXTINCLUDE 
 BEGIN
-	"#ifndef APSTUDIO_INVOKED\r\n"
+    "#ifndef APSTUDIO_INVOKED\r\n"
     "#include ""targetver.h""\r\n"
     "#endif\r\n"
-	"#include ""afxres.h""\r\n"
-	"\0"
-END
-
-3 TEXTINCLUDE
-BEGIN
-	"1 TYPELIB ""bgOCXDemo.tlb""\r\n"
+    "#include ""afxres.h""\r\n"
     "\0"
 END
 
-/////////////////////////////////////////////////////////////////////////////
+3 TEXTINCLUDE 
+BEGIN
+    "1 TYPELIB ""bgOCXDemo.tlb""\r\n"
+    "\0"
+END
+
 #endif    // APSTUDIO_INVOKED
 
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// 版本
+// Version
 //
 
 VS_VERSION_INFO VERSIONINFO
@@ -75,34 +83,41 @@ BEGIN
             VALUE "OriginalFilename", "bgOCXDemo.ocx"
             VALUE "ProductName", "TODO: <产品名>"
             VALUE "ProductVersion", "1.0.0.1"
-            VALUE "OLESelfRegister", ""
         END
     END
     BLOCK "VarFileInfo"
     BEGIN
-		VALUE "Translation", 0x0804, 936
+        VALUE "Translation", 0x804, 936
     END
 END
 
-/////////////////////////////////////////////////////////////////////////////
-//
-// 位图
-//
-
-IDB_BGOCXDEMO   BITMAP   "bgOCXDemoCtrl.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// 对话框
+// Bitmap
 //
 
+IDB_BGOCXDEMO           BITMAP                  "bgOCXDemoCtrl.bmp"
 
-IDD_PROPPAGE_BGOCXDEMO DIALOG   0, 0, 250, 62
-STYLE WS_CHILD
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_PROPPAGE_BGOCXDEMO DIALOG  0, 0, 250, 62
+STYLE DS_SETFONT | WS_CHILD
 FONT 9, "MS Shell Dlg"
 BEGIN
-    LTEXT           "TODO: 将用于操作 bgOCXDemo Control 的属性的控件放置在此对话框上。",
-                    IDC_STATIC,7,25,229,16
+    LTEXT           "TODO: 将用于操作 bgOCXDemo Control 的属性的控件放置在此对话框上。",IDC_STATIC,7,25,229,16
+END
+
+IDD_DLG_PLAYER_SCREEN DIALOGEX 0, 0, 359, 283
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,205,269,50,14,NOT WS_VISIBLE
+    PUSHBUTTON      "取消",IDCANCEL,309,269,50,14,NOT WS_VISIBLE
+    EDITTEXT        IDC_EDIT1,0,0,359,282,ES_AUTOHSCROLL | ES_READONLY
 END
 
 
@@ -112,7 +127,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO
+GUIDELINES DESIGNINFO 
 BEGIN
     IDD_PROPPAGE_BGOCXDEMO, DIALOG
     BEGIN
@@ -124,27 +139,42 @@ BEGIN
 END
 #endif    // APSTUDIO_INVOKED
 
+
 /////////////////////////////////////////////////////////////////////////////
 //
-// 字符串表
+// HTML
 //
 
-STRINGTABLE
-BEGIN
-	IDS_BGOCXDEMO               "bgOCXDemo Control"
-	IDS_BGOCXDEMO_PPG           "bgOCXDemo Property Page"
-	IDS_BGOCXDEMO_PPG_CAPTION   "常规"
+IDR_HTML_OCXPLAYERSCREENDLG HTML                    "OCXPlayerScreenDlg.htm"
 
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_BGOCXDEMO           "bgOCXDemo Control"
+    IDS_BGOCXDEMO_PPG       "bgOCXDemo Property Page"
 END
+
+STRINGTABLE 
+BEGIN
+    IDS_BGOCXDEMO_PPG_CAPTION "常规"
+END
+
+#endif    // 中文(中华人民共和国) resources
+/////////////////////////////////////////////////////////////////////////////
+
 
 
 #ifndef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
 //
-// 从 TEXTINCLUDE 3 资源生成。
+// Generated from the TEXTINCLUDE 3 resource.
 //
 1 TYPELIB "bgOCXDemo.tlb"
 
 /////////////////////////////////////////////////////////////////////////////
-#endif    // 不是 APSTUDIO_INVOKED
+#endif    // not APSTUDIO_INVOKED
 
