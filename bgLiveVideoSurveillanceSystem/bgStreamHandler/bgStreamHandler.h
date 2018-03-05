@@ -1,7 +1,10 @@
 #ifndef _BG_STREAM_HANDLER_H_
 #define _BG_STREAM_HANDLER_H_
 
+#include <string>
 #include <Windows.h>
+
+#define __STDC_CONSTANT_MACROS
 
 #ifdef __cplusplus
 extern "C" {
@@ -23,6 +26,12 @@ enum StreamType
 	StreamTypeRecord
 };
 
+enum StreamOperator
+{
+	Op_Record,
+	Op_Play
+};
+
 enum FrameType
 {
 	FrameAudio,
@@ -32,7 +41,7 @@ enum FrameType
 class bgStreamHandlerNotifer
 {
 public:
-	virtual int PlayingStreamNotifer(const char *url, AVFrame *frame, ) = 0;
+	virtual int PlayingStreamNotifer(const char *url, AVFrame *frame) = 0;
 	virtual int SaveStreamNotifer(const char *url, AVPacket *pkt) = 0;
 };
 
@@ -49,7 +58,7 @@ public:
 	void Close();
 
 public:
-	int Start(const char *url, enum StreamType type);
+	int Start(const char *url, enum StreamType type, enum StreamOperator op);
 	void Stop();
 
 public:
@@ -64,6 +73,9 @@ private:
 	bgStreamHandlerNotifer *notifer_;
 	enum StreamType type_;
 	std::string url_;
+
+	bool is_record_;
+	bool is_play_;
 };
 
 

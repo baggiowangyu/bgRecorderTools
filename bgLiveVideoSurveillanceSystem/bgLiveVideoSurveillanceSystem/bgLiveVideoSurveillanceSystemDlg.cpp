@@ -53,6 +53,7 @@ CbgLiveVideoSurveillanceSystemDlg::CbgLiveVideoSurveillanceSystemDlg(CWnd* pPare
 	, sniffer_(new bgSniffer(this))
 	, stream_mgr_(new bgStreamManager(this))
 	, recoder_(new bgStreamRecorder(this))
+	, player_(new bgMediaPlayer(this))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -527,7 +528,20 @@ int CbgLiveVideoSurveillanceSystemDlg::RecoderNotifer(const char *url, enum Stre
 
 	switch (event)
 	{
-	case 0:
+	case StreamRecordUpdateRootpath:
+		// 更新根路径
+		break;
+	case StreamRecordUpdateRecordInfo:
+		// 更新录制信息
+		break;
+	case StreamRecordStart:
+		// 开始录制
+		break;
+	case StreamRecordPause:
+		// 暂停录制
+		break;
+	case StreamRecordStop:
+		// 停止录制
 		break;
 	default:
 		break;

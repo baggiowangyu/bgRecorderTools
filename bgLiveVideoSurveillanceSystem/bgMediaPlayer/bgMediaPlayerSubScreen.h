@@ -1,8 +1,11 @@
 #ifndef _BG_MEDIA_PLAYER_SUB_SCREEN_H_
 #define _BG_MEDIA_PLAYER_SUB_SCREEN_H_
 
+
+#include <string>
 #include <windows.h>
 #include "..\..\ext\SDL2\include\SDL.h"
+#define __STDC_CONSTANT_MACROS
 
 class bgMediaPlayerSubScreen
 {

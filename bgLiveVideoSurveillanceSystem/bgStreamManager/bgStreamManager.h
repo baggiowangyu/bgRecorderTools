@@ -4,6 +4,7 @@
 #include <string>
 #include <map>
 
+class bgStreamHandler;
 
 enum STREAM_NOTIFY_TYPE
 {
@@ -33,19 +34,20 @@ public:
 	int SetSaveRootPath(const char *rootpath);
 	int HandleURL(const char *url, bool isPlay, bool isSave);
 
-public:
-	int Play(const char *url);
-	int Stop(const char *url);
+//public:
+//	int Play(const char *url);
+//	int Stop(const char *url);
+//
+//public:
+//	int SaveStream(const char *url);
+//
+//public:
+//	int InsertStreamUrl(const char *url);
+//	int RemoveStreamUrl(const char *url);
 
 public:
-	int SaveStream(const char *url);
-
-public:
-	int InsertStreamUrl(const char *url);
-	int RemoveStreamUrl(const char *url);
-
-public:
-	std::map<std::string, int> stream_urls_;
+	std::string root_path_;
+	std::map<std::string, bgStreamHandler*> stream_urls_;
 
 private:
 	bgStreamNotifer *notifer_;

@@ -19,7 +19,7 @@ void bgStreamHandler::Close()
 
 }
 
-int bgStreamHandler::Start(const char *url, enum StreamType type)
+int bgStreamHandler::Start(const char *url, enum StreamType type, enum StreamOperator op)
 {
 	int errCode = 0;
 
@@ -29,13 +29,14 @@ int bgStreamHandler::Start(const char *url, enum StreamType type)
 	type_ = type;
 	url_ = url;
 
+	// 检测线程是否正在运行，若没有，则启动线程，若正在运行，则跳过
 	CreateThread(NULL, 0, bgStreamHandler::WorkingThread, this, 0, NULL);
 	CreateThread(NULL, 0, bgStreamHandler::EventThread, this, 0, NULL);
 
 	return errCode;
 }
 
-void bgStreamHandler::Close()
+void bgStreamHandler::Stop()
 {
 
 }
@@ -124,7 +125,7 @@ DWORD WINAPI bgStreamHandler::WorkingThread(LPVOID lpParam)
 		if (av_packet.stream_index == video_stream_index)
 		{
 			// 这是视频帧，先将帧数据回调给保存回调
-			notifer_->SaveStreamNotifer(handler->url_.c_str(), &av_packet);
+			handler->notifer_->SaveStreamNotifer(handler->url_.c_str(), &av_packet);
 			
 			// 解码后回调给播放回调
 			AVFrame *frame = av_frame_alloc();
