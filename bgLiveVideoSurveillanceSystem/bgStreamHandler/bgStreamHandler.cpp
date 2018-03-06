@@ -147,6 +147,7 @@ DWORD WINAPI bgStreamHandler::WorkingThread(LPVOID lpParam)
 			if (got_pic)
 			{
 				// 首先回调发送视频信息
+				notifer_->PlayingStreamNotifer(handler->url_.c_str(), frame);
 
 				// 然后发送
 			}
