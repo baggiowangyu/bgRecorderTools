@@ -16,29 +16,41 @@ int bgStreamHandler::Initialize()
 
 void bgStreamHandler::Close()
 {
-
+	is_play_ = false;
+	is_record_ = false;
 }
 
 int bgStreamHandler::Start(const char *url, enum StreamType type, enum StreamOperator op)
 {
 	int errCode = 0;
 
-	// 先结束掉旧的工作
-	Close();
-
 	type_ = type;
 	url_ = url;
 
-	// 检测线程是否正在运行，若没有，则启动线程，若正在运行，则跳过
-	CreateThread(NULL, 0, bgStreamHandler::WorkingThread, this, 0, NULL);
-	CreateThread(NULL, 0, bgStreamHandler::EventThread, this, 0, NULL);
+	switch (op)
+	{
+	case Op_Play:
+		is_play_ = true;
+		break;
+	case Op_Record:
+		is_record_ = true;
+		break;
+	}
+
+	if (!is_thread_working_)
+	{
+		// 检测线程是否正在运行，若没有，则启动线程，若正在运行，则跳过
+		CreateThread(NULL, 0, bgStreamHandler::WorkingThread, this, 0, NULL);
+		CreateThread(NULL, 0, bgStreamHandler::EventThread, this, 0, NULL);
+	}
+	
 
 	return errCode;
 }
 
 void bgStreamHandler::Stop()
 {
-
+	url_ = "";
 }
 
 DWORD WINAPI bgStreamHandler::WorkingThread(LPVOID lpParam)

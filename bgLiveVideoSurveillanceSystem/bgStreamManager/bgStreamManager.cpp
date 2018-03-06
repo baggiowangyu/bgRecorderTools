@@ -56,42 +56,9 @@ int bgStreamManager::HandleURL(const char *url, bool isPlay, bool isSave)
 		}
 	}
 
-	stream_urls_.insert(std::pair<url, handler>);
+	stream_urls_.insert(std::pair<std::string, bgStreamHandler*>(url, handler));
 
 	return errCode;
 }
 
 
-
-//int bgStreamManager::Play(const char *url)
-//{
-//	// 扔到流记录模块，将数据回调通知给
-//	return 0;
-//}
-//
-//int bgStreamManager::Stop(const char *url)
-//{
-//	return 0;
-//}
-//
-//int bgStreamManager::SaveStream(const char *url)
-//{
-//	// 扔到流记录模块，开始流记录
-//	return 0;
-//}
-//
-//int bgStreamManager::InsertStreamUrl(const char *url)
-//{
-//	int element_count = stream_urls_.size();
-//	stream_urls_.insert(std::pair<std::string, int>(url, element_count));
-//
-//	return 0;
-//}
-//
-//int bgStreamManager::RemoveStreamUrl(const char *url)
-//{
-//	std::map<std::string, int>::iterator iter = stream_urls_.find(url);
-//	stream_urls_.erase(iter);
-//
-//	return 0;
-//}

@@ -41,6 +41,7 @@ enum FrameType
 class bgStreamHandlerNotifer
 {
 public:
+	virtual int StreamCodecInfoNotifer(AVCodecContext *video_codec_ctx, AVCodecContext *audio_codec_ctx) = 0;
 	virtual int PlayingStreamNotifer(const char *url, AVFrame *frame) = 0;
 	virtual int SaveStreamNotifer(const char *url, AVPacket *pkt) = 0;
 };
@@ -50,6 +51,9 @@ class bgStreamHandler
 public:
 	bgStreamHandler(bgStreamHandlerNotifer *notifer)
 		: notifer_(notifer)
+		, is_record_(false)
+		, is_play_(false)
+		, is_thread_working_(false)
 	{}
 	~bgStreamHandler() {}
 
@@ -62,10 +66,6 @@ public:
 	void Stop();
 
 public:
-// 	int Pause();
-// 	int Resume();
-
-public:
 	static DWORD WINAPI WorkingThread(LPVOID lpParam);
 	static DWORD WINAPI EventThread(LPVOID lpParam);
 	
@@ -76,6 +76,8 @@ private:
 
 	bool is_record_;
 	bool is_play_;
+
+	bool is_thread_working_;
 };
 
 

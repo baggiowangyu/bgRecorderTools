@@ -62,6 +62,15 @@ CbgLiveVideoSurveillanceSystemDlg::~CbgLiveVideoSurveillanceSystemDlg()
 {
 	delete sniffer_;
 	sniffer_ = NULL;
+
+	delete stream_mgr_;
+	stream_mgr_ = NULL;
+
+	delete recoder_;
+	recoder_ = NULL;
+
+	delete player_;
+	player_ = NULL;
 }
 
 void CbgLiveVideoSurveillanceSystemDlg::DoDataExchange(CDataExchange* pDX)
@@ -548,4 +557,19 @@ int CbgLiveVideoSurveillanceSystemDlg::RecoderNotifer(const char *url, enum Stre
 	}
 
 	return errCode;
+}
+
+int CbgLiveVideoSurveillanceSystemDlg::StreamCodecInfoNotifer(AVCodecContext *video_codec_ctx, AVCodecContext *audio_codec_ctx)
+{
+	return 0;
+}
+
+int CbgLiveVideoSurveillanceSystemDlg::PlayingStreamNotifer(const char *url, AVFrame *frame)
+{
+	return 0;
+}
+
+int CbgLiveVideoSurveillanceSystemDlg::SaveStreamNotifer(const char *url, AVPacket *pkt)
+{
+	return 0;
 }
