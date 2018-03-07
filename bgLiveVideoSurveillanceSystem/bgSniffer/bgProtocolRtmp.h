@@ -17,7 +17,6 @@ public:
 
 private:
 	bgSnifferNotifer *notifer_;
-	std::
 };
 
 #endif//_BG_PROTOCOL_RTMP_H_
