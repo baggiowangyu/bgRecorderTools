@@ -1,6 +1,7 @@
 #ifndef _BG_PROTOCOL_RTMP_H_
 #define _BG_PROTOCOL_RTMP_H_
 
+#include <string>
 #include "bgBasePacketParse.h"
 
 
@@ -17,6 +18,8 @@ public:
 
 private:
 	bgSnifferNotifer *notifer_;
+	std::string url_section_1_;
+	std::string url_section_2_;
 };
 
 #endif//_BG_PROTOCOL_RTMP_H_

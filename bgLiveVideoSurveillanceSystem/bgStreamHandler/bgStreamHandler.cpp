@@ -146,10 +146,8 @@ DWORD WINAPI bgStreamHandler::WorkingThread(LPVOID lpParam)
 			
 			if (got_pic)
 			{
-				// 首先回调发送视频信息
+				// 首先回调发送视频帧信息
 				handler->notifer_->PlayingStreamNotifer(handler->url_.c_str(), frame);
-
-				// 然后发送
 			}
 		}
 		else if (av_packet.stream_index == audio_stream_index)

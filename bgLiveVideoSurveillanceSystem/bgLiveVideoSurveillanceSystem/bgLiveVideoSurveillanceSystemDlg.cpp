@@ -308,7 +308,7 @@ void CbgLiveVideoSurveillanceSystemDlg::EnumNetworkDevices()
 		m_cNetworkDevices.SetItemText(item_count, 2, A2T(dev_desc[index].net_ip_.c_str()));
 		m_cNetworkDevices.SetItemText(item_count, 3, A2T(dev_desc[index].name_.c_str()));
 		TCHAR buffer[32] = {0};
-		m_cNetworkDevices.SetItemText(item_count, 4, _itot_s(dev_desc[index].mask_ip_, buffer, 32, 10));
+		m_cNetworkDevices.SetItemText(item_count, 4, _itot(dev_desc[index].mask_ip_, buffer, 10));
 	}
 
 	delete [] dev_desc;

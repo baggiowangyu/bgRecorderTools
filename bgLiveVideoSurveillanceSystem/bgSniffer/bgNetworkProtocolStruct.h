@@ -33,30 +33,30 @@ typedef struct bgEthernetII
 // 以太网802.3帧【已修正】
 typedef bgEthernetII bg802_3;
 
-// 网线连接帧
-typedef struct bgPPPoE
-{
-	u_short version_;
-	u_short pppoe_type_;
-	u_short code_;
-	u_short session_id_;
-	u_short len_;
-	std::string next_data_type_;
-} bgPPPoE;
+//// 网线连接帧
+//typedef struct bgPPPoE
+//{
+//	u_short version_;
+//	u_short pppoe_type_;
+//	u_short code_;
+//	u_short session_id_;
+//	u_short len_;
+//	std::string next_data_type_;
+//} bgPPPoE;
 
-// 地址解析协议ARP
-typedef struct bgARP
-{
-	u_short hardware_type_;		// 硬件类型
-	u_short protocol_type_;
-	u_short hardware_len_;
-	u_short protocol_len_;
-	u_short op_code_;
-	u_char src_mac_[6];
-	u_char des_mac_[6];
-	u_char src_ip_[4];
-	u_char des_ip_[4];
-} bgARP;
+//// 地址解析协议ARP
+//typedef struct bgARP
+//{
+//	u_short hardware_type_;		// 硬件类型
+//	u_short protocol_type_;
+//	u_short hardware_len_;
+//	u_short protocol_len_;
+//	u_short op_code_;
+//	u_char src_mac_[6];
+//	u_char des_mac_[6];
+//	u_char src_ip_[4];
+//	u_char des_ip_[4];
+//} bgARP;
 
 
 // IPv4协议【已修正】
@@ -79,26 +79,26 @@ typedef struct bgIPv4
 } bgIPv4;
 
 // IPv6协议
-typedef struct bgIPv6
-{
-	//u_short version_;
-	//u_char traffic_class_;	//通信类别 
-	//u_char flow_label_[3];	//流标记
-	//u_short next_len_;		//负载长度  包括扩展头和上层载荷
-	//u_short protocol_;		//上层协议 
-	//u_short hop_limit_;		//跳数限制 
-	//u_char src_ip_[16];		//源MAC
-	//u_char des_ip_[16];		//目的MAC
-	//u_short ext_len_;		//扩展长度
-	//u_short sign_;			//标记是否存在扩展头部 
-} bgIPv6;
+//typedef struct bgIPv6
+//{
+//	u_short version_;
+//	u_char traffic_class_;	//通信类别 
+//	u_char flow_label_[3];	//流标记
+//	u_short next_len_;		//负载长度  包括扩展头和上层载荷
+//	u_short protocol_;		//上层协议 
+//	u_short hop_limit_;		//跳数限制 
+//	u_char src_ip_[16];		//源MAC
+//	u_char des_ip_[16];		//目的MAC
+//	u_short ext_len_;		//扩展长度
+//	u_short sign_;			//标记是否存在扩展头部 
+//} bgIPv6;
 
 // ICMP协议
-typedef struct bgICMP
-{
-	//u_short ic_type_;	// 类型
-	//u_short code_;		// 代码
-} bgICMP;
+//typedef struct bgICMP
+//{
+//	u_short ic_type_;	// 类型
+//	u_short code_;		// 代码
+//} bgICMP;
 
 
 //
@@ -113,13 +113,13 @@ typedef struct bgUDP
 } bgUDP;
 
 
-// IGMP协议
-typedef struct bgIGMP
-{
-	//u_char version_;	// 版本
-	//u_char ig_type_;	// 类型
-	//u_char multicast_;	// D类 组地址
-} bgIGMP;
+//// IGMP协议
+//typedef struct bgIGMP
+//{
+//	u_char version_;	// 版本
+//	u_char ig_type_;	// 类型
+//	u_char multicast_;	// D类 组地址
+//} bgIGMP;
 
 
 //
@@ -147,50 +147,50 @@ typedef struct bgTCP
 
 
 
-// OSPF协议
-typedef struct bgOSPF
-{
-	//u_char version_;			// 
-	//u_short ospf_type_;			// 
-	//u_short len_;				// 
-	//u_char route_ip_[4];		// 
-	//u_char area_ip_[4];			// 
-	//u_short authen_type_;		// 
-	//std::string authen_data_;	// 
-} bgOSPF;
+//// OSPF协议
+//typedef struct bgOSPF
+//{
+//	u_char version_;			// 
+//	u_short ospf_type_;			// 
+//	u_short len_;				// 
+//	u_char route_ip_[4];		// 
+//	u_char area_ip_[4];			// 
+//	u_short authen_type_;		// 
+//	std::string authen_data_;	// 
+//} bgOSPF;
 
-// 域名解析
-typedef struct bgDNS
-{
-	//u_short sign_;				// 
-	//u_char symbol_[2];			// 
-	//u_char qr_;					// 
-	//u_short question_num_;		// 
-	//u_short answer_num_;		//
-	//u_short authen_answer_;		// 
-	//u_short extra_answer_;		// 
-	//std::string questions_;		// 
-} bgDNS;
+//// 域名解析
+//typedef struct bgDNS
+//{
+//	u_short sign_;				// 
+//	u_char symbol_[2];			// 
+//	u_char qr_;					// 
+//	u_short question_num_;		// 
+//	u_short answer_num_;		//
+//	u_short authen_answer_;		// 
+//	u_short extra_answer_;		// 
+//	std::string questions_;		// 
+//} bgDNS;
 
-// DHCP协议
-typedef struct bgDHCP
-{
-	//u_char op_;
-	//u_char hardware_type_;
-	//u_short hardware_len_;
-	//u_short hardware_ops_;		// 跳数，经过一个路由器加一
-	//int transaction_id_;		// 事物ID
-	//u_short secs_;				// 客户机启动时间
-	//u_char Ciaddr_[4];
-	//u_char Yiaddr_[4];
-	//u_char Siaddr_[4];
-	//u_char Giaddr_[4];
-	//u_char Chaddr_[4];
-	//std::string server_name_;
-	//std::string file_;
-	//u_short message_type_;
-	//u_short message_in_;
-} bgDHCP;
+//// DHCP协议
+//typedef struct bgDHCP
+//{
+//	u_char op_;
+//	u_char hardware_type_;
+//	u_short hardware_len_;
+//	u_short hardware_ops_;		// 跳数，经过一个路由器加一
+//	int transaction_id_;		// 事物ID
+//	u_short secs_;				// 客户机启动时间
+//	u_char Ciaddr_[4];
+//	u_char Yiaddr_[4];
+//	u_char Siaddr_[4];
+//	u_char Giaddr_[4];
+//	u_char Chaddr_[4];
+//	std::string server_name_;
+//	std::string file_;
+//	u_short message_type_;
+//	u_short message_in_;
+//} bgDHCP;
 
 
 //
@@ -220,20 +220,20 @@ typedef struct ip_address {
 }ip_address;  
 
 
-// 用于保存IPV4的首部  
-typedef struct ip_header {  
-	u_char ver_ihl;  
-	u_char tos;  
-	u_short tlen;  
-	u_short identification;  
-	u_short flags_fo;  
-	u_char ttl;  
-	u_char proto;  
-	u_short crc;  
-	ip_address saddr;  
-	ip_address daddr;  
-	u_int op_pad;  
-}ip_header;  
+//// 用于保存IPV4的首部  
+//typedef struct ip_header {  
+//	u_char ver_ihl;  
+//	u_char tos;  
+//	u_short tlen;  
+//	u_short identification;  
+//	u_short flags_fo;  
+//	u_char ttl;  
+//	u_char proto;  
+//	u_short crc;  
+//	ip_address saddr;  
+//	ip_address daddr;  
+//	u_int op_pad;  
+//}ip_header;  
 
 #pragma pack()
 

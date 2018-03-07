@@ -21,7 +21,7 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
-			UseOfMFC="1"
+			UseOfMFC="2"
 			CharacterSet="1"
 			>
 			<Tool
@@ -49,7 +49,7 @@
 				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="1"
+				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				DebugInformationFormat="4"
@@ -68,7 +68,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Version.lib shlwapi.lib Packet.lib wpcap.lib SDL2.lib SDL2_image.lib avcodec.lib avdevice.lib avfilter.lib avformat.lib avutil.lib postproc.lib swresample.lib swscale.lib bgBase.lib bgSniffer.lib bgStreamManager.lib bgStreamRecorder.lib bgMediaPlayer.lib"
+				AdditionalDependencies="Version.lib shlwapi.lib Packet.lib wpcap.lib SDL2.lib SDL2_image.lib avcodec.lib avdevice.lib avfilter.lib avformat.lib avutil.lib postproc.lib swresample.lib swscale.lib bgBase.lib bgSniffer.lib bgStreamManager.lib bgStreamHandler.lib bgStreamRecorder.lib bgMediaPlayer.lib"
 				OutputFile="$(OutDir)\LVSS.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\Debug;..\..\ext\Winpcap\Lib;..\..\ext\SDL2\lib\x86;..\..\ext\ffmpeg\lib\x86"

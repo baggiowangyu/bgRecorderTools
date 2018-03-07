@@ -40,12 +40,12 @@ int bgProtocolRtmp::Parse(unsigned char *header, const unsigned char *data, int 
 	{
 		// 解码
 		AVal strval;
-		AMF_DecodeString((const char *)&rtmp_header->body_[1], &strval);
+		AMF_DecodeString(&rtmp_header->body_[1], &strval);
 
 		if (_stricmp(strval.av_val, "connect") == 0)
 		{
 			const unsigned char *data = ((const unsigned char *)&rtmp_header->body_[0]) + 1 + 2 + strval.av_len;
-			AMF_DecodeInt32((const char *)data);
+			AMF_DecodeInt32(data);
 
 			const unsigned char *object_entry = data + 1 + 8;
 
@@ -56,21 +56,19 @@ int bgProtocolRtmp::Parse(unsigned char *header, const unsigned char *data, int 
 			for (int index = 0; index < buffer_size; ++index)
 			{
 				const unsigned char element = *object_entry_point;
-				//char msg[4096] = {0};
-				//sprintf_s(msg, 4096, "%d:\t0x%02X\n", index, element);
-				//OutputDebugStringA(msg);
+
 				if (element == 0xc3)
 					++tag_count;
 
 				++object_entry_point;
 			}
 
-			int real_rtmp_body_object_size = buffer_size - tag_count;
-			unsigned char *real_rtmp_body_object_buffer = new unsigned char[buffer_size];
+			int real_rtmp_body_object_size = buffer_size;
+			unsigned char *real_rtmp_body_object_buffer = new unsigned char[real_rtmp_body_object_size];
 			memset(real_rtmp_body_object_buffer, 0, real_rtmp_body_object_size);
 
 			int real_pos = 0;
-			for (int index = 0; index < buffer_size; ++index)
+			for (int index = 0; index < buffer_size + 1; ++index)
 			{
 				if (object_entry[index] != 0xC3)
 				{
@@ -131,26 +129,147 @@ int bgProtocolRtmp::Parse(unsigned char *header, const unsigned char *data, int 
 			// 解析AMF对象错误，这里一直不知道该怎么解决
 			// 先放着吧，后面再来处理。我们这里先增加一个流缓存管理模块
 			AMFObject amf_object;
-			int errCode = AMF3_Decode(&amf_object, (const char *)real_rtmp_body_object_buffer, real_rtmp_body_object_size, TRUE);
+			int errCode = AMF_Decode(&amf_object, real_rtmp_body_object_buffer, real_rtmp_body_object_size, FALSE);
 
 			delete [] real_rtmp_body_object_buffer;
 			real_rtmp_body_object_buffer = NULL;
 
-			int obj_count = AMF_CountProp(&amf_object);
-			for (int index = 0; index < obj_count; ++index)
-			{
-				AVal name;
-				AMFObjectProperty *amf_obj_prop = AMF_GetProp(&amf_object, &name, index);
+			// 这个对象里面有一个属性，这个属性里面是一个对象，就是我们想要的真正的对象
+			AMFObjectProperty *prop = AMF_GetProp(&amf_object, NULL, 0);
 
-				Sleep(1);
+			AMFObject real_obj;
+			AMFProp_GetObject(prop, &real_obj);
+			int real_obj_count = AMF_CountProp(&real_obj);
+			for (int prop_index = 0; prop_index < real_obj_count; ++prop_index)
+			{
+				// 这里拿不到数据
+				AMFObjectProperty *real_prop = AMF_GetProp(&real_obj, NULL, prop_index);
+				if (_stricmp(real_prop->p_name.av_val, "tcUrl") == 0)
+				{
+					// 找到了我们要找的
+					url_section_1_ = real_prop->p_name.av_val;
+					break;
+				}
 			}
+
+			//// 这里我们不再尝试用API来解析Object，我们人工来解析
+			//AMFObject obj;
+			//obj.o_num = 0;
+			//obj.o_props = NULL;
+
+			//int nSize = real_rtmp_body_object_size;
+			//unsigned char *pBuffer = real_rtmp_body_object_buffer;
+			//BOOL bError = FALSE;
+			//AMFObjectProperty prop;
+			//while (nSize > 0)
+			//{
+			//	int nRes;
+
+			//	if (nSize >=3 && AMF_DecodeInt24(pBuffer) == AMF_OBJECT_END)
+			//	{
+			//		nSize -= 3;
+			//		bError = FALSE;
+			//		break;
+			//	}
+
+			//	if (bError)
+			//	{
+			//		//RTMP_Log(RTMP_LOGERROR,
+			//		//	"DECODING ERROR, IGNORING BYTES UNTIL NEXT KNOWN PATTERN!");
+			//		nSize--;
+			//		pBuffer++;
+			//		continue;
+			//	}
+
+			//	nRes = AMFProp_Decode(&prop, pBuffer, nSize, FALSE);
+			//	if (nRes == -1)
+			//	{
+			//		bError = TRUE;
+			//		break;
+			//	}
+			//	else
+			//	{
+			//		nSize -= nRes;
+			//		if (nSize < 0)
+			//		{
+			//			bError = TRUE;
+			//			break;
+			//		}
+			//		pBuffer += nRes;
+			//		AMF_AddProp(&obj, &prop);
+			//	}
+			//}
 
 #endif //RTMP_PROTOCOL_USE_VIOLENCE_METHOD
 		}
 		else if (_stricmp(strval.av_val, "onStatus") == 0)
 		{
+			const unsigned char *object_entry = ((const unsigned char *)&rtmp_header->body_[0]) + 1 + 2 + strval.av_len;
+
+			// 这里存在一个问题，就是其中可能会因为分段，增加0xC3字节表示包头，现在需要遍历一遍，将所有数据段分段存储，重新拼接再解析
+			int buffer_size = host_body_size - 12 - strval.av_len;
+			int tag_count = 0;
+			const unsigned char *object_entry_point = object_entry;
+			for (int index = 0; index < buffer_size; ++index)
+			{
+				const unsigned char element = *object_entry_point;
+
+				if (element == 0xc3)
+					++tag_count;
+
+				++object_entry_point;
+			}
+
+			int real_rtmp_body_object_size = buffer_size;
+			unsigned char *real_rtmp_body_object_buffer = new unsigned char[real_rtmp_body_object_size];
+			memset(real_rtmp_body_object_buffer, 0, real_rtmp_body_object_size);
+
+			int real_pos = 0;
+			for (int index = 0; index < buffer_size + 1; ++index)
+			{
+				if (object_entry[index] != 0xC3)
+				{
+					real_rtmp_body_object_buffer[real_pos] = object_entry[index];
+					++real_pos;
+				}
+			}
+
 			// 如果是“NetStream.Data.Reset”则认为存在描述字符串，缓存下来
 			// 如果是“NetStream.Data.Start”则认为一次rtmp捕捉完毕了，在这里将url回调上去
+			AMFObject amf_object;
+			int errCode = AMF_Decode(&amf_object, real_rtmp_body_object_buffer, real_rtmp_body_object_size, FALSE);
+
+			delete [] real_rtmp_body_object_buffer;
+			real_rtmp_body_object_buffer = NULL;
+
+			// 这个对象里面有一个属性，这个属性里面是一个对象，就是我们想要的真正的对象
+			AMFObjectProperty *prop = AMF_GetProp(&amf_object, NULL, 0);
+
+			AMFObject real_obj;
+			AMFProp_GetObject(prop, &real_obj);
+			int real_obj_count = AMF_CountProp(&real_obj);
+			for (int prop_index = 0; prop_index < real_obj_count; ++prop_index)
+			{
+				AMFObjectProperty *real_prop = AMF_GetProp(&real_obj, NULL, prop_index);
+				if (_stricmp(real_prop->p_name.av_val, "code") == 0)
+				{
+					// 找到了我们要找的
+					if (real_prop->p_type == AMF_STRING)
+					{
+						if (_stricmp(real_prop->p_vu.p_aval.av_val, "NetStream.Data.Reset") == 0)
+						{
+							// 这里找出第二段的字符串，拼接到url_section_2_
+						}
+						else if (_stricmp(real_prop->p_vu.p_aval.av_val, "NetStream.Data.Start") == 0)
+						{
+							std::string url = url_section_1_ + url_section_2_;
+							notifer_->SnifferResultReport("rtmp", url.c_str());
+						}
+					}
+					
+					break;
+				}
+			}
 		}
 		
 	}
