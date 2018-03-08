@@ -827,7 +827,7 @@ AMFProp_Dump(AMFObjectProperty *prop)
 	if (name.av_len > 18)
 		name.av_len = 18;
 
-	_snprintf(strRes, 255, "Name: %18.*s, ", name.av_len, name.av_val);
+	_snprintf_s(strRes, 256, 255, "Name: %18.*s, ", name.av_len, name.av_val);
 
 	if (prop->p_type == AMF_OBJECT)
 	{
@@ -851,22 +851,19 @@ AMFProp_Dump(AMFObjectProperty *prop)
 	switch (prop->p_type)
 	{
 	case AMF_NUMBER:
-		_snprintf(str, 255, "NUMBER:\t%.2f", prop->p_vu.p_number);
+		_snprintf_s(str, 256, 255, "NUMBER:\t%.2f", prop->p_vu.p_number);
 		break;
 	case AMF_BOOLEAN:
-		_snprintf(str, 255, "BOOLEAN:\t%s",
-			prop->p_vu.p_number != 0.0 ? "TRUE" : "FALSE");
+		_snprintf_s(str, 256, 255, "BOOLEAN:\t%s", prop->p_vu.p_number != 0.0 ? "TRUE" : "FALSE");
 		break;
 	case AMF_STRING:
-		_snprintf(str, 255, "STRING:\t%.*s", prop->p_vu.p_aval.av_len,
-			prop->p_vu.p_aval.av_val);
+		_snprintf_s(str, 256, 255, "STRING:\t%.*s", prop->p_vu.p_aval.av_len, prop->p_vu.p_aval.av_val);
 		break;
 	case AMF_DATE:
-		_snprintf(str, 255, "DATE:\ttimestamp: %.2f, UTC offset: %d",
-			prop->p_vu.p_number, prop->p_UTCoffset);
+		_snprintf_s(str, 256, 255, "DATE:\ttimestamp: %.2f, UTC offset: %d", prop->p_vu.p_number, prop->p_UTCoffset);
 		break;
 	default:
-		_snprintf(str, 255, "INVALID TYPE 0x%02x", (unsigned char)prop->p_type);
+		_snprintf_s(str, 256, 255, "INVALID TYPE 0x%02x", (unsigned char)prop->p_type);
 	}
 
 	RTMP_Log(RTMP_LOGDEBUG, "Property: <%s%s>", strRes, str);

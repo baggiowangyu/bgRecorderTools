@@ -77,62 +77,10 @@ int bgProtocolRtmp::Parse(unsigned char *header, const unsigned char *data, int 
 				}
 			}
 
-#ifdef RTMP_PROTOCOL_USE_VIOLENCE_METHOD
-			{
-				// 
-				// !!!!! 直接使用残暴手段暴力搜url，这个AMF解码Object的时候老是报错
-				// 
-				const char *rtmp_protocol = "rtmp://";
-				const char *tmp_buf = (const char *)real_rtmp_body_object_buffer;
-				int url_begin_offset = 0;
-				int url_end_offset = 0;
-				for (int buf_index = 0; buf_index < real_rtmp_body_object_size; ++buf_index)
-				{
-					if (memcmp(rtmp_protocol, tmp_buf, strlen(rtmp_protocol)) == 0)
-					{
-						// 找到了起始偏移处，接下来找紧随其后的'\0'
-						url_begin_offset = buf_index;
-						break;
-					}
-					++tmp_buf;
-				}
-
-				const char *tmp_buf2 = (const char *)real_rtmp_body_object_buffer + url_begin_offset;
-				for (int buf_index2 = 0; buf_index2 < real_rtmp_body_object_size - url_begin_offset; ++buf_index2)
-				{
-					if (*tmp_buf2 == '\0')
-					{
-						url_end_offset = buf_index2 + url_begin_offset;
-
-						// 取出子串
-						char url[4096] = {0};
-						memcpy(url, real_rtmp_body_object_buffer + url_begin_offset, url_end_offset - url_begin_offset);
-
-						// 回调传到上层
-						// !!!!!!!!!!!!!!!!!!!!!!!!!注意!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-						// 实际上这里并不算完，因为后面还有可能带参数
-						// 所以拿到这个url后还需要等下一个包过来，里面包含了参数
-						// 经过抓包分析，后面的串，我们可以从getStreamLength命令来获取，正好，这个命令里面不存在Object的解码问题
-						// 或者从onStatus('NetStream.Play.Reset')里面拿details得到串
-						notifer_->SnifferResultReport("rtmp", url);
-
-						OutputDebugStringA(url);
-						OutputDebugStringA("\n");
-
-						break;
-					}
-
-					++tmp_buf2;
-				}
-			}
-#else
 			// 解析AMF对象错误，这里一直不知道该怎么解决
 			// 先放着吧，后面再来处理。我们这里先增加一个流缓存管理模块
 			AMFObject amf_object;
 			int errCode = AMF_Decode(&amf_object, real_rtmp_body_object_buffer, real_rtmp_body_object_size, FALSE);
-
-			delete [] real_rtmp_body_object_buffer;
-			real_rtmp_body_object_buffer = NULL;
 
 			// 这个对象里面有一个属性，这个属性里面是一个对象，就是我们想要的真正的对象
 			AMFObjectProperty *prop = AMF_GetProp(&amf_object, NULL, 0);
@@ -144,70 +92,25 @@ int bgProtocolRtmp::Parse(unsigned char *header, const unsigned char *data, int 
 			{
 				// 这里拿不到数据
 				AMFObjectProperty *real_prop = AMF_GetProp(&real_obj, NULL, prop_index);
-				if (_stricmp(real_prop->p_name.av_val, "tcUrl") == 0)
+				if (memcmp(real_prop->p_name.av_val, "tcUrl", real_prop->p_name.av_len) == 0)
 				{
 					// 找到了我们要找的
-					url_section_1_ = real_prop->p_name.av_val;
+					url_section_1_ = real_prop->p_vu.p_aval.av_val;
 					break;
 				}
 			}
 
-			//// 这里我们不再尝试用API来解析Object，我们人工来解析
-			//AMFObject obj;
-			//obj.o_num = 0;
-			//obj.o_props = NULL;
+			delete [] real_rtmp_body_object_buffer;
+			real_rtmp_body_object_buffer = NULL;
 
-			//int nSize = real_rtmp_body_object_size;
-			//unsigned char *pBuffer = real_rtmp_body_object_buffer;
-			//BOOL bError = FALSE;
-			//AMFObjectProperty prop;
-			//while (nSize > 0)
-			//{
-			//	int nRes;
-
-			//	if (nSize >=3 && AMF_DecodeInt24(pBuffer) == AMF_OBJECT_END)
-			//	{
-			//		nSize -= 3;
-			//		bError = FALSE;
-			//		break;
-			//	}
-
-			//	if (bError)
-			//	{
-			//		//RTMP_Log(RTMP_LOGERROR,
-			//		//	"DECODING ERROR, IGNORING BYTES UNTIL NEXT KNOWN PATTERN!");
-			//		nSize--;
-			//		pBuffer++;
-			//		continue;
-			//	}
-
-			//	nRes = AMFProp_Decode(&prop, pBuffer, nSize, FALSE);
-			//	if (nRes == -1)
-			//	{
-			//		bError = TRUE;
-			//		break;
-			//	}
-			//	else
-			//	{
-			//		nSize -= nRes;
-			//		if (nSize < 0)
-			//		{
-			//			bError = TRUE;
-			//			break;
-			//		}
-			//		pBuffer += nRes;
-			//		AMF_AddProp(&obj, &prop);
-			//	}
-			//}
-
-#endif //RTMP_PROTOCOL_USE_VIOLENCE_METHOD
 		}
-		else if (_stricmp(strval.av_val, "onStatus") == 0)
+
+		if (_stricmp(strval.av_val, "onStatus") == 0)
 		{
 			const unsigned char *object_entry = ((const unsigned char *)&rtmp_header->body_[0]) + 1 + 2 + strval.av_len;
 
 			// 这里存在一个问题，就是其中可能会因为分段，增加0xC3字节表示包头，现在需要遍历一遍，将所有数据段分段存储，重新拼接再解析
-			int buffer_size = host_body_size - 12 - strval.av_len;
+			int buffer_size = host_body_size - 3 - strval.av_len;
 			int tag_count = 0;
 			const unsigned char *object_entry_point = object_entry;
 			for (int index = 0; index < buffer_size; ++index)
@@ -224,6 +127,9 @@ int bgProtocolRtmp::Parse(unsigned char *header, const unsigned char *data, int 
 			unsigned char *real_rtmp_body_object_buffer = new unsigned char[real_rtmp_body_object_size];
 			memset(real_rtmp_body_object_buffer, 0, real_rtmp_body_object_size);
 
+			// modify
+			// 这里需要处理一下，如果没有0xC3分段的话，就用原始数据
+			// 否则就申请新的内存来处理
 			int real_pos = 0;
 			for (int index = 0; index < buffer_size + 1; ++index)
 			{
@@ -239,9 +145,6 @@ int bgProtocolRtmp::Parse(unsigned char *header, const unsigned char *data, int 
 			AMFObject amf_object;
 			int errCode = AMF_Decode(&amf_object, real_rtmp_body_object_buffer, real_rtmp_body_object_size, FALSE);
 
-			delete [] real_rtmp_body_object_buffer;
-			real_rtmp_body_object_buffer = NULL;
-
 			// 这个对象里面有一个属性，这个属性里面是一个对象，就是我们想要的真正的对象
 			AMFObjectProperty *prop = AMF_GetProp(&amf_object, NULL, 0);
 
@@ -256,13 +159,16 @@ int bgProtocolRtmp::Parse(unsigned char *header, const unsigned char *data, int 
 					// 找到了我们要找的
 					if (real_prop->p_type == AMF_STRING)
 					{
-						if (_stricmp(real_prop->p_vu.p_aval.av_val, "NetStream.Data.Reset") == 0)
+						if (memcmp(real_prop->p_name.av_val, "NetStream.Data.Reset", real_prop->p_name.av_len) == 0)
 						{
 							// 这里找出第二段的字符串，拼接到url_section_2_
+							url_section_2_ = real_prop->p_vu.p_aval.av_val;
 						}
-						else if (_stricmp(real_prop->p_vu.p_aval.av_val, "NetStream.Data.Start") == 0)
+						else if (memcmp(real_prop->p_name.av_val, "NetStream.Data.Start", real_prop->p_name.av_len) == 0)
 						{
-							std::string url = url_section_1_ + url_section_2_;
+							std::string url = url_section_1_;
+							url += "\\";
+							url += url_section_2_;
 							notifer_->SnifferResultReport("rtmp", url.c_str());
 						}
 					}
@@ -270,6 +176,9 @@ int bgProtocolRtmp::Parse(unsigned char *header, const unsigned char *data, int 
 					break;
 				}
 			}
+
+			delete [] real_rtmp_body_object_buffer;
+			real_rtmp_body_object_buffer = NULL;
 		}
 		
 	}
