@@ -345,9 +345,27 @@ void CbgLiveVideoSurveillanceSystemDlg::OnBnClickedBtnStopMonitor()
 
 int CbgLiveVideoSurveillanceSystemDlg::SnifferResultReport(const char *protocol, const char *value)
 {
+	USES_CONVERSION;
+
+	// 首先检查这个url是否在两个列表中有出现，如果有，则不处理
+	int sniffer_item_count = m_cSnifferURL.GetItemCount();
+	for (int index = 0; index < sniffer_item_count; ++index)
+	{
+		CString url = m_cSnifferURL.GetItemText(index, 0);
+		if (_stricmp(T2A(url.GetBuffer(0)), value) == 0)
+			return -1;
+	}
+
+	int record_item_count = m_cRecordURL.GetItemCount();
+	for (int index = 0; index < record_item_count; ++index)
+	{
+		CString url = m_cRecordURL.GetItemText(index, 2);
+		if (_stricmp(T2A(url.GetBuffer(0)), value) == 0)
+			return -1;
+	}
+
 	int item_count = m_cSnifferURL.GetItemCount();
 
-	USES_CONVERSION;
 	m_cSnifferURL.InsertItem(item_count, A2T(value));
 
 	return 0;

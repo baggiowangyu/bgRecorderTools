@@ -63,19 +63,29 @@ int bgProtocolRtmp::Parse(unsigned char *header, const unsigned char *data, int 
 				++object_entry_point;
 			}
 
+			// modify
+			// 这里需要处理一下，如果没有0xC3分段的话，就用原始数据
+			// 否则就申请新的内存来处理
 			int real_rtmp_body_object_size = buffer_size;
-			unsigned char *real_rtmp_body_object_buffer = new unsigned char[real_rtmp_body_object_size];
-			memset(real_rtmp_body_object_buffer, 0, real_rtmp_body_object_size);
+			unsigned char *real_rtmp_body_object_buffer = NULL;
 
-			int real_pos = 0;
-			for (int index = 0; index < buffer_size + 1; ++index)
+			if (tag_count > 0)
 			{
-				if (object_entry[index] != 0xC3)
+				real_rtmp_body_object_buffer = new unsigned char[real_rtmp_body_object_size];
+				memset(real_rtmp_body_object_buffer, 0, real_rtmp_body_object_size);
+
+				int real_pos = 0;
+				for (int index = 0; index < buffer_size + 1; ++index)
 				{
-					real_rtmp_body_object_buffer[real_pos] = object_entry[index];
-					++real_pos;
+					if (object_entry[index] != 0xC3)
+					{
+						real_rtmp_body_object_buffer[real_pos] = object_entry[index];
+						++real_pos;
+					}
 				}
 			}
+			else
+				real_rtmp_body_object_buffer = (unsigned char *)object_entry;
 
 			// 解析AMF对象错误，这里一直不知道该怎么解决
 			// 先放着吧，后面再来处理。我们这里先增加一个流缓存管理模块
@@ -100,13 +110,16 @@ int bgProtocolRtmp::Parse(unsigned char *header, const unsigned char *data, int 
 				}
 			}
 
-			delete [] real_rtmp_body_object_buffer;
+			if (tag_count > 0)
+				delete [] real_rtmp_body_object_buffer;
+
 			real_rtmp_body_object_buffer = NULL;
 
 		}
 
 		if (_stricmp(strval.av_val, "onStatus") == 0)
 		{
+			OutputDebugStringA("RTMP >>> onStatus\n");
 			const unsigned char *object_entry = ((const unsigned char *)&rtmp_header->body_[0]) + 1 + 2 + strval.av_len;
 
 			// 这里存在一个问题，就是其中可能会因为分段，增加0xC3字节表示包头，现在需要遍历一遍，将所有数据段分段存储，重新拼接再解析
@@ -123,22 +136,29 @@ int bgProtocolRtmp::Parse(unsigned char *header, const unsigned char *data, int 
 				++object_entry_point;
 			}
 
-			int real_rtmp_body_object_size = buffer_size;
-			unsigned char *real_rtmp_body_object_buffer = new unsigned char[real_rtmp_body_object_size];
-			memset(real_rtmp_body_object_buffer, 0, real_rtmp_body_object_size);
-
 			// modify
 			// 这里需要处理一下，如果没有0xC3分段的话，就用原始数据
 			// 否则就申请新的内存来处理
-			int real_pos = 0;
-			for (int index = 0; index < buffer_size + 1; ++index)
+			int real_rtmp_body_object_size = buffer_size;
+			unsigned char *real_rtmp_body_object_buffer = NULL;
+
+			if (tag_count > 0)
 			{
-				if (object_entry[index] != 0xC3)
+				real_rtmp_body_object_buffer = new unsigned char[real_rtmp_body_object_size];
+				memset(real_rtmp_body_object_buffer, 0, real_rtmp_body_object_size);
+
+				int real_pos = 0;
+				for (int index = 0; index < buffer_size + 1; ++index)
 				{
-					real_rtmp_body_object_buffer[real_pos] = object_entry[index];
-					++real_pos;
+					if (object_entry[index] != 0xC3)
+					{
+						real_rtmp_body_object_buffer[real_pos] = object_entry[index];
+						++real_pos;
+					}
 				}
 			}
+			else
+				real_rtmp_body_object_buffer = (unsigned char *)object_entry;
 
 			// 如果是“NetStream.Data.Reset”则认为存在描述字符串，缓存下来
 			// 如果是“NetStream.Data.Start”则认为一次rtmp捕捉完毕了，在这里将url回调上去
@@ -177,7 +197,9 @@ int bgProtocolRtmp::Parse(unsigned char *header, const unsigned char *data, int 
 				}
 			}
 
-			delete [] real_rtmp_body_object_buffer;
+			if (tag_count > 0)
+				delete [] real_rtmp_body_object_buffer;
+				
 			real_rtmp_body_object_buffer = NULL;
 		}
 		
