@@ -150,17 +150,6 @@ void bgSniffer::CloseNetworkDevice()
 	//plugins_.clear();
 }
 
-//int bgSniffer::LoadDataParsePlugins(bgBasePacketParse *plugin)
-//{
-//	plugins_.push_back(plugin);
-//	return 0;
-//}
-//
-//int bgSniffer::DispatchPacket(const unsigned char *data, int len)
-//{
-//	return 0;
-//}
-
 DWORD bgSniffer::WorkingThread(LPVOID lpParam)
 {
 	int errCode = 0;
