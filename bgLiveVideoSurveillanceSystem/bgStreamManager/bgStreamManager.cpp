@@ -24,7 +24,7 @@ int bgStreamManager::HandleURL(const char *url, bool isPlay, bool isSave)
 		handler = iter->second;
 	else
 	{
-		handler = new bgStreamHandler((bgStreamHandlerNotifer*)notifer_);
+		handler = new bgStreamHandler(this);
 
 		errCode = handler->Initialize();
 		if (errCode != 0)
@@ -62,3 +62,17 @@ int bgStreamManager::HandleURL(const char *url, bool isPlay, bool isSave)
 }
 
 
+int bgStreamManager::StreamCodecInfoNotifer(AVCodecContext *video_codec_ctx, AVCodecContext *audio_codec_ctx)
+{
+
+}
+
+int bgStreamManager::PlayingStreamNotifer(const char *url, AVFrame *frame)
+{
+
+}
+
+int bgStreamManager::SaveStreamNotifer(const char *url, AVPacket *pkt)
+{
+
+}

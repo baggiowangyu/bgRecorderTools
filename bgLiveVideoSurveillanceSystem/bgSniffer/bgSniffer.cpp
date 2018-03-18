@@ -108,10 +108,10 @@ int bgSniffer::OpenNetworkDevice(const char *device_name, unsigned int mask_ip /
 	{
 		// ±àÒë¹ıÂËÆ÷
 		struct bpf_program fcode;
-		//char packet_filter[] = "ip and tcp";
+		char packet_filter[] = "ip and tcp";
 		//char packet_filter[] = "tcp dst port 80";
 		//char packet_filter[] = "tcp port 80";
-		char packet_filter[] = "tcp port 1935";
+		//char packet_filter[] = "tcp port 1935";
 
 		if(pcap_compile((pcap_t *)adapter_handle_, &fcode, packet_filter, 1, mask_ip) < 0)
 			return -2;  

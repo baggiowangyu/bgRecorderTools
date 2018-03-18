@@ -6,6 +6,8 @@
 #include "bgLiveVideoSurveillanceSystem.h"
 #include "bgLiveVideoSurveillanceSystemDlg.h"
 
+#include "..\bgBase\output.h"
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -185,6 +187,8 @@ BOOL CbgLiveVideoSurveillanceSystemDlg::OnInitDialog()
 
 	// 枚举当前网卡
 	EnumNetworkDevices();
+	DebugStringOutput(_T("准备就绪"));
+	m_cState.SetWindowText(_T("准备就绪"));
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -330,7 +334,10 @@ void CbgLiveVideoSurveillanceSystemDlg::OnBnClickedBtnStartMonitor()
 	USES_CONVERSION;
 	int errCode = sniffer_->OpenNetworkDevice(T2A(dev_path.GetBuffer(0)), _ttoi(mask_ip.GetBuffer(0)));
 	if (errCode != 0)
+	{
+		DebugStringOutput(_T("打开网卡出错！"));
 		m_cState.SetWindowText(_T("打开网卡出错！"));
+	}
 	
 }
 
@@ -338,6 +345,9 @@ void CbgLiveVideoSurveillanceSystemDlg::OnBnClickedBtnStopMonitor()
 {
 	// 点击了停止监控
 	sniffer_->CloseNetworkDevice();
+
+	DebugStringOutput(_T("抓流停止"));
+	m_cState.SetWindowText(_T("抓流停止"));
 
 	// 重新遍历一遍网络设备
 	//EnumNetworkDevices();

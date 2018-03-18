@@ -209,6 +209,18 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="Output"
+			>
+			<File
+				RelativePath=".\output.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\output.h"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath=".\ReadMe.txt"
 			>
