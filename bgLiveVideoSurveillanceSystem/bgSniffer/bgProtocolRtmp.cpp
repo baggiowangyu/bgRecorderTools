@@ -42,8 +42,6 @@ int bgProtocolRtmp::Parse(unsigned char *header, const unsigned char *data, int 
 		AVal strval;
 		AMF_DecodeString(&rtmp_header->body_[1], &strval);
 
-		
-
 		if (_stricmp(strval.av_val, "connect") == 0)
 		{
 			const unsigned char *data = ((const unsigned char *)&rtmp_header->body_[0]) + 1 + 2 + strval.av_len;
@@ -165,7 +163,10 @@ int bgProtocolRtmp::Parse(unsigned char *header, const unsigned char *data, int 
 				url_section_2_ = "";
 			}
 		}
-		
+	}
+	else
+	{
+		// ’‚¿Ô
 	}
 
 	return errCode;
