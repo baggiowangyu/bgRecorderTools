@@ -96,7 +96,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\libfreetype-6.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\libjpeg-9.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\libpng16-16.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\libtiff-5.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\libwebp-4.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\SDL_ttf.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\SDL2.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\SDL2_image.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\zlib1.dll $(OutDir)&#x0D;&#x0A;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\avcodec-57.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\avdevice-57.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\avfilter-6.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\avformat-57.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\avutil-55.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\postproc-54.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\swresample-2.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\swscale-4.dll $(OutDir)&#x0D;&#x0A;"
+				CommandLine="XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\libfreetype-6.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\libjpeg-9.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\libpng16-16.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\libtiff-5.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\libwebp-4.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\SDL_ttf.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\SDL2.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\SDL2_image.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\zlib1.dll $(OutDir)&#x0D;&#x0A;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\ffmpeg.exe &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\ffplay.exe &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\avcodec-57.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\avdevice-57.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\avfilter-6.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\avformat-57.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\avutil-55.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\postproc-54.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\swresample-2.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\swscale-4.dll $(OutDir)&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -158,7 +158,7 @@
 				AdditionalLibraryDirectories="..\Release;..\..\ext\Winpcap\Lib;..\..\ext\SDL2\lib\x86;..\..\ext\ffmpeg\lib\x86"
 				GenerateDebugInformation="true"
 				SubSystem="2"
-				OptimizeReferences="2"
+				OptimizeReferences="1"
 				EnableCOMDATFolding="2"
 				TargetMachine="1"
 			/>
@@ -182,7 +182,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\libfreetype-6.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\libjpeg-9.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\libpng16-16.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\libtiff-5.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\libwebp-4.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\SDL_ttf.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\SDL2.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\SDL2_image.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\zlib1.dll $(OutDir)&#x0D;&#x0A;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\avcodec-57.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\avdevice-57.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\avfilter-6.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\avformat-57.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\avutil-55.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\postproc-54.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\swresample-2.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\swscale-4.dll $(OutDir)&#x0D;&#x0A;"
+				CommandLine="XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\libfreetype-6.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\libjpeg-9.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\libpng16-16.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\libtiff-5.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\libwebp-4.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\SDL_ttf.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\SDL2.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\SDL2_image.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\zlib1.dll $(OutDir)&#x0D;&#x0A;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\ffmpeg.exe &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\ffplay.exe &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\avcodec-57.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\avdevice-57.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\avfilter-6.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\avformat-57.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\avutil-55.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\postproc-54.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\swresample-2.dll $(OutDir)&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\swscale-4.dll $(OutDir)&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -215,7 +215,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\bgSniffer;..\..\ext\ffmpeg\include;..\bgStreamHandler"
-				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;DEMO"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;DEMO"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -240,7 +240,7 @@
 				AdditionalDependencies="Version.lib shlwapi.lib Packet.lib wpcap.lib SDL2.lib SDL2_image.lib avcodec.lib avdevice.lib avfilter.lib avformat.lib avutil.lib postproc.lib swresample.lib swscale.lib bgBase.lib bgSniffer.lib bgStreamManager.lib bgStreamHandler.lib bgStreamRecorder.lib bgMediaPlayer.lib"
 				OutputFile="$(OutDir)\LVSS.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\Debug;..\..\ext\Winpcap\Lib;..\..\ext\SDL2\lib\x86;..\..\ext\ffmpeg\lib\x86"
+				AdditionalLibraryDirectories="&quot;..\Demo Debug&quot;;..\..\ext\Winpcap\Lib;..\..\ext\SDL2\lib\x86;..\..\ext\ffmpeg\lib\x86"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				TargetMachine="1"
@@ -265,7 +265,93 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\libfreetype-6.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\libjpeg-9.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\libpng16-16.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\libtiff-5.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\libwebp-4.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\SDL_ttf.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\SDL2.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\SDL2_image.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\zlib1.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\avcodec-57.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\avdevice-57.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\avfilter-6.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\avformat-57.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\avutil-55.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\postproc-54.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\swresample-2.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\swscale-4.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;"
+				CommandLine="XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\libfreetype-6.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\libjpeg-9.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\libpng16-16.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\libtiff-5.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\libwebp-4.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\SDL_ttf.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\SDL2.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\SDL2_image.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\zlib1.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\ffmpeg.exe &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\ffplay.exe &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\avcodec-57.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\avdevice-57.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\avfilter-6.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\avformat-57.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\avutil-55.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\postproc-54.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\swresample-2.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\swscale-4.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Demo Release|Win32"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="1"
+			UseOfMFC="2"
+			CharacterSet="1"
+			WholeProgramOptimization="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="false"
+				ValidateParameters="true"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				EnableIntrinsicFunctions="true"
+				AdditionalIncludeDirectories="..\bgSniffer;..\..\ext\ffmpeg\include;..\bgStreamHandler"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;DEMO"
+				MinimalRebuild="false"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="true"
+				UsePrecompiledHeader="2"
+				WarningLevel="3"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="2052"
+				AdditionalIncludeDirectories="$(IntDir)"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="Version.lib shlwapi.lib Packet.lib wpcap.lib SDL2.lib SDL2_image.lib avcodec.lib avdevice.lib avfilter.lib avformat.lib avutil.lib postproc.lib swresample.lib swscale.lib bgBase.lib bgSniffer.lib bgStreamManager.lib bgStreamHandler.lib bgStreamRecorder.lib bgMediaPlayer.lib"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories="&quot;..\Demo Release&quot;;..\..\ext\Winpcap\Lib;..\..\ext\SDL2\lib\x86;..\..\ext\ffmpeg\lib\x86"
+				GenerateDebugInformation="true"
+				SubSystem="2"
+				OptimizeReferences="1"
+				EnableCOMDATFolding="2"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				CommandLine="XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\libfreetype-6.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\libjpeg-9.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\libpng16-16.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\libtiff-5.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\libwebp-4.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\SDL_ttf.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\SDL2.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\SDL2_image.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\SDL2\lib\x86\zlib1.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\ffmpeg.exe &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\ffplay.exe &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\avcodec-57.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\avdevice-57.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\avfilter-6.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\avformat-57.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\avutil-55.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\postproc-54.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\swresample-2.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;XCOPY /Y /D $(SolutionDir)..\ext\ffmpeg\bin\x86\swscale-4.dll &quot;$(OutDir)&quot;&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -306,6 +392,14 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Demo Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Demo Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"

@@ -9,7 +9,7 @@
 #define IDR_MAINFRAME                   128
 #define IDR_MENU_SNIFFER                129
 #define IDR_MENU_RECORD                 130
-#define IDC_EDIT_SCREEN                 1000
+//#define IDC_EDIT_SCREEN                 1000
 #define IDC_EDIT2                       1001
 #define IDC_LIST_NETWORK_DEVICES        1002
 #define IDC_BTN_START_MONITOR           1003
@@ -20,6 +20,7 @@
 #define IDC_EDIT3                       1008
 #define IDC_EDIT_SAVEPATH               1008
 #define IDC_STATIC_SAVEPATH             1009
+#define IDC_STATIC_SCREEN               1010
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_32773                        32773
@@ -42,7 +43,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        131
 #define _APS_NEXT_COMMAND_VALUE         32786
-#define _APS_NEXT_CONTROL_VALUE         1010
+#define _APS_NEXT_CONTROL_VALUE         1011
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

@@ -78,7 +78,7 @@ CbgLiveVideoSurveillanceSystemDlg::~CbgLiveVideoSurveillanceSystemDlg()
 void CbgLiveVideoSurveillanceSystemDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_EDIT_SCREEN, m_cScreen);
+	DDX_Control(pDX, IDC_STATIC_SCREEN, m_cScreen);
 	DDX_Control(pDX, IDC_EDIT2, m_cState);
 	DDX_Control(pDX, IDC_LIST_NETWORK_DEVICES, m_cNetworkDevices);
 	DDX_Control(pDX, IDC_LIST_SNIFFER_URLS, m_cSnifferURL);
@@ -184,7 +184,7 @@ BOOL CbgLiveVideoSurveillanceSystemDlg::OnInitDialog()
 
 	// 初始化播放器
 	RECT r;
-	m_cScreen.GetRect(&r);
+	m_cScreen.GetWindowRect(&r);
 	int errCode = player_->Initialize(r.right - r.left, r.bottom - r.top, 1, m_cScreen.GetSafeHwnd());
 	if (errCode != 0)
 	{
@@ -385,13 +385,12 @@ int CbgLiveVideoSurveillanceSystemDlg::SnifferResultReport(const char *protocol,
 	if ((sniffer_item_count > 0) || (record_item_count > 0))
 		return 0;
 	else
-#else
+#endif
 	{
 		int item_count = m_cSnifferURL.GetItemCount();
 		m_cSnifferURL.InsertItem(item_count, A2T(value));
 	}
 	
-#endif
 	return 0;
 }
 void CbgLiveVideoSurveillanceSystemDlg::OnNMRClickListSnifferUrls(NMHDR *pNMHDR, LRESULT *pResult)
@@ -531,8 +530,39 @@ void CbgLiveVideoSurveillanceSystemDlg::OnSnifferMenuPlay()
 	int m_nIndex =  m_cSnifferURL.GetNextSelectedItem(m_pstion);
 	CString url = m_cSnifferURL.GetItemText(m_nIndex, 0);
 
-	USES_CONVERSION;
-	stream_mgr_->HandleURL(T2A(url.GetString()), true, false);
+	// 启动播放器播放
+	TCHAR current_dir[MAX_PATH] = {0};
+	TCHAR current_exe_path[MAX_PATH] = {0};
+	GetModuleFileName(NULL, current_exe_path, MAX_PATH);
+#ifdef UNICODE
+	std::wstring tmp = current_exe_path;
+	int pos = tmp.find_last_of(_T('\\'));
+	if (pos < 0)
+		return ;
+
+	std::wstring current_dir_stl = tmp.substr(0, pos);
+	_tcscpy_s(current_dir, MAX_PATH, current_dir_stl.c_str());
+#else
+	std::string tmp = current_exe_path;
+	int pos = tmp.find_last_of(_T('\\'));
+	if (pos < 0)
+		return ;
+
+	std::string current_dir_stl = tmp.substr(0, pos);
+	_tcscpy_s(current_dir, MAX_PATH, current_dir_stl.c_str());
+#endif
+
+	TCHAR ffplay_path[MAX_PATH] = {0};
+	_tcscat_s(ffplay_path, MAX_PATH, current_dir);
+	_tcscat_s(ffplay_path, MAX_PATH, _T("\\ffplay.exe"));
+
+	TCHAR cmd[4096] = {0};
+	_stprintf_s(cmd, _T("%s %s"), ffplay_path, url.GetBuffer(0));
+
+	ShellExecute(NULL, _T("open"), ffplay_path, url.GetString(), current_dir, SW_SHOW);
+
+	//USES_CONVERSION;
+	//stream_mgr_->HandleURL(T2A(url.GetString()), true, false);
 #endif
 }
 
@@ -546,9 +576,46 @@ void CbgLiveVideoSurveillanceSystemDlg::OnSnifferMenuRecord()
 	CString url = m_cSnifferURL.GetItemText(m_nIndex, 0);
 	m_cSnifferURL.DeleteItem(m_nIndex);
 
+	// 启动录制工具录制
+	TCHAR current_dir[MAX_PATH] = {0};
+	TCHAR current_exe_path[MAX_PATH] = {0};
+	GetModuleFileName(NULL, current_exe_path, MAX_PATH);
+#ifdef UNICODE
+	std::wstring tmp = current_exe_path;
+	int pos = tmp.find_last_of(_T('\\'));
+	if (pos < 0)
+		return ;
+
+	std::wstring current_dir_stl = tmp.substr(0, pos);
+	_tcscpy_s(current_dir, MAX_PATH, current_dir_stl.c_str());
+#else
+	std::string tmp = current_exe_path;
+	int pos = tmp.find_last_of(_T('\\'));
+	if (pos < 0)
+		return ;
+
+	std::string current_dir_stl = tmp.substr(0, pos);
+	_tcscpy_s(current_dir, MAX_PATH, current_dir_stl.c_str());
+#endif
+
+	TCHAR ffplay_path[MAX_PATH] = {0};
+	_tcscat_s(ffplay_path, MAX_PATH, current_dir);
+	_tcscat_s(ffplay_path, MAX_PATH, _T("\\ffmpeg.exe"));
+
+	// 根据当前时间生成吧
+	SYSTEMTIME st;
+	GetLocalTime(&st);
+
+	//-i \"%s\" -vcodec copy -acodec copy -f flv \"%s\"
+	TCHAR param[4096] = {0};
+	_stprintf_s(param, _T("-i \"%s\" -vcodec copy -acodec copy -f flv \"%s\\%d%02d%02d-%02d%02d%02d-%03d.flv\""),
+		url.GetBuffer(0), current_dir, st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
+
+	ShellExecute(NULL, _T("open"), ffplay_path, param, current_dir, SW_SHOW);
+
 	// 将此url交给录制模块
-	USES_CONVERSION;
-	stream_mgr_->HandleURL(T2A(url.GetString()), false, true);
+	//USES_CONVERSION;
+	//stream_mgr_->HandleURL(T2A(url.GetString()), false, true);
 #endif
 }
 

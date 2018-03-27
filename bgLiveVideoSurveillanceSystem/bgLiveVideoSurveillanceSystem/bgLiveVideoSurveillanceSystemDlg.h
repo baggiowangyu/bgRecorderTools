@@ -49,7 +49,7 @@ public:
 	void LoadPacketParsePlugins();
 
 public:
-	CEdit m_cScreen;
+	CStatic m_cScreen;
 	CEdit m_cState;
 	CListCtrl m_cNetworkDevices;
 	CListCtrl m_cSnifferURL;
