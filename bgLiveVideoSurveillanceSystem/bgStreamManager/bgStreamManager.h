@@ -3,6 +3,20 @@
 
 #include <string>
 #include <map>
+#include "bgStreamHandler.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+#include "libavformat/avformat.h"
+#include "libavcodec/avcodec.h"
+#include "libavfilter/avfilter.h"
+#include "libavutil/avutil.h"
+#include "libswresample/swresample.h"
+#include "libswscale/swscale.h"
+#ifdef __cplusplus
+};
+#endif
 
 class bgStreamHandler;
 

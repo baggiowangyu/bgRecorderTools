@@ -138,7 +138,11 @@ BOOL CbgLiveVideoSurveillanceSystemDlg::OnInitDialog()
 	// TODO: 在此添加额外的初始化代码
 	CString v = GetMyVersion();
 	TCHAR version[4096] = {0};
-	_stprintf_s(version, 4096, _T("网络直播视频监控平台 V%s"), v.GetBuffer(0));
+#ifdef DEMO
+	_stprintf_s(version, 4096, _T("网络视频嗅探工具 V%s [体验版]"), v.GetBuffer(0));
+#else
+	_stprintf_s(version, 4096, _T("网络视频嗅探工具 V%s"), v.GetBuffer(0));
+#endif
 	SetWindowText(version);
 
 	// 初始化三个列表
@@ -152,7 +156,10 @@ BOOL CbgLiveVideoSurveillanceSystemDlg::OnInitDialog()
 	m_cSnifferURL.SetExtendedStyle(m_cSnifferURL.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 	m_cSnifferURL.InsertColumn(0, _T("抓取的视频源"), 0, 620);
 
+#ifdef _DEBUG
+	// 测试用的源
 	m_cSnifferURL.InsertItem(0, _T("rtmp://live.hkstv.hk.lxdns.com/live/hks"));
+#endif
 
 	m_cRecordURL.SetExtendedStyle(m_cRecordURL.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 	m_cRecordURL.InsertColumn(0, _T("录制文件名"), 0, 250);
@@ -374,10 +381,17 @@ int CbgLiveVideoSurveillanceSystemDlg::SnifferResultReport(const char *protocol,
 			return -1;
 	}
 
-	int item_count = m_cSnifferURL.GetItemCount();
-
-	m_cSnifferURL.InsertItem(item_count, A2T(value));
-
+#ifdef DEMO
+	if ((sniffer_item_count > 0) || (record_item_count > 0))
+		return 0;
+	else
+#else
+	{
+		int item_count = m_cSnifferURL.GetItemCount();
+		m_cSnifferURL.InsertItem(item_count, A2T(value));
+	}
+	
+#endif
 	return 0;
 }
 void CbgLiveVideoSurveillanceSystemDlg::OnNMRClickListSnifferUrls(NMHDR *pNMHDR, LRESULT *pResult)
@@ -436,20 +450,27 @@ void CbgLiveVideoSurveillanceSystemDlg::OnNMRClickListRecords(NMHDR *pNMHDR, LRE
 
 void CbgLiveVideoSurveillanceSystemDlg::OnSnifferMenuDel()
 {
-	// 
+#ifdef DEMO
+	MessageBox(_T("体验版不开放此功能"), _T("提示"), MB_OK|MB_ICONINFORMATION);
+#else
 	POSITION m_pstion = m_cSnifferURL.GetFirstSelectedItemPosition();
 	int m_nIndex =  m_cSnifferURL.GetNextSelectedItem(m_pstion);
 	m_cSnifferURL.DeleteItem(m_nIndex);
+#endif
 }
 
 void CbgLiveVideoSurveillanceSystemDlg::OnSnifferMenuDelAll()
 {
+#ifdef DEMO
+	MessageBox(_T("体验版不开放此功能"), _T("提示"), MB_OK|MB_ICONINFORMATION);
+#else
 	m_cSnifferURL.DeleteAllItems();
+#endif
+	
 }
 
 void CbgLiveVideoSurveillanceSystemDlg::OnSnifferMenuCopy()
 {
-	// 
 	POSITION m_pstion = m_cSnifferURL.GetFirstSelectedItemPosition();
 	int m_nIndex =  m_cSnifferURL.GetNextSelectedItem(m_pstion);
 	CString url = m_cSnifferURL.GetItemText(m_nIndex, 0);
@@ -472,7 +493,9 @@ void CbgLiveVideoSurveillanceSystemDlg::OnSnifferMenuCopy()
 
 void CbgLiveVideoSurveillanceSystemDlg::OnSnifferMenuCopyAll()
 {
-	// TODO: 在此添加命令处理程序代码
+#ifdef DEMO
+	MessageBox(_T("体验版不开放此功能"), _T("提示"), MB_OK|MB_ICONINFORMATION);
+#else
 	CString all_urls;
 	int item_count = m_cSnifferURL.GetItemCount();
 	for (int index = 0; index < item_count; ++index)
@@ -496,22 +519,28 @@ void CbgLiveVideoSurveillanceSystemDlg::OnSnifferMenuCopyAll()
 	EmptyClipboard();
 	SetClipboardData(CF_UNICODETEXT, hClip);
 	CloseClipboard();
+#endif
 }
 
 void CbgLiveVideoSurveillanceSystemDlg::OnSnifferMenuPlay()
 {
-	// 
+#ifdef DEMO
+	MessageBox(_T("体验版不开放此功能"), _T("提示"), MB_OK|MB_ICONINFORMATION);
+#else
 	POSITION m_pstion = m_cSnifferURL.GetFirstSelectedItemPosition();
 	int m_nIndex =  m_cSnifferURL.GetNextSelectedItem(m_pstion);
 	CString url = m_cSnifferURL.GetItemText(m_nIndex, 0);
 
 	USES_CONVERSION;
 	stream_mgr_->HandleURL(T2A(url.GetString()), true, false);
+#endif
 }
 
 void CbgLiveVideoSurveillanceSystemDlg::OnSnifferMenuRecord()
 {
-	// 
+#ifdef DEMO
+	MessageBox(_T("体验版不开放此功能"), _T("提示"), MB_OK|MB_ICONINFORMATION);
+#else
 	POSITION m_pstion = m_cSnifferURL.GetFirstSelectedItemPosition();
 	int m_nIndex =  m_cSnifferURL.GetNextSelectedItem(m_pstion);
 	CString url = m_cSnifferURL.GetItemText(m_nIndex, 0);
@@ -520,6 +549,7 @@ void CbgLiveVideoSurveillanceSystemDlg::OnSnifferMenuRecord()
 	// 将此url交给录制模块
 	USES_CONVERSION;
 	stream_mgr_->HandleURL(T2A(url.GetString()), false, true);
+#endif
 }
 
 

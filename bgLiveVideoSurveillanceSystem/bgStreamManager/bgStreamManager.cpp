@@ -64,15 +64,21 @@ int bgStreamManager::HandleURL(const char *url, bool isPlay, bool isSave)
 
 int bgStreamManager::StreamCodecInfoNotifer(AVCodecContext *video_codec_ctx, AVCodecContext *audio_codec_ctx)
 {
+	int errCode = 0;
 
+	return errCode;
 }
 
 int bgStreamManager::PlayingStreamNotifer(const char *url, AVFrame *frame)
 {
+	int errCode = 0;
 
+	return errCode;
 }
 
 int bgStreamManager::SaveStreamNotifer(const char *url, AVPacket *pkt)
 {
+	int errCode = 0;
 
+	return errCode;
 }
