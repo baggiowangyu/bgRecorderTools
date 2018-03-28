@@ -265,5 +265,8 @@ std::string bgHttpHeader::GetResultState()
 std::string bgHttpHeader::GetHeadFieldValue(std::string key)
 {
 	std::map<std::string, std::string>::iterator iter = header_values_.find(key);
+	if (iter == header_values_.end())
+		return "";
+	
 	return iter->second;
 }

@@ -559,7 +559,7 @@ void CbgLiveVideoSurveillanceSystemDlg::OnSnifferMenuPlay()
 	TCHAR cmd[4096] = {0};
 	_stprintf_s(cmd, _T("%s %s"), ffplay_path, url.GetBuffer(0));
 
-	ShellExecute(NULL, _T("open"), ffplay_path, url.GetString(), current_dir, SW_SHOW);
+	ShellExecute(NULL, _T("open"), ffplay_path, url.GetString(), current_dir, SW_HIDE);
 
 	//USES_CONVERSION;
 	//stream_mgr_->HandleURL(T2A(url.GetString()), true, false);
