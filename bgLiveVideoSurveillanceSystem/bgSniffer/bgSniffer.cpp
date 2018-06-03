@@ -40,7 +40,7 @@ int bgSniffer::EnumAllNetworkDevices(int &count, PNETWORK_DEVICE_DESC device_des
 	{
 		++device_count;
 		current_dev = current_dev->next;
-	} while (current_dev->next != NULL);
+	} while (current_dev != NULL);
 
 	// 数量不足，反馈需要的数量
 	if (count < device_count)
@@ -51,7 +51,9 @@ int bgSniffer::EnumAllNetworkDevices(int &count, PNETWORK_DEVICE_DESC device_des
 
 	current_dev = alldevs;
 	PNETWORK_DEVICE_DESC device = device_descs;
-	for (int index = 0; index < device_count; ++index)
+	int index = 0;
+	//for (int index = 0; index < device_count; ++index)
+	do
 	{
 		device_descs[index].name_ = current_dev->name;
 
@@ -91,7 +93,8 @@ int bgSniffer::EnumAllNetworkDevices(int &count, PNETWORK_DEVICE_DESC device_des
 		device_descs[index].mask_ip_ = ((struct sockaddr_in*)(current_dev->addresses->netmask))->sin_addr.S_un.S_addr;
 
 		current_dev = current_dev->next;
-	} while (current_dev->next != NULL);
+		++index;
+	} while (current_dev != NULL);
 
 	return 0;
 }
