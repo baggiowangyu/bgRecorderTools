@@ -33,6 +33,7 @@ private:
 	Poco::ThreadPool *threadpool_;
 
 private:
+	std::string ffmpeg_;
 	std::string file_name_;
 	std::string url_;
 };

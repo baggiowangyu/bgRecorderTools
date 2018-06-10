@@ -61,8 +61,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="PocoFoundationd.lib PocoNetd.lib PocoDatad.lib PocoDataSQLited.lib avformat.lib avcodec.lib avutil.lib"
-				OutputFile="$(OutDir)\$(ProjectName)_v1.2.exe"
+				AdditionalDependencies="PocoFoundationd.lib PocoNetd.lib PocoDatad.lib PocoDataSQLited.lib avformat.lib avcodec.lib avutil.lib shell32.lib"
+				OutputFile="$(OutDir)\$(ProjectName)_v1.3.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\ext\POCO\lib\x86\Debug;..\ext\ffmpeg\lib\x86"
 				GenerateDebugInformation="true"

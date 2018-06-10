@@ -10,6 +10,8 @@ extern "C" {
 	};
 #endif
 
+#include <shellapi.h>
+
 //////////////////////////////////////////////////////////////////////////
 //
 // 首先实现一个我自己的线程执行类
@@ -28,6 +30,15 @@ public:
 		path_ = path;
 	}
 
+	void SetParam(Poco::Data::Session *session, const char *id, const char *name, const char *url, const char *path, const char *ffmpeg) {
+		session_ = session;
+		id_ = id;
+		name_ = name;
+		url_ = url;
+		path_ = path;
+		ffmpeg_ = ffmpeg;
+	}
+
 public:
 	virtual void run() {
 		Poco::Thread *ptr_thread = Poco::Thread::current();
@@ -40,188 +51,238 @@ public:
 		std::string name = name_.c_str();
 		std::string url = url_.c_str();
 		std::string path = path_.c_str();
+		std::string ffmpeg = ffmpeg_.c_str();
 
-		//////////////////////////////////////////////////////////////////////////
-		//
-		// 预处理输入文件
-
-		AVFormatContext *input_fmtctx_ = NULL;
-		int errCode = avformat_open_input(&input_fmtctx_, url.c_str(), NULL, NULL);
-		if (errCode < 0)
+		if (ffmpeg.empty())
 		{
-			errCode = -2;
-			goto end;
-		}
-
-		errCode = avformat_find_stream_info(input_fmtctx_, NULL);
-		if (errCode < 0)
-		{
-			errCode = -3;
-			goto end;
-		}
-
-		//////////////////////////////////////////////////////////////////////////
-		//
-		// 预处理输出文件
-
-		AVFormatContext *output_fmtctx_ = NULL;
-		errCode = avformat_alloc_output_context2(&output_fmtctx_, NULL, NULL, path.c_str());
-		if (!output_fmtctx_)
-		{
-			errCode = -4;
-			goto end;
-		}
-
-		AVOutputFormat *ofmt = output_fmtctx_->oformat;
-
-		//////////////////////////////////////////////////////////////////////////
-		AVStream *video_stream = NULL;
-		AVStream *audio_stream = NULL;
-		int video_index = -1;
-		int audio_index = -1;
-
-		AVStream *video_output_stream = NULL;
-		AVStream *audio_output_stream = NULL;
-
-		AVCodecContext *audio_output_codecctx_ = NULL;
-		AVCodec *audio_encoder_ = NULL;
-
-		AVCodecContext *audio_input_codecctx_ = NULL;
-		AVCodec *audio_decoder_ = NULL;
-
-		AVFrame *audio_frame_ = NULL;
-		int buffer_size = 0;
-		uint8_t *frame_buffer = NULL;
-
-		for (int index = 0; index < input_fmtctx_->nb_streams; ++index)
-		{
-			AVStream *in_stream = input_fmtctx_->streams[index];
-			AVCodecParameters *in_codecpar = in_stream->codecpar;
-
-			if (in_codecpar->codec_type == AVMEDIA_TYPE_VIDEO)
-			{
-				video_index = index;
-				video_stream = in_stream;
-
-				// 这里就是copy了原来的流信息，包括codec这一类的数据
-				video_output_stream = avformat_new_stream(output_fmtctx_, NULL);
-				if (video_output_stream == NULL)
-				{
-					printf("创建视频输出流失败！\n");
-					errCode = AVERROR_UNKNOWN;
-					goto end;
-				}
-
-				// 复制参数
-				errCode = avcodec_parameters_copy(video_output_stream->codecpar, in_codecpar);
-				if (errCode < 0)
-				{
-					printf("复制流参数失败！\n");
-					errCode = AVERROR_UNKNOWN;
-					goto end;
-				}
-
-				video_output_stream->codecpar->codec_tag = 0;
-			}
-			else if (in_codecpar->codec_type == AVMEDIA_TYPE_AUDIO)
-			{
-				audio_index = index;
-				audio_stream = in_stream;
-
-				audio_input_codecctx_ = audio_stream->codec;
-
-				//////////////////////////////////////////////////////////////////////////
-				// 创建输出流
-				audio_output_stream = avformat_new_stream(output_fmtctx_, NULL);
-				if (audio_output_stream == NULL)
-				{
-					printf("创建音频输出流失败！\n");
-					errCode = AVERROR_UNKNOWN;
-					goto end;
-				}
-
-				// 复制参数
-				errCode = avcodec_parameters_copy(audio_output_stream->codecpar, in_codecpar);
-				if (errCode < 0)
-				{
-					printf("复制流参数失败！\n");
-					errCode = AVERROR_UNKNOWN;
-					goto end;
-				}
-
-				audio_output_stream->codecpar->codec_tag = 0;
-
-			}
-		}
-
-		//////////////////////////////////////////////////////////////////////////
-		if (!(output_fmtctx_->flags & AVFMT_NOFILE))
-		{
-			errCode = avio_open(&output_fmtctx_->pb, path.c_str(), AVIO_FLAG_WRITE);
-			if (errCode < 0)
-			{
-				errCode = -5;
-				goto end;
-			}
-		}
-
-		errCode = avformat_write_header(output_fmtctx_, NULL);
-		if (errCode < 0)
-		{
-			errCode = -6;
-			goto end;
-		}
-
-		int total = 0;
-		while (true)
-		{
-			AVPacket pkt;
-			errCode = av_read_frame(input_fmtctx_, &pkt);
-			if (errCode < 0)
-				break;
-
-			AVStream *in_stream = input_fmtctx_->streams[pkt.stream_index];
-			AVStream *out_stream = output_fmtctx_->streams[pkt.stream_index];
-
+			// 使用SDK下载
+			//////////////////////////////////////////////////////////////////////////
 			//
-			pkt.pts = av_rescale_q_rnd(pkt.pts, in_stream->time_base, out_stream->time_base, (AVRounding)(AV_ROUND_NEAR_INF|AV_ROUND_PASS_MINMAX));
-			pkt.dts = av_rescale_q_rnd(pkt.dts, in_stream->time_base, out_stream->time_base, (AVRounding)(AV_ROUND_NEAR_INF|AV_ROUND_PASS_MINMAX));
-			pkt.duration = av_rescale_q(pkt.duration, in_stream->time_base, out_stream->time_base);
-			pkt.pos = -1;
+			// 预处理输入文件
 
-			errCode = av_interleaved_write_frame(output_fmtctx_, &pkt);
+			AVFormatContext *input_fmtctx_ = NULL;
+			int errCode = avformat_open_input(&input_fmtctx_, url.c_str(), NULL, NULL);
 			if (errCode < 0)
 			{
-				printf("写入帧失败！\n");
+				errCode = -2;
 				goto end;
 			}
-			else
+
+			errCode = avformat_find_stream_info(input_fmtctx_, NULL);
+			if (errCode < 0)
 			{
-				total += pkt.size;
-				//printf("正在下载：%s号文件，已下载：%d 字节数据...\n", id, total);
+				errCode = -3;
+				goto end;
 			}
 
-			av_packet_unref(&pkt);
-		}
+			// 准备过滤器
+			AVBitStreamFilterContext* h264bsfc =  av_bitstream_filter_init("h264_mp4toannexb");
+			AVBitStreamFilterContext* adtstoasc =  av_bitstream_filter_init("aac_adtstoasc");
 
-		av_write_trailer(output_fmtctx_);
+			//////////////////////////////////////////////////////////////////////////
+			//
+			// 预处理输出文件
 
+			AVFormatContext *output_fmtctx_ = NULL;
+			errCode = avformat_alloc_output_context2(&output_fmtctx_, NULL, NULL, path.c_str());
+			if (!output_fmtctx_)
+			{
+				errCode = -4;
+				goto end;
+			}
+
+			AVOutputFormat *ofmt = output_fmtctx_->oformat;
+
+			//////////////////////////////////////////////////////////////////////////
+			AVStream *video_stream = NULL;
+			AVStream *audio_stream = NULL;
+			int video_index = -1;
+			int audio_index = -1;
+
+			AVStream *video_output_stream = NULL;
+			AVStream *audio_output_stream = NULL;
+
+			AVCodecContext *audio_output_codecctx_ = NULL;
+			AVCodec *audio_encoder_ = NULL;
+
+			AVCodecContext *audio_input_codecctx_ = NULL;
+			AVCodec *audio_decoder_ = NULL;
+
+			AVFrame *audio_frame_ = NULL;
+			int buffer_size = 0;
+			uint8_t *frame_buffer = NULL;
+
+			for (int index = 0; index < input_fmtctx_->nb_streams; ++index)
+			{
+				AVStream *in_stream = input_fmtctx_->streams[index];
+				AVCodecParameters *in_codecpar = in_stream->codecpar;
+
+				if (in_codecpar->codec_type == AVMEDIA_TYPE_VIDEO)
+				{
+					video_index = index;
+					video_stream = in_stream;
+
+					// 这里就是copy了原来的流信息，包括codec这一类的数据
+					video_output_stream = avformat_new_stream(output_fmtctx_, NULL);
+					if (video_output_stream == NULL)
+					{
+						printf("创建视频输出流失败！\n");
+						errCode = AVERROR_UNKNOWN;
+						goto end;
+					}
+
+					// 复制参数
+					errCode = avcodec_parameters_copy(video_output_stream->codecpar, in_codecpar);
+					if (errCode < 0)
+					{
+						printf("复制流参数失败！\n");
+						errCode = AVERROR_UNKNOWN;
+						goto end;
+					}
+
+					video_output_stream->codecpar->codec_tag = 0;
+				}
+				else if (in_codecpar->codec_type == AVMEDIA_TYPE_AUDIO)
+				{
+					audio_index = index;
+					audio_stream = in_stream;
+
+					audio_input_codecctx_ = audio_stream->codec;
+
+					//////////////////////////////////////////////////////////////////////////
+					// 创建输出流
+					audio_output_stream = avformat_new_stream(output_fmtctx_, NULL);
+					if (audio_output_stream == NULL)
+					{
+						printf("创建音频输出流失败！\n");
+						errCode = AVERROR_UNKNOWN;
+						goto end;
+					}
+
+					// 复制参数
+					errCode = avcodec_parameters_copy(audio_output_stream->codecpar, in_codecpar);
+					if (errCode < 0)
+					{
+						printf("复制流参数失败！\n");
+						errCode = AVERROR_UNKNOWN;
+						goto end;
+					}
+
+					audio_output_stream->codecpar->codec_tag = 0;
+
+				}
+			}
+
+			//////////////////////////////////////////////////////////////////////////
+			if (!(output_fmtctx_->flags & AVFMT_NOFILE))
+			{
+				errCode = avio_open(&output_fmtctx_->pb, path.c_str(), AVIO_FLAG_WRITE);
+				if (errCode < 0)
+				{
+					errCode = -5;
+					goto end;
+				}
+			}
+
+			errCode = avformat_write_header(output_fmtctx_, NULL);
+			if (errCode < 0)
+			{
+				errCode = -6;
+				goto end;
+			}
+
+			int total = 0;
+			int tmp_pts = 0;
+			while (true)
+			{
+				AVPacket pkt;
+				errCode = av_read_frame(input_fmtctx_, &pkt);
+				if (errCode < 0)
+					break;
+
+				AVStream *in_stream = input_fmtctx_->streams[pkt.stream_index];
+				AVStream *out_stream = output_fmtctx_->streams[pkt.stream_index];
+
+				//
+				pkt.pts = av_rescale_q_rnd(pkt.pts, in_stream->time_base, out_stream->time_base, (AVRounding)(AV_ROUND_NEAR_INF|AV_ROUND_PASS_MINMAX));
+				pkt.dts = av_rescale_q_rnd(pkt.dts, in_stream->time_base, out_stream->time_base, (AVRounding)(AV_ROUND_NEAR_INF|AV_ROUND_PASS_MINMAX));
+				pkt.duration = av_rescale_q(pkt.duration, in_stream->time_base, out_stream->time_base);
+				pkt.pos = -1;
+				++tmp_pts;
+
+				if (in_stream->codec->codec_id == AV_CODEC_ID_H264)
+				{
+					// 需要进行H264过滤
+					av_bitstream_filter_filter(h264bsfc, in_stream->codec, NULL, &pkt.data, &pkt.size, pkt.data, pkt.size, 0);
+				}
+				else if (in_stream->codec->codec_id == AV_CODEC_ID_AAC)
+				{
+					// 需要进行AAC过滤
+					av_bitstream_filter_filter(adtstoasc, in_stream->codec, NULL, &pkt.data, &pkt.size, pkt.data, pkt.size, 0);
+				}
+
+				errCode = av_interleaved_write_frame(output_fmtctx_, &pkt);
+				//errCode = av_write_frame(output_fmtctx_, &pkt);
+				if (errCode < 0)
+				{
+					printf("写入帧失败！\n");
+					char msg[AV_ERROR_MAX_STRING_SIZE] = {0};
+					char *err = av_make_error_string(msg, AV_ERROR_MAX_STRING_SIZE, errCode);
+					goto end;
+				}
+				else
+				{
+					total += pkt.size;
+					//printf("正在下载：%s号文件，已下载：%d 字节数据...\n", id, total);
+				}
+
+				av_packet_unref(&pkt);
+			}
+
+			av_write_trailer(output_fmtctx_);
 end:
 
-		avformat_close_input(&input_fmtctx_);
+			av_bitstream_filter_close(h264bsfc);
+			av_bitstream_filter_close(adtstoasc);
 
-		if (output_fmtctx_)
-		{
-			if (output_fmtctx_->flags & AVFMT_NOFILE)
-				avio_closep(&output_fmtctx_->pb);
+			avformat_close_input(&input_fmtctx_);
 
-			avformat_free_context(output_fmtctx_);
+			if (output_fmtctx_)
+			{
+				if (output_fmtctx_->flags & AVFMT_NOFILE)
+					avio_closep(&output_fmtctx_->pb);
+
+				avformat_free_context(output_fmtctx_);
+			}
+
+			if (errCode < 0 && errCode != AVERROR_EOF)
+			{
+				//printf("发生了错误！%s\n", (av_err2str(errCode)));
+				return ;
+			}
 		}
-
-		if (errCode < 0 && errCode != AVERROR_EOF)
+		else
 		{
-			//printf("发生了错误！%s\n", (av_err2str(errCode)));
-			return ;
+			// 使用ffmpeg下载
+			char param[4096] = {0};
+			sprintf_s(param, 4096, "-i \"%s\" -codec copy \"%s\"", url.c_str(), path.c_str());
+
+			SHELLEXECUTEINFOA exeinfo;
+			ZeroMemory(&exeinfo, sizeof(SHELLEXECUTEINFOA));
+			exeinfo.cbSize = sizeof(SHELLEXECUTEINFOA);
+			exeinfo.lpVerb = "open";
+			exeinfo.lpFile = ffmpeg.c_str();
+			exeinfo.lpParameters = param;
+			exeinfo.fMask = SEE_MASK_FLAG_NO_UI | SEE_MASK_NOCLOSEPROCESS;
+			exeinfo.nShow = SW_HIDE;
+			BOOL bret = ShellExecuteExA(&exeinfo);
+			if (!bret)
+			{
+				std::cout<<"下载："<<path.c_str()<<"失败！错误码："<<GetLastError()<<std::endl;
+				return ;
+			}
+
+			WaitForSingleObject(exeinfo.hProcess, INFINITE);
 		}
 
 		// 这里更新数据库信息
@@ -238,6 +299,7 @@ private:
 	std::string name_;
 	std::string url_;
 	std::string path_;
+	std::string ffmpeg_;
 	Poco::Data::Session *session_;
 };
 
@@ -303,6 +365,9 @@ int Downloader::Start()
 	{
 		select_.execute();
 
+		ffmpeg_ = current_dir;
+		ffmpeg_ += "\\ffmpeg.exe";
+
 		file_name_ = record_dir;
 		file_name_ += ids[0];
 		file_name_ += "_";
@@ -338,7 +403,8 @@ int Downloader::Start()
 		
 
 		MyRunnable *my_runnable = new MyRunnable();
-		my_runnable->SetParam(session, ids[0].c_str(), names[0].c_str(), urls[0].c_str(), file_name_.c_str());
+		//my_runnable->SetParam(session, ids[0].c_str(), names[0].c_str(), urls[0].c_str(), file_name_.c_str());
+		my_runnable->SetParam(session, ids[0].c_str(), names[0].c_str(), urls[0].c_str(), file_name_.c_str(), ffmpeg_.c_str());
 		threadpool_->start(*my_runnable);
 		Poco::Thread::sleep(1000);
 
