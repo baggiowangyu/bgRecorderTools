@@ -274,7 +274,7 @@ end:
 			exeinfo.lpFile = ffmpeg.c_str();
 			exeinfo.lpParameters = param;
 			exeinfo.fMask = SEE_MASK_FLAG_NO_UI | SEE_MASK_NOCLOSEPROCESS;
-			exeinfo.nShow = SW_HIDE;
+			exeinfo.nShow = SW_MINIMIZE;
 			BOOL bret = ShellExecuteExA(&exeinfo);
 			if (!bret)
 			{
@@ -429,6 +429,9 @@ int Downloader::Start()
 		names.clear();
 		urls.clear();
 	}
+
+	// 这里可能需要等待线程池清空
+	threadpool_->joinAll();
 
 	return errCode;
 }

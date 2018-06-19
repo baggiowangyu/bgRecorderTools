@@ -6,6 +6,8 @@
 
 #include "Scanner.h"
 #include "Downloader.h"
+#include "Checker.h"
+#include "Exporter.h"
 
 #include "Poco\\Data\\SQLite\\Connector.h" 
 #include "Poco\\Data\\SessionFactory.h"
@@ -36,6 +38,16 @@ int _tmain(int argc, _TCHAR* argv[])
 		{
 			Downloader downloader;
 			downloader.Start();
+		}
+		else if (_tcscmp(_T("-c"), argv[1]) == 0)
+		{
+			Checker checker;
+			checker.Start("F:\\Program Files\\2018flgx\\");
+		}
+		else if (_tcscmp(_T("-e"), argv[1]) == 0)
+		{
+			Exporter exporter;
+			exporter.Export("F:\\Program Files\\2018flgx\\export\\");
 		}
 	}
 

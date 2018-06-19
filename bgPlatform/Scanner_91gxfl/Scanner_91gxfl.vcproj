@@ -230,6 +230,30 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="Checker"
+			>
+			<File
+				RelativePath=".\Checker.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Checker.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Exporter"
+			>
+			<File
+				RelativePath=".\Exporter.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Exporter.h"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath=".\ReadMe.txt"
 			>
