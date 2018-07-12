@@ -1,4 +1,5 @@
 #include "Checker.h"
+#include "StringExchange.h"
 
 Checker::Checker()
 {
@@ -60,7 +61,11 @@ int Checker::Start(const char *root_dir)
 
 		setlocale(LC_ALL, "C");
 
-		file_name_ += /*str*/names[index];
+		// 检查文件名是否有非法字符，有的话替换成其他编码
+		// 算了，还是简单点，直接将不合法字符移除掉
+		str = StringExchange::ReplayceString(names[index]);
+
+		file_name_ += str;
 		file_name_ += ".mkv";
 	
 		try

@@ -1,4 +1,5 @@
 #include "Downloader.h"
+#include "StringExchange.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -386,6 +387,10 @@ int Downloader::Start()
 		delete[]char8;
 
 		setlocale(LC_ALL, "C");
+
+		// 检查文件名是否有非法字符，有的话替换成其他编码
+		// 算了，还是简单点，直接将不合法字符移除掉
+		str = StringExchange::ReplayceString(str);
 
 		file_name_ += str;
 		file_name_ += ".mkv";

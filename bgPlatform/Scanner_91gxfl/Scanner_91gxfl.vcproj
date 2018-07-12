@@ -254,6 +254,18 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="StringExchange"
+			>
+			<File
+				RelativePath=".\StringExchange.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\StringExchange.h"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath=".\ReadMe.txt"
 			>

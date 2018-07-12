@@ -120,7 +120,7 @@ int Scanner::DoScan()
 	select_.reset(*session);
 
 	int begin_index = indexs.size() == 0 ? 1810 : atoi(indexs[0].c_str()) + 1;
-	int max_index = 20000;
+	int max_index = 30000;
 
 	// 这里可以考虑用任务池来执行，看看如何增加任务池
 

@@ -76,7 +76,7 @@ void Exporter::Export(const char *root_dir)
 
 
 
-		++count;
+		//++count;
 	}
 
 	ids.clear();
