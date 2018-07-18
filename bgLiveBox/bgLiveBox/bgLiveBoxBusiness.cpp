@@ -3,11 +3,10 @@
 
 
 bgLiveBoxBusiness::bgLiveBoxBusiness(bgLiveBoxBusinessObserver *observer)
-: http_client_session_(new Poco::Net::HTTPClientSession(ROOT_URL))
-, observer_(observer)
+: observer_(observer)
 {
-	Poco::Timespan timeout_span(50, 0);
-	http_client_session_->setTimeout(timeout_span);
+	
+	
 }
 
 bgLiveBoxBusiness::~bgLiveBoxBusiness()
@@ -21,6 +20,9 @@ int bgLiveBoxBusiness::UpdateApps()
 	int errCode = 0;
 	observer_->StateNotify("正在刷新平台信息...");
 
+	Poco::Net::HTTPClientSession *http_client_session_ = new Poco::Net::HTTPClientSession(ROOT_URL);
+	Poco::Timespan timeout_span(50, 0);
+	http_client_session_->setTimeout(timeout_span);
 	Poco::Net::HTTPRequest request(Poco::Net::HTTPRequest::HTTP_POST, "/load.php", Poco::Net::HTTPRequest::HTTP_1_1);
 	request.setVersion("HTTP/1.1");
 	request.setKeepAlive(true);
@@ -46,6 +48,7 @@ int bgLiveBoxBusiness::UpdateApps()
 	}
 	catch (Poco::Exception& exception)
 	{
+		delete http_client_session_;
 		sprintf_s(msg, 4096, "发送查询平台信息请求失败！错误码：%d，错误信息：%s", exception.code(), exception.displayText().c_str());
 		observer_->StateNotify(msg);
 		return exception.code();
@@ -60,6 +63,7 @@ int bgLiveBoxBusiness::UpdateApps()
 	}
 	catch (Poco::Exception& exception)
 	{
+		delete http_client_session_;
 		sprintf_s(msg, 4096, "接收查询平台信息应答失败！错误码：%d，错误信息：%s", exception.code(), exception.displayText().c_str());
 		observer_->StateNotify(msg);
 		return exception.code();
@@ -68,6 +72,7 @@ int bgLiveBoxBusiness::UpdateApps()
 	Poco::Net::HTTPResponse::HTTPStatus status = response.getStatus();
 	if (status != Poco::Net::HTTPResponse::HTTPStatus::HTTP_OK)
 	{
+		delete http_client_session_;
 		sprintf_s(msg, 4096, "查询平台信息应答失败！错误码：%d", status);
 		observer_->StateNotify(msg);
 		return status;
@@ -151,6 +156,7 @@ int bgLiveBoxBusiness::UpdateApps()
 	}
 
 	// 平台解析完毕
+	delete http_client_session_;
 
 	// 通知界面更新名称
 	observer_->AppUpdated();
@@ -164,6 +170,9 @@ int bgLiveBoxBusiness::UpdateRooms(const char *app_id, const char *app_name)
 	int errCode = 0;
 	observer_->StateNotify("正在刷新房间信息...");
 
+	Poco::Net::HTTPClientSession *http_client_session_ = new Poco::Net::HTTPClientSession(ROOT_URL);
+	Poco::Timespan timeout_span(50, 0);
+	http_client_session_->setTimeout(timeout_span);
 	Poco::Net::HTTPRequest request(Poco::Net::HTTPRequest::HTTP_POST, "/int.php", Poco::Net::HTTPRequest::HTTP_1_1);
 	request.setVersion("HTTP/1.1");
 	request.setKeepAlive(true);
@@ -189,6 +198,7 @@ int bgLiveBoxBusiness::UpdateRooms(const char *app_id, const char *app_name)
 	}
 	catch (Poco::Exception& exception)
 	{
+		delete http_client_session_;
 		sprintf_s(msg, 4096, "发送查询房间信息请求失败！错误码：%d，错误信息：%s", exception.code(), exception.displayText().c_str());
 		observer_->StateNotify(msg);
 		return exception.code();
@@ -203,6 +213,7 @@ int bgLiveBoxBusiness::UpdateRooms(const char *app_id, const char *app_name)
 	}
 	catch (Poco::Exception& exception)
 	{
+		delete http_client_session_;
 		sprintf_s(msg, 4096, "接收查询房间信息应答失败！错误码：%d，错误信息：%s", exception.code(), exception.displayText().c_str());
 		observer_->StateNotify(msg);
 		return exception.code();
@@ -211,6 +222,7 @@ int bgLiveBoxBusiness::UpdateRooms(const char *app_id, const char *app_name)
 	Poco::Net::HTTPResponse::HTTPStatus status = response.getStatus();
 	if (status != Poco::Net::HTTPResponse::HTTPStatus::HTTP_OK)
 	{
+		delete http_client_session_;
 		sprintf_s(msg, 4096, "查询房间信息应答失败！错误码：%d", status);
 		observer_->StateNotify(msg);
 		return status;
@@ -291,6 +303,8 @@ int bgLiveBoxBusiness::UpdateRooms(const char *app_id, const char *app_name)
 
 		zb_data = zb_data.substr(pos + strlen("</li>"));
 	}
+
+	delete http_client_session_;
 
 	observer_->RoomUpdate(app_id, app_name);
 	observer_->StateNotify("房间信息刷新完成...");

@@ -68,7 +68,6 @@ public:
 	std::vector<room_info> current_rooms;
 
 private:
-	Poco::Net::HTTPClientSession *http_client_session_;
 	bgLiveBoxBusinessObserver *observer_;
 };
 
