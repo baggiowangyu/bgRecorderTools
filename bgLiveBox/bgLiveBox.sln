@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bgLiveBox", "bgLiveBox\bgLiveBox.vcproj", "{73EC83AA-8BFE-42E2-9563-CBF84AD79093}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{73EC83AA-8BFE-42E2-9563-CBF84AD79093}.Debug|Win32.ActiveCfg = Debug|Win32
+		{73EC83AA-8BFE-42E2-9563-CBF84AD79093}.Debug|Win32.Build.0 = Debug|Win32
+		{73EC83AA-8BFE-42E2-9563-CBF84AD79093}.Release|Win32.ActiveCfg = Release|Win32
+		{73EC83AA-8BFE-42E2-9563-CBF84AD79093}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
