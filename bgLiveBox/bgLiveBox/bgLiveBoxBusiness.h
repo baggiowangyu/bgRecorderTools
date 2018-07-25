@@ -43,7 +43,6 @@ struct room_info
 	std::string live_url;
 };
 
-#define ROOT_URL	"zb.qm3.top"
 
 class bgLiveBoxBusinessObserver
 {

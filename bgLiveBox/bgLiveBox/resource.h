@@ -22,7 +22,9 @@
 #define IDC_STATIC_PLAYER_INFO1         1012
 #define IDC_STATIC_PLAYER_INFO2         1013
 #define IDC_STATIC_PLAYER_INFO3         1014
-#define IDC_STATIC_PLAYER_INFO4         1014
+#define IDC_EDIT_SEARCH                 1015
+#define IDC_BUTTON1                     1016
+#define IDC_BTN_SEARCH                  1016
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_32773                        32773
@@ -38,7 +40,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        130
 #define _APS_NEXT_COMMAND_VALUE         32779
-#define _APS_NEXT_CONTROL_VALUE         1015
+#define _APS_NEXT_CONTROL_VALUE         1017
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

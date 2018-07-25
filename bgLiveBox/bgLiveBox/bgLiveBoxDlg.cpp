@@ -62,6 +62,7 @@ void CbgLiveBoxDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_COMBO_TYPE, m_cShowTypes);
 	DDX_Control(pDX, IDC_EDIT_CURRENT_INFO, m_cCurrentInfo);
 	DDX_Control(pDX, IDC_EDIT_CURRENT_ROOM_LIST_INFO2, m_cCurrentRoomListInfo);
+	DDX_Control(pDX, IDC_EDIT_SEARCH, m_cSearch);
 }
 
 BEGIN_MESSAGE_MAP(CbgLiveBoxDlg, CDialog)
@@ -79,6 +80,9 @@ BEGIN_MESSAGE_MAP(CbgLiveBoxDlg, CDialog)
 	ON_BN_CLICKED(IDC_BTN_STOP_PLAY, &CbgLiveBoxDlg::OnBnClickedBtnStopPlay)
 	ON_WM_CLOSE()
 	ON_STN_CLICKED(IDC_STATIC_PLAYER2, &CbgLiveBoxDlg::OnStnClickedStaticPlayer2)
+	ON_STN_CLICKED(IDC_STATIC_PLAYER, &CbgLiveBoxDlg::OnStnClickedStaticPlayer)
+	ON_EN_CHANGE(IDC_EDIT_CURRENT_ROOM_LIST_INFO2, &CbgLiveBoxDlg::OnEnChangeEditCurrentRoomListInfo2)
+	ON_BN_CLICKED(IDC_BTN_SEARCH, &CbgLiveBoxDlg::OnBnClickedBtnSearch)
 END_MESSAGE_MAP()
 
 
@@ -415,4 +419,43 @@ void CbgLiveBoxDlg::OnClose()
 void CbgLiveBoxDlg::OnStnClickedStaticPlayer2()
 {
 	// TODO: 在此添加控件通知处理程序代码
+}
+
+void CbgLiveBoxDlg::OnStnClickedStaticPlayer()
+{
+	// TODO: 在此添加控件通知处理程序代码
+}
+
+void CbgLiveBoxDlg::OnEnChangeEditCurrentRoomListInfo2()
+{
+	// TODO:  如果该控件是 RICHEDIT 控件，它将不
+	// 发送此通知，除非重写 __super::OnInitDialog()
+	// 函数并调用 CRichEditCtrl().SetEventMask()，
+	// 同时将 ENM_CHANGE 标志“或”运算到掩码中。
+
+	// TODO:  在此添加控件通知处理程序代码
+}
+
+void CbgLiveBoxDlg::OnBnClickedBtnSearch()
+{
+	CString key;
+	m_cSearch.GetWindowText(key);
+
+	POSITION pos = m_cRooms.GetFirstSelectedItemPosition();
+	int select_item = m_cRooms.GetNextSelectedItem(pos);
+	if (select_item < 0)
+		select_item = 0;
+
+	int item_count = m_cRooms.GetItemCount();
+	for (int index = select_item; index < item_count; ++index)
+	{
+		CString name = m_cRooms.GetItemText(index, 0);
+		if (name.Find(key) >= 0)
+		{
+			// 找到了，定位到那一行
+			m_cRooms.SetItemState(index, LVIS_FOCUSED | LVIS_SELECTED,LVIS_FOCUSED | LVIS_SELECTED);   //选中行
+			m_cRooms.SetSelectionMark(index);
+			break;
+		}
+	}
 }

@@ -1,6 +1,17 @@
 #include "stdafx.h"
 #include "bgLiveBoxBusiness.h"
 
+#define USE_OTHER
+
+#ifdef USE_QIUMINGSHAN
+#define ROOT_URL	"zb.qm3.top"
+#endif
+
+#ifdef USE_OTHER
+#define ROOT_URL	"api.hclyz.cn"
+#endif
+
+
 
 bgLiveBoxBusiness::bgLiveBoxBusiness(bgLiveBoxBusinessObserver *observer)
 : observer_(observer)
@@ -20,9 +31,18 @@ int bgLiveBoxBusiness::UpdateApps()
 	int errCode = 0;
 	observer_->StateNotify("正在刷新平台信息...");
 
+#ifdef USE_QIUMINGSHAN
 	Poco::Net::HTTPClientSession *http_client_session_ = new Poco::Net::HTTPClientSession(ROOT_URL);
+#endif
+
+#ifdef USE_OTHER
+	Poco::Net::HTTPClientSession *http_client_session_ = new Poco::Net::HTTPClientSession(ROOT_URL, 81);
+#endif
+
 	Poco::Timespan timeout_span(50, 0);
 	http_client_session_->setTimeout(timeout_span);
+
+#ifdef USE_QIUMINGSHAN
 	Poco::Net::HTTPRequest request(Poco::Net::HTTPRequest::HTTP_POST, "/load.php", Poco::Net::HTTPRequest::HTTP_1_1);
 	request.setVersion("HTTP/1.1");
 	request.setKeepAlive(true);
@@ -46,6 +66,22 @@ int bgLiveBoxBusiness::UpdateApps()
 	{
 		http_client_session_->sendRequest(request) << http_body;
 	}
+#endif
+
+#ifdef USE_OTHER
+	Poco::Net::HTTPRequest request(Poco::Net::HTTPRequest::HTTP_GET, "/mf/json.txt", Poco::Net::HTTPRequest::HTTP_1_1);
+	request.setVersion("HTTP/1.1");
+	request.setKeepAlive(true);
+	request.setHost(ROOT_URL, 81);
+	request.add("Accept", "text/html, application/xhtml+xml, */*");
+	request.add("Content-Type", "application/json");
+
+	try
+	{
+		http_client_session_->sendRequest(request);
+	}
+
+#endif
 	catch (Poco::Exception& exception)
 	{
 		delete http_client_session_;
@@ -90,6 +126,7 @@ int bgLiveBoxBusiness::UpdateApps()
 	Poco::Dynamic::Var json = parser.parse(result);
 	Poco::JSON::Object::Ptr jsonObject = json.extract<Poco::JSON::Object::Ptr>();
 
+#ifdef USE_QIUMINGSHAN
 	// 这里的结果应该尝试一下xml能不能解析，这里还要考虑一下是否需要做编码转换
 	Poco::Dynamic::Var pt = jsonObject->get("pt");
 	std::string pt_str = pt.toString();
@@ -154,6 +191,49 @@ int bgLiveBoxBusiness::UpdateApps()
 
 		pt_data = pt_data.substr(pos + strlen("</li>"));
 	}
+#endif
+
+#ifdef USE_OTHER
+	Poco::JSON::Array::Ptr pt = jsonObject->getArray("pingtai");
+	int pt_count = pt->size();
+	apps.clear();
+	for (int index = 0; index < pt_count; ++index)
+	{
+		// 
+		Poco::Dynamic::Var element = pt->get(index);
+		Poco::JSON::Object::Ptr elementObject = element.extract<Poco::JSON::Object::Ptr>();
+
+		struct app_info info;
+		info.app_id = elementObject->get("address").toString();
+		info.app_img_url = elementObject->get("xinimg").toString();
+
+		// 名字要编码转换一下
+		int pt_str_unicode_size = elementObject->get("title").toString().size() + 1;
+		wchar_t *pt_str_unicode = new wchar_t[pt_str_unicode_size];
+		ZeroMemory(pt_str_unicode, pt_str_unicode_size * sizeof(wchar_t));
+
+		errCode = MultiByteToWideChar(CP_UTF8, 0, elementObject->get("title").toString().c_str(), -1, pt_str_unicode, pt_str_unicode_size);
+		errCode = GetLastError();
+
+		int pt_str_ansi_size = pt_str_unicode_size;
+		char *pt_str_ansi = new char[pt_str_ansi_size];
+		ZeroMemory(pt_str_ansi, pt_str_ansi_size * sizeof(char));
+
+		errCode = WideCharToMultiByte(CP_ACP, 0, pt_str_unicode, -1, pt_str_ansi, pt_str_ansi_size, NULL, NULL);
+		errCode = GetLastError();
+
+		char n[4096] = {0};
+		sprintf_s(n, 4096, "%s(%s)", pt_str_ansi, elementObject->get("Number").toString().c_str());
+		info.app_name = n;
+
+		apps.push_back(info);
+
+		delete [] pt_str_unicode;
+		pt_str_unicode = NULL;
+		delete [] pt_str_ansi;
+		pt_str_ansi = NULL;
+	}
+#endif
 
 	// 平台解析完毕
 	delete http_client_session_;
@@ -170,6 +250,7 @@ int bgLiveBoxBusiness::UpdateRooms(const char *app_id, const char *app_name)
 	int errCode = 0;
 	observer_->StateNotify("正在刷新房间信息...");
 
+#ifdef USE_QIUMINGSHAN
 	Poco::Net::HTTPClientSession *http_client_session_ = new Poco::Net::HTTPClientSession(ROOT_URL);
 	Poco::Timespan timeout_span(50, 0);
 	http_client_session_->setTimeout(timeout_span);
@@ -196,6 +277,27 @@ int bgLiveBoxBusiness::UpdateRooms(const char *app_id, const char *app_name)
 	{
 		http_client_session_->sendRequest(request) << http_body;
 	}
+#endif
+
+#ifdef USE_OTHER
+	Poco::Net::HTTPClientSession *http_client_session_ = new Poco::Net::HTTPClientSession(ROOT_URL, 81);
+	Poco::Timespan timeout_span(50, 0);
+	http_client_session_->setTimeout(timeout_span);
+
+	char object[4096] = {0};
+	sprintf_s(object, 4096, "/mf/%s", app_id);
+	Poco::Net::HTTPRequest request(Poco::Net::HTTPRequest::HTTP_GET, object, Poco::Net::HTTPRequest::HTTP_1_1);
+	request.setVersion("HTTP/1.1");
+	request.setKeepAlive(true);
+	request.setHost(ROOT_URL, 81);
+	request.add("Accept", "text/html, application/xhtml+xml, */*");
+	request.add("Content-Type", "application/json");
+
+	try
+	{
+		http_client_session_->sendRequest(request);
+	}
+#endif
 	catch (Poco::Exception& exception)
 	{
 		delete http_client_session_;
@@ -238,6 +340,7 @@ int bgLiveBoxBusiness::UpdateRooms(const char *app_id, const char *app_name)
 	Poco::Dynamic::Var json = parser.parse(result);
 	Poco::JSON::Object::Ptr jsonObject = json.extract<Poco::JSON::Object::Ptr>();
 
+#ifdef USE_QIUMINGSHAN
 	Poco::JSON::Array::Ptr urlArray = jsonObject->getArray("url");
 
 	// 这里的结果应该尝试一下xml能不能解析，这里还要考虑一下是否需要做编码转换
@@ -303,6 +406,48 @@ int bgLiveBoxBusiness::UpdateRooms(const char *app_id, const char *app_name)
 
 		zb_data = zb_data.substr(pos + strlen("</li>"));
 	}
+#endif
+
+#ifdef USE_OTHER
+	Poco::JSON::Array::Ptr pt = jsonObject->getArray("zhubo");
+	int pt_count = pt->size();
+	current_rooms.clear();
+	for (int index = 0; index < pt_count; ++index)
+	{
+		// 
+		Poco::Dynamic::Var element = pt->get(index);
+		Poco::JSON::Object::Ptr elementObject = element.extract<Poco::JSON::Object::Ptr>();
+
+		struct room_info info;
+		info.img_url = elementObject->get("img").toString();
+		info.index = index;
+		info.live_url = elementObject->get("address").toString();
+
+		// 名字要编码转换一下
+		int pt_str_unicode_size = elementObject->get("title").toString().size() + 1;
+		wchar_t *pt_str_unicode = new wchar_t[pt_str_unicode_size];
+		ZeroMemory(pt_str_unicode, pt_str_unicode_size * sizeof(wchar_t));
+
+		errCode = MultiByteToWideChar(CP_UTF8, 0, elementObject->get("title").toString().c_str(), -1, pt_str_unicode, pt_str_unicode_size);
+		errCode = GetLastError();
+
+		int pt_str_ansi_size = pt_str_unicode_size;
+		char *pt_str_ansi = new char[pt_str_ansi_size];
+		ZeroMemory(pt_str_ansi, pt_str_ansi_size * sizeof(char));
+
+		errCode = WideCharToMultiByte(CP_ACP, 0, pt_str_unicode, -1, pt_str_ansi, pt_str_ansi_size, NULL, NULL);
+		errCode = GetLastError();
+
+		info.name = pt_str_ansi;
+
+		current_rooms.push_back(info);
+
+		delete [] pt_str_unicode;
+		pt_str_unicode = NULL;
+		delete [] pt_str_ansi;
+		pt_str_ansi = NULL;
+	}
+#endif
 
 	delete http_client_session_;
 

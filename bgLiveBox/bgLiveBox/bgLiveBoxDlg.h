@@ -71,4 +71,8 @@ public:
 	afx_msg void OnClose();
 	afx_msg void OnStnClickedStaticPlayer2();
 	CEdit m_cCurrentRoomListInfo;
+	afx_msg void OnStnClickedStaticPlayer();
+	afx_msg void OnEnChangeEditCurrentRoomListInfo2();
+	afx_msg void OnBnClickedBtnSearch();
+	CEdit m_cSearch;
 };
