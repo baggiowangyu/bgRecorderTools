@@ -45,7 +45,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\ext\POCO\include"
+				AdditionalIncludeDirectories="..\ext\POCO\include;..\ext\VLC\include"
 				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -68,8 +68,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="libvlc.lib"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\ext\POCO\lib"
+				AdditionalLibraryDirectories="..\ext\POCO\lib;..\ext\VLC\lib"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				TargetMachine="1"
@@ -127,6 +128,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
+				AdditionalIncludeDirectories="..\ext\POCO\include;..\ext\VLC\include"
 				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG"
 				MinimalRebuild="false"
 				RuntimeLibrary="2"
@@ -149,7 +151,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="libvlc.lib"
+				OutputFile="$(OutDir)\WLRÍøÂçÖ±²¥Â¼Ïñ»úV7.0.exe"
 				LinkIncremental="1"
+				AdditionalLibraryDirectories="..\ext\POCO\lib;..\ext\VLC\lib"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"

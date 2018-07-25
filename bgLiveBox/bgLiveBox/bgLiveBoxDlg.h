@@ -7,6 +7,7 @@
 #include "afxwin.h"
 
 #include "bgLiveBoxBusiness.h"
+#include "vlc/vlc.h"
 
 
 // CbgLiveBoxDlg ¶Ô»°¿ò
@@ -60,4 +61,14 @@ public:
 	afx_msg void OnPlay();
 	afx_msg void OnNMRClickListLivingRoom(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnLvnItemchangedListLivingRoom(NMHDR *pNMHDR, LRESULT *pResult);
+
+public:
+	libvlc_instance_t		*m_vlcInst;
+	libvlc_media_player_t	*m_vlcMplay;
+	libvlc_media_t			*m_vlcMedia;
+	afx_msg void OnNMDblclkListLivingRoom(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnBnClickedBtnStopPlay();
+	afx_msg void OnClose();
+	afx_msg void OnStnClickedStaticPlayer2();
+	CEdit m_cCurrentRoomListInfo;
 };

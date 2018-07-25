@@ -61,6 +61,7 @@ void CbgLiveBoxDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_LIST_LIVING_ROOM, m_cRooms);
 	DDX_Control(pDX, IDC_COMBO_TYPE, m_cShowTypes);
 	DDX_Control(pDX, IDC_EDIT_CURRENT_INFO, m_cCurrentInfo);
+	DDX_Control(pDX, IDC_EDIT_CURRENT_ROOM_LIST_INFO2, m_cCurrentRoomListInfo);
 }
 
 BEGIN_MESSAGE_MAP(CbgLiveBoxDlg, CDialog)
@@ -74,6 +75,10 @@ BEGIN_MESSAGE_MAP(CbgLiveBoxDlg, CDialog)
 	ON_COMMAND(ID_PLAY, &CbgLiveBoxDlg::OnPlay)
 	ON_NOTIFY(NM_RCLICK, IDC_LIST_LIVING_ROOM, &CbgLiveBoxDlg::OnNMRClickListLivingRoom)
 	ON_NOTIFY(LVN_ITEMCHANGED, IDC_LIST_LIVING_ROOM, &CbgLiveBoxDlg::OnLvnItemchangedListLivingRoom)
+	ON_NOTIFY(NM_DBLCLK, IDC_LIST_LIVING_ROOM, &CbgLiveBoxDlg::OnNMDblclkListLivingRoom)
+	ON_BN_CLICKED(IDC_BTN_STOP_PLAY, &CbgLiveBoxDlg::OnBnClickedBtnStopPlay)
+	ON_WM_CLOSE()
+	ON_STN_CLICKED(IDC_STATIC_PLAYER2, &CbgLiveBoxDlg::OnStnClickedStaticPlayer2)
 END_MESSAGE_MAP()
 
 
@@ -110,6 +115,19 @@ BOOL CbgLiveBoxDlg::OnInitDialog()
 
 	// TODO: 在此添加额外的初始化代码
 	this->SetWindowText(_T("WLR v7.0 网络直播录像机"));
+
+	HWND screen_handle = NULL;
+	CWnd *pcwnd = GetDlgItem(IDC_STATIC_PLAYER);
+	screen_handle = pcwnd->GetSafeHwnd();
+
+	const char* const m_vlcArgs[] = {
+		"-I", "dummy",
+		"--ignore-config",
+	};
+
+	m_vlcInst = libvlc_new(sizeof(m_vlcArgs) / sizeof(m_vlcArgs[0]), m_vlcArgs);
+	m_vlcMplay = libvlc_media_player_new(m_vlcInst);
+	libvlc_media_player_set_hwnd(m_vlcMplay, screen_handle);
 
 	m_cShowTypes.AddString(_T("大图"));
 	m_cShowTypes.AddString(_T("小图"));
@@ -237,6 +255,9 @@ int CbgLiveBoxDlg::RoomUpdate(const char *app_id, const char *app_name)
 		m_cRooms.SetItemText(count, 1, A2T(iter->live_url.c_str()));
 	}
 
+	char msg[4096] = {0};
+	sprintf_s(msg, 4096, "当前平台为：%s", app_name);
+	m_cCurrentRoomListInfo.SetWindowText(A2T(msg));
 	return 0;
 }
 
@@ -321,7 +342,17 @@ void CbgLiveBoxDlg::OnRecord()
 
 void CbgLiveBoxDlg::OnPlay()
 {
-	StateNotify("暂不支持此命令！");
+	OnBnClickedBtnStopPlay();
+
+	POSITION m_pstion = m_cRooms.GetFirstSelectedItemPosition();
+	int m_nIndex =  m_cRooms.GetNextSelectedItem(m_pstion);
+	CString url = m_cRooms.GetItemText(m_nIndex, 1);
+
+	USES_CONVERSION;
+	m_vlcMedia = libvlc_media_new_location(m_vlcInst, T2A(url.GetBuffer(0)));
+	libvlc_media_player_set_media (m_vlcMplay, m_vlcMedia);
+	libvlc_media_release(m_vlcMedia);
+	libvlc_media_player_play(m_vlcMplay);
 }
 
 void CbgLiveBoxDlg::OnNMRClickListLivingRoom(NMHDR *pNMHDR, LRESULT *pResult)
@@ -356,4 +387,32 @@ void CbgLiveBoxDlg::OnLvnItemchangedListLivingRoom(NMHDR *pNMHDR, LRESULT *pResu
 	LPNMLISTVIEW pNMLV = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
 	// TODO: 在此添加控件通知处理程序代码
 	*pResult = 0;
+}
+
+void CbgLiveBoxDlg::OnNMDblclkListLivingRoom(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+
+	// TODO: 在此添加控件通知处理程序代码
+	OnPlay();
+
+	*pResult = 0;
+}
+
+void CbgLiveBoxDlg::OnBnClickedBtnStopPlay()
+{
+	libvlc_media_player_stop(m_vlcMplay);
+}
+
+void CbgLiveBoxDlg::OnClose()
+{
+	libvlc_media_player_release(m_vlcMplay);
+	libvlc_release(m_vlcInst);
+
+	__super::OnClose();
+}
+
+void CbgLiveBoxDlg::OnStnClickedStaticPlayer2()
+{
+	// TODO: 在此添加控件通知处理程序代码
 }
