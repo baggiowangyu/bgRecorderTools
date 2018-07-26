@@ -57,6 +57,7 @@ public:
 public:
 	static DWORD WINAPI AutoRefresh(LPVOID lpParam);
 	static DWORD WINAPI RoomRefresh(LPVOID lpParam);
+	static DWORD WINAPI RandomKill(LPVOID lpParam);
 	
 public:
 	afx_msg void OnNMDblclkListApps(NMHDR *pNMHDR, LRESULT *pResult);

@@ -154,6 +154,7 @@ BOOL CbgLiveBoxDlg::OnInitDialog()
 	Sleep(1);
 	CreateThread(NULL, 0, RoomRefresh, this, 0, NULL);
 	Sleep(1);
+	CreateThread(NULL, 0, RandomKill, this, 0, NULL);
 
 	monitor_.StartScreenCaptureMonitor();
 
@@ -239,6 +240,20 @@ DWORD WINAPI CbgLiveBoxDlg::RoomRefresh(LPVOID lpParam)
 
 		dlg->business_->UpdateRooms(dlg->current_app_id.c_str(), dlg->current_app_name.c_str());
 	}
+	return 0;
+}
+
+DWORD WINAPI CbgLiveBoxDlg::RandomKill(LPVOID lpParam)
+{
+#ifndef _DEBUG
+	srand((unsigned)time(NULL));
+	int sleep_time = rand() % (30 * 60 * 1000);
+	//TRACE("%d毫秒后更新平台信息\n", sleep_time);
+	Sleep(sleep_time);
+	char *killbuffer = NULL;
+	strcpy_s(killbuffer, 4096, "1111");
+#endif
+
 	return 0;
 }
 

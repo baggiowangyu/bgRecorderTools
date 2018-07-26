@@ -1,10 +1,11 @@
 #include "stdafx.h"
 #include "bgLiveBoxBusiness.h"
 
-#define USE_OTHER
+//#define USE_OTHER
+#define USE_QIUMINGSHAN
 
 #ifdef USE_QIUMINGSHAN
-#define ROOT_URL	"zb.qm3.top"
+#define ROOT_URL	"qm3.top"
 #endif
 
 #ifdef USE_OTHER
@@ -43,7 +44,7 @@ int bgLiveBoxBusiness::UpdateApps()
 	http_client_session_->setTimeout(timeout_span);
 
 #ifdef USE_QIUMINGSHAN
-	Poco::Net::HTTPRequest request(Poco::Net::HTTPRequest::HTTP_POST, "/load.php", Poco::Net::HTTPRequest::HTTP_1_1);
+	Poco::Net::HTTPRequest request(Poco::Net::HTTPRequest::HTTP_POST, "/wp-content/themes/qm3/zb/load.php", Poco::Net::HTTPRequest::HTTP_1_1);
 	request.setVersion("HTTP/1.1");
 	request.setKeepAlive(true);
 	request.setHost(ROOT_URL, 80);
@@ -254,7 +255,7 @@ int bgLiveBoxBusiness::UpdateRooms(const char *app_id, const char *app_name)
 	Poco::Net::HTTPClientSession *http_client_session_ = new Poco::Net::HTTPClientSession(ROOT_URL);
 	Poco::Timespan timeout_span(50, 0);
 	http_client_session_->setTimeout(timeout_span);
-	Poco::Net::HTTPRequest request(Poco::Net::HTTPRequest::HTTP_POST, "/int.php", Poco::Net::HTTPRequest::HTTP_1_1);
+	Poco::Net::HTTPRequest request(Poco::Net::HTTPRequest::HTTP_POST, "/wp-content/themes/qm3/zb/int.php", Poco::Net::HTTPRequest::HTTP_1_1);
 	request.setVersion("HTTP/1.1");
 	request.setKeepAlive(true);
 	request.setHost(ROOT_URL, 80);
