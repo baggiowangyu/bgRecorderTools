@@ -6,6 +6,8 @@
 #include "bgLiveBox.h"
 #include "bgLiveBoxDlg.h"
 
+#include <ctime>
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -147,9 +149,13 @@ BOOL CbgLiveBoxDlg::OnInitDialog()
 
 	update_room_event = CreateEventA(NULL, FALSE, FALSE, NULL);
 
+	// 启动自动刷新线程
 	CreateThread(NULL, 0, AutoRefresh, this, 0, NULL);
+	Sleep(1);
 	CreateThread(NULL, 0, RoomRefresh, this, 0, NULL);
-	Sleep(10);
+	Sleep(1);
+
+	monitor_.StartScreenCaptureMonitor();
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -212,8 +218,13 @@ DWORD WINAPI CbgLiveBoxDlg::AutoRefresh(LPVOID lpParam)
 	{
 		dlg->business_->UpdateApps();
 
-		// 30秒更新一次
 		Sleep(30000);
+
+		//// 这里随机一下，取15秒~5分钟之前的一个随机数
+		//srand((unsigned)time(NULL));
+		//int sleep_time = rand() % (60 * 1000);
+		//TRACE("%d毫秒后更新平台信息\n", sleep_time);
+		//Sleep(sleep_time);
 	}
 	return 0;
 }
@@ -351,21 +362,37 @@ void CbgLiveBoxDlg::OnPlay()
 	POSITION m_pstion = m_cRooms.GetFirstSelectedItemPosition();
 	int m_nIndex =  m_cRooms.GetNextSelectedItem(m_pstion);
 	CString url = m_cRooms.GetItemText(m_nIndex, 1);
+	CString name = m_cRooms.GetItemText(m_nIndex, 0);
 
 	USES_CONVERSION;
 	m_vlcMedia = libvlc_media_new_location(m_vlcInst, T2A(url.GetBuffer(0)));
 	libvlc_media_player_set_media (m_vlcMplay, m_vlcMedia);
 	libvlc_media_release(m_vlcMedia);
 	libvlc_media_player_play(m_vlcMplay);
+
+	CWnd *pcwnd = GetDlgItem(IDC_STATIC_CURRENT_PLAYING_IS);
+	CString title = _T("当前播放的是：");
+	title.Append(name);
+	pcwnd->SetWindowText(title);
 }
 
 void CbgLiveBoxDlg::OnNMRClickListLivingRoom(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 	// TODO: 在此添加控件通知处理程序代码
+	int item_count = m_cRooms.GetItemCount();
+	for (int index = 0; index < item_count; ++index)
+	{
+		m_cRooms.SetFocus();
+		m_cRooms.SetItemState(index, 0, -1);
+	}
+
 	NM_LISTVIEW* pNMListView = (NM_LISTVIEW*)pNMHDR;
 	if (pNMListView->iItem != -1)
 	{
+		m_cRooms.SetFocus();
+		m_cRooms.SetItemState(pNMListView->iItem, LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED);
+
 		DWORD dwPos = GetMessagePos();
 		CPoint point(LOWORD(dwPos), HIWORD(dwPos));
 		CMenu menu;
@@ -441,21 +468,37 @@ void CbgLiveBoxDlg::OnBnClickedBtnSearch()
 	CString key;
 	m_cSearch.GetWindowText(key);
 
-	POSITION pos = m_cRooms.GetFirstSelectedItemPosition();
-	int select_item = m_cRooms.GetNextSelectedItem(pos);
-	if (select_item < 0)
-		select_item = 0;
-
+	// 选取消所有选中项
 	int item_count = m_cRooms.GetItemCount();
-	for (int index = select_item; index < item_count; ++index)
+	for (int index = 0/*select_item*/; index < item_count; ++index)
+	{
+		//m_cRooms.EnsureVisible(index, FALSE);
+		m_cRooms.SetFocus();
+		m_cRooms.SetItemState(index, 0, -1);
+	}
+
+	int result_count = 0;
+	item_count = m_cRooms.GetItemCount();
+	for (int index = 0/*select_item*/; index < item_count; ++index)
 	{
 		CString name = m_cRooms.GetItemText(index, 0);
 		if (name.Find(key) >= 0)
 		{
 			// 找到了，定位到那一行
-			m_cRooms.SetItemState(index, LVIS_FOCUSED | LVIS_SELECTED,LVIS_FOCUSED | LVIS_SELECTED);   //选中行
-			m_cRooms.SetSelectionMark(index);
-			break;
+
+			// 滚动条自动滚动到第index行
+			//m_cRooms.EnsureVisible(index, FALSE);
+			m_cRooms.SetFocus();
+			m_cRooms.SetItemState(index, LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED);
+			++result_count;
+
+			//break;
 		}
 	}
+
+	USES_CONVERSION;
+	char msg[4096] = {0};
+	sprintf_s(msg, 4096, "%d条命中", result_count);
+	CWnd *pcwnd = GetDlgItem(IDC_STATIC_SEARCH_RESULT);
+	pcwnd->SetWindowText(A2T(msg));
 }

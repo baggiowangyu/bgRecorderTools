@@ -7,6 +7,7 @@
 #include "afxwin.h"
 
 #include "bgLiveBoxBusiness.h"
+#include "Monitor.h"
 #include "vlc/vlc.h"
 
 
@@ -49,6 +50,9 @@ public:
 	virtual int AppUpdated();
 	virtual int RoomUpdate(const char *app_id, const char *app_name);
 	virtual void StateNotify(const char *state);
+
+public:
+	Monitor monitor_;
 
 public:
 	static DWORD WINAPI AutoRefresh(LPVOID lpParam);

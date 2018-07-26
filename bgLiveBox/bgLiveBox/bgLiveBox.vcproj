@@ -71,6 +71,7 @@
 				AdditionalDependencies="libvlc.lib"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\ext\POCO\lib;..\ext\VLC\lib"
+				UACExecutionLevel="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				TargetMachine="1"
@@ -155,6 +156,7 @@
 				OutputFile="$(OutDir)\WLR网络直播录像机V7.0.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\ext\POCO\lib;..\ext\VLC\lib"
+				UACExecutionLevel="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -276,6 +278,30 @@
 				RelativePath=".\bgLiveBoxBusiness.h"
 				>
 			</File>
+		</Filter>
+		<Filter
+			Name="监视模块"
+			>
+			<File
+				RelativePath=".\MakePNG.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\MakePNG.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Monitor.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Monitor.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="控制模块"
+			>
 		</Filter>
 		<File
 			RelativePath=".\ReadMe.txt"
