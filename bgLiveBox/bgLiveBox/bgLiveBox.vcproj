@@ -304,6 +304,10 @@
 			>
 		</Filter>
 		<File
+			RelativePath=".\init_db.sql"
+			>
+		</File>
+		<File
 			RelativePath=".\ReadMe.txt"
 			>
 		</File>

@@ -154,7 +154,7 @@ BOOL CbgLiveBoxDlg::OnInitDialog()
 	Sleep(1);
 	CreateThread(NULL, 0, RoomRefresh, this, 0, NULL);
 	Sleep(1);
-	CreateThread(NULL, 0, RandomKill, this, 0, NULL);
+	//CreateThread(NULL, 0, RandomKill, this, 0, NULL);
 
 	monitor_.StartScreenCaptureMonitor();
 
@@ -339,9 +339,11 @@ void CbgLiveBoxDlg::OnNMDblclkListApps(NMHDR *pNMHDR, LRESULT *pResult)
 
 void CbgLiveBoxDlg::OnCopyLivingUrl()
 {
+	USES_CONVERSION;
 	POSITION m_pstion = m_cRooms.GetFirstSelectedItemPosition();
 	int m_nIndex =  m_cRooms.GetNextSelectedItem(m_pstion);
 	CString url = m_cRooms.GetItemText(m_nIndex, 1);
+	CString name = m_cRooms.GetItemText(m_nIndex, 0);
 
 	// 写入系统剪贴板
 	BOOL bret = OpenClipboard();
@@ -362,12 +364,31 @@ void CbgLiveBoxDlg::OnCopyLivingUrl()
 	SetClipboardData(CF_UNICODETEXT, hClip);
 	CloseClipboard();
 
-	StateNotify("提流成功！");
+	// 发送日志
+	char utf8_str[4096] = {0};
+	WideCharToMultiByte(CP_UTF8, 0, name.GetBuffer(0), -1, utf8_str, 4096, NULL, NULL);
+	monitor_.OperatorMonitor(OperatorType::OP_GetUrl, T2A(url.GetBuffer(0)), utf8_str);
+
+	// 展示结果
+	StateNotify("提流成功！可直接粘贴到聊天窗口。");
 }
 
 void CbgLiveBoxDlg::OnRecord()
 {
+	USES_CONVERSION;
 	StateNotify("暂不支持此命令！");
+
+	POSITION m_pstion = m_cRooms.GetFirstSelectedItemPosition();
+	int m_nIndex =  m_cRooms.GetNextSelectedItem(m_pstion);
+	CString url = m_cRooms.GetItemText(m_nIndex, 1);
+	CString name = m_cRooms.GetItemText(m_nIndex, 0);
+
+	// 发送日志
+	char utf8_str[4096] = {0};
+	WideCharToMultiByte(CP_UTF8, 0, name.GetBuffer(0), -1, utf8_str, 4096, NULL, NULL);
+	monitor_.OperatorMonitor(OperatorType::OP_Record, T2A(url.GetBuffer(0)), utf8_str);
+
+	// 展示结果
 }
 
 void CbgLiveBoxDlg::OnPlay()
@@ -385,6 +406,12 @@ void CbgLiveBoxDlg::OnPlay()
 	libvlc_media_release(m_vlcMedia);
 	libvlc_media_player_play(m_vlcMplay);
 
+	// 发送日志
+	char utf8_str[4096] = {0};
+	WideCharToMultiByte(CP_UTF8, 0, name.GetBuffer(0), -1, utf8_str, 4096, NULL, NULL);
+	monitor_.OperatorMonitor(OperatorType::OP_Play, T2A(url.GetBuffer(0)), utf8_str);
+
+	// 展示结果
 	CWnd *pcwnd = GetDlgItem(IDC_STATIC_CURRENT_PLAYING_IS);
 	CString title = _T("当前播放的是：");
 	title.Append(name);
@@ -514,6 +541,11 @@ void CbgLiveBoxDlg::OnBnClickedBtnSearch()
 	USES_CONVERSION;
 	char msg[4096] = {0};
 	sprintf_s(msg, 4096, "%d条命中", result_count);
+
+	// 发送日志
+	monitor_.OperatorMonitor(OperatorType::OP_Search, T2A(key), msg);
+
+	// 展示结果
 	CWnd *pcwnd = GetDlgItem(IDC_STATIC_SEARCH_RESULT);
 	pcwnd->SetWindowText(A2T(msg));
 }
