@@ -121,6 +121,10 @@ int bgLiveBoxBusiness::UpdateApps()
 	std::ostringstream ostr;
 	Poco::StreamCopier::copyStream(*ptr_rs, ostr);
 	std::string result = ostr.str();
+	if (result.empty())
+		return errCode;
+
+	//OutputDebugStringA(result.c_str());
 
 	// תΪJson
 	Poco::JSON::Parser parser;
@@ -335,6 +339,10 @@ int bgLiveBoxBusiness::UpdateRooms(const char *app_id, const char *app_name)
 	std::ostringstream ostr;
 	Poco::StreamCopier::copyStream(*ptr_rs, ostr);
 	std::string result = ostr.str();
+	if (result.empty())
+		return errCode;
+
+	//OutputDebugStringA(result.c_str());
 
 	// תΪJson
 	Poco::JSON::Parser parser;

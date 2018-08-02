@@ -510,6 +510,9 @@ void CbgLiveBoxDlg::OnBnClickedBtnSearch()
 	CString key;
 	m_cSearch.GetWindowText(key);
 
+	if (key.IsEmpty())
+		return ;
+
 	// 选取消所有选中项
 	int item_count = m_cRooms.GetItemCount();
 	for (int index = 0/*select_item*/; index < item_count; ++index)
