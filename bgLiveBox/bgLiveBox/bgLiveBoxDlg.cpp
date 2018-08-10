@@ -383,6 +383,47 @@ void CbgLiveBoxDlg::OnRecord()
 	CString url = m_cRooms.GetItemText(m_nIndex, 1);
 	CString name = m_cRooms.GetItemText(m_nIndex, 0);
 
+	// 拿当前时间
+	SYSTEMTIME st;
+	GetLocalTime(&st);
+
+	// 得到当前程序所在目录
+	char current_program_path[4096] = {0};
+	GetModuleFileNameA(NULL, current_program_path, 4096);
+	std::string current_program_path_stl = current_program_path;
+	int pos = current_program_path_stl.find_last_of("\\");
+	std::string current_dir;
+	if (pos > 0)
+		current_dir = current_program_path_stl.substr(0, pos + 1);
+	else
+		current_dir = current_program_path_stl;
+
+	// 准备路径
+	char ffmpeg_path[4096] = {0};
+	sprintf_s(ffmpeg_path, 4096, "%sffmpeg.exe", current_dir.c_str());
+
+	char record_file_path[4096] = {0};
+	sprintf_s(record_file_path, 4096, "%sWLR网络直播录像机-%s-%d%02d%02d_%02d%02d%02d.flv",
+		current_dir.c_str(), T2A(name.GetBuffer(0)), st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
+
+	char parameter[8192] = {0};
+	sprintf_s(parameter, 4096, "-i \"%s\" -c copy \"%s\"", T2A(url.GetBuffer(0)), record_file_path);
+
+	SHELLEXECUTEINFOA shell_info;
+	ZeroMemory(&shell_info, sizeof(SHELLEXECUTEINFOA));
+	shell_info.cbSize = sizeof(SHELLEXECUTEINFOA);
+	shell_info.fMask = SEE_MASK_FLAG_NO_UI;
+	shell_info.hwnd = this->GetSafeHwnd();
+	shell_info.lpVerb = "open";
+	shell_info.lpFile = ffmpeg_path;
+	shell_info.lpParameters = parameter;
+	shell_info.nShow = SW_SHOW;
+
+	if (!ShellExecuteExA(&shell_info))
+		StateNotify("录制程序启动失败！");
+	else
+		StateNotify("录制程序已启动！");
+
 	// 发送日志
 	char utf8_str[4096] = {0};
 	WideCharToMultiByte(CP_UTF8, 0, name.GetBuffer(0), -1, utf8_str, 4096, NULL, NULL);

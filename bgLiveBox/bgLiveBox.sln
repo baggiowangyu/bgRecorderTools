@@ -6,11 +6,17 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
+		QiuMingShan Debug|Win32 = QiuMingShan Debug|Win32
+		QiuMingShan Release|Win32 = QiuMingShan Release|Win32
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{73EC83AA-8BFE-42E2-9563-CBF84AD79093}.Debug|Win32.ActiveCfg = Debug|Win32
 		{73EC83AA-8BFE-42E2-9563-CBF84AD79093}.Debug|Win32.Build.0 = Debug|Win32
+		{73EC83AA-8BFE-42E2-9563-CBF84AD79093}.QiuMingShan Debug|Win32.ActiveCfg = QiuMingShan Debug|Win32
+		{73EC83AA-8BFE-42E2-9563-CBF84AD79093}.QiuMingShan Debug|Win32.Build.0 = QiuMingShan Debug|Win32
+		{73EC83AA-8BFE-42E2-9563-CBF84AD79093}.QiuMingShan Release|Win32.ActiveCfg = QiuMingShan Release|Win32
+		{73EC83AA-8BFE-42E2-9563-CBF84AD79093}.QiuMingShan Release|Win32.Build.0 = QiuMingShan Release|Win32
 		{73EC83AA-8BFE-42E2-9563-CBF84AD79093}.Release|Win32.ActiveCfg = Release|Win32
 		{73EC83AA-8BFE-42E2-9563-CBF84AD79093}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection

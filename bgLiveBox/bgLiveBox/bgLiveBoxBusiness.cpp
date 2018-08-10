@@ -2,7 +2,7 @@
 #include "bgLiveBoxBusiness.h"
 
 //#define USE_OTHER
-#define USE_QIUMINGSHAN
+//#define USE_QIUMINGSHAN
 
 #ifdef USE_QIUMINGSHAN
 #define ROOT_URL	"qm3.top"
@@ -122,6 +122,9 @@ int bgLiveBoxBusiness::UpdateApps()
 	Poco::StreamCopier::copyStream(*ptr_rs, ostr);
 	std::string result = ostr.str();
 	if (result.empty())
+		return errCode;
+
+	if (result.compare("null") == 0)
 		return errCode;
 
 	//OutputDebugStringA(result.c_str());
@@ -340,6 +343,9 @@ int bgLiveBoxBusiness::UpdateRooms(const char *app_id, const char *app_name)
 	Poco::StreamCopier::copyStream(*ptr_rs, ostr);
 	std::string result = ostr.str();
 	if (result.empty())
+		return errCode;
+
+	if (result.compare("null") == 0)
 		return errCode;
 
 	//OutputDebugStringA(result.c_str());
