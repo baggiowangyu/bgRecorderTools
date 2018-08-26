@@ -19,8 +19,11 @@ void Exporter::Export(const char *root_dir)
 	export_dir.createDirectories();
 
 	Poco::Path txt_file_path = export_dir_path.append("export.txt");
-	Poco::File txt_file(export_dir_path);
-	txt_file.remove();
+	Poco::File txt_file(txt_file_path);
+
+	if (txt_file.exists())
+		txt_file.remove();
+
 	if (!txt_file.createFile())
 	{
 		return ;
@@ -50,7 +53,7 @@ void Exporter::Export(const char *root_dir)
 	for (int index = 0; index < ids.size(); ++index)
 	{
 		std::string file_name_;
-		file_name_ = root_dir;
+		//file_name_ = root_dir;
 		file_name_ += ids[index];
 		file_name_ += "_";
 
@@ -73,7 +76,17 @@ void Exporter::Export(const char *root_dir)
 		file_name_ += ".mkv";
 
 		// 这里写入文件，先写文件名，再写下载地址
+		FILE *export_file = fopen(txt_file_path.toString().c_str(), "a");
+		if (export_file == NULL)
+			return ;
+		
+		fwrite(file_name_.c_str(), file_name_.size(), 1, export_file);
+		fwrite(">>>>", strlen(">>>>"), 1, export_file);
+		fwrite(urls[index].c_str(), urls[index].size(), 1, export_file);
+		fwrite("\r\n", 2, 1, export_file);
 
+		fclose(export_file);
+		export_file = NULL;
 
 
 		//++count;

@@ -238,9 +238,16 @@ SEND_REQUEST:
 		DWORD tick_stop = GetTickCount();
 		DWORD tick_span = tick_stop - tick_start;
 
+		std::string json_str = ostr.str();
+		if (json_str.empty())
+		{
+			// Ê§°ÜÁË
+			continue;
+		}
+
 		// ×ªÎªJson
 		Poco::JSON::Parser parser;
-		Poco::Dynamic::Var json = parser.parse(ostr.str());
+		Poco::Dynamic::Var json = parser.parse(json_str);
 		Poco::JSON::Object::Ptr jsonObject = json.extract<Poco::JSON::Object::Ptr>();
 
 		Poco::Dynamic::Var resultCode = jsonObject->get("resultCode");
