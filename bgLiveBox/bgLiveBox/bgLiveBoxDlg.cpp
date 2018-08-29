@@ -65,6 +65,7 @@ void CbgLiveBoxDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT_CURRENT_INFO, m_cCurrentInfo);
 	DDX_Control(pDX, IDC_EDIT_CURRENT_ROOM_LIST_INFO2, m_cCurrentRoomListInfo);
 	DDX_Control(pDX, IDC_EDIT_SEARCH, m_cSearch);
+	DDX_Control(pDX, IDC_LIST_24HOURS_KEEP, m_cKeepRecordList);
 }
 
 BEGIN_MESSAGE_MAP(CbgLiveBoxDlg, CDialog)

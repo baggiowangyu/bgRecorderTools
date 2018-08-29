@@ -488,6 +488,10 @@
 			Name="控制模块"
 			>
 		</Filter>
+		<Filter
+			Name="守护录像模块"
+			>
+		</Filter>
 		<File
 			RelativePath=".\init_db.sql"
 			>

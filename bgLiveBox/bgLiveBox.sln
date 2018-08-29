@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bgLiveBox", "bgLiveBox\bgLiveBox.vcproj", "{73EC83AA-8BFE-42E2-9563-CBF84AD79093}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bgLiveRecorder", "bgLiveRecorder\bgLiveRecorder.vcproj", "{09C1DEC8-2051-4A12-91E2-77FCFFBD5A40}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -19,6 +21,14 @@ Global
 		{73EC83AA-8BFE-42E2-9563-CBF84AD79093}.QiuMingShan Release|Win32.Build.0 = QiuMingShan Release|Win32
 		{73EC83AA-8BFE-42E2-9563-CBF84AD79093}.Release|Win32.ActiveCfg = Release|Win32
 		{73EC83AA-8BFE-42E2-9563-CBF84AD79093}.Release|Win32.Build.0 = Release|Win32
+		{09C1DEC8-2051-4A12-91E2-77FCFFBD5A40}.Debug|Win32.ActiveCfg = Debug|Win32
+		{09C1DEC8-2051-4A12-91E2-77FCFFBD5A40}.Debug|Win32.Build.0 = Debug|Win32
+		{09C1DEC8-2051-4A12-91E2-77FCFFBD5A40}.QiuMingShan Debug|Win32.ActiveCfg = Debug|Win32
+		{09C1DEC8-2051-4A12-91E2-77FCFFBD5A40}.QiuMingShan Debug|Win32.Build.0 = Debug|Win32
+		{09C1DEC8-2051-4A12-91E2-77FCFFBD5A40}.QiuMingShan Release|Win32.ActiveCfg = Release|Win32
+		{09C1DEC8-2051-4A12-91E2-77FCFFBD5A40}.QiuMingShan Release|Win32.Build.0 = Release|Win32
+		{09C1DEC8-2051-4A12-91E2-77FCFFBD5A40}.Release|Win32.ActiveCfg = Release|Win32
+		{09C1DEC8-2051-4A12-91E2-77FCFFBD5A40}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

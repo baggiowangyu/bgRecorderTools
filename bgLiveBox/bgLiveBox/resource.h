@@ -27,6 +27,8 @@
 #define IDC_BTN_SEARCH                  1016
 #define IDC_STATIC_SEARCH_RESULT        1017
 #define IDC_STATIC_CURRENT_PLAYING_IS   1018
+#define IDC_LIST1                       1019
+#define IDC_LIST_24HOURS_KEEP           1019
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_32773                        32773
@@ -42,7 +44,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        130
 #define _APS_NEXT_COMMAND_VALUE         32779
-#define _APS_NEXT_CONTROL_VALUE         1019
+#define _APS_NEXT_CONTROL_VALUE         1020
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

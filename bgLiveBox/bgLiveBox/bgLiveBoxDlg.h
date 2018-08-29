@@ -80,4 +80,5 @@ public:
 	afx_msg void OnEnChangeEditCurrentRoomListInfo2();
 	afx_msg void OnBnClickedBtnSearch();
 	CEdit m_cSearch;
+	CListCtrl m_cKeepRecordList;
 };
