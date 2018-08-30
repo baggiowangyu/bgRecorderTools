@@ -491,6 +491,14 @@
 		<Filter
 			Name="ÊØ»¤Â¼ÏñÄ£¿é"
 			>
+			<File
+				RelativePath=".\bgLiveKeeper.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\bgLiveKeeper.h"
+				>
+			</File>
 		</Filter>
 		<File
 			RelativePath=".\init_db.sql"
