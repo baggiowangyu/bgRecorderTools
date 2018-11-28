@@ -127,6 +127,10 @@ int bgLiveBoxBusiness::UpdateApps()
 	if (result.compare("null") == 0)
 		return errCode;
 
+	int pos = result.find("如果");
+	if (pos >= 0)
+		return errCode;
+
 	//OutputDebugStringA(result.c_str());
 
 	// 转为Json
@@ -346,6 +350,10 @@ int bgLiveBoxBusiness::UpdateRooms(const char *app_id, const char *app_name)
 		return errCode;
 
 	if (result.compare("null") == 0)
+		return errCode;
+
+	int pos = result.find("如果");
+	if (pos >= 0)
 		return errCode;
 
 	//OutputDebugStringA(result.c_str());
