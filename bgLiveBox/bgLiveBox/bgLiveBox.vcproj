@@ -673,6 +673,18 @@
 			Name="控制模块"
 			>
 		</Filter>
+		<Filter
+			Name="守护录像模块"
+			>
+			<File
+				RelativePath=".\bgLiveKeeper.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\bgLiveKeeper.h"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath=".\init_db.sql"
 			>
