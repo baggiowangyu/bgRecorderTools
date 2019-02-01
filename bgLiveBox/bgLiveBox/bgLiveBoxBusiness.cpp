@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "bgLiveBoxBusiness.h"
+#include "curl/curl.h"
 
 //#define USE_OTHER
 //#define USE_QIUMINGSHAN
@@ -10,6 +11,10 @@
 
 #ifdef USE_OTHER
 #define ROOT_URL	"api.hclyz.cn"
+#endif
+
+#ifdef USE_XIAOJIEJIE
+#define ROOT_URL	"xxjj.live"
 #endif
 
 
@@ -38,6 +43,10 @@ int bgLiveBoxBusiness::UpdateApps()
 
 #ifdef USE_OTHER
 	Poco::Net::HTTPClientSession *http_client_session_ = new Poco::Net::HTTPClientSession(ROOT_URL, 81);
+#endif
+
+#ifdef USE_XIAOJIEJIE
+	Poco::Net::HTTPClientSession *http_client_session_ = new Poco::Net::HTTPClientSession(ROOT_URL);
 #endif
 
 	Poco::Timespan timeout_span(50, 0);
@@ -83,6 +92,11 @@ int bgLiveBoxBusiness::UpdateApps()
 	}
 
 #endif
+
+#ifdef USE_XIAOJIEJIE
+	// 一个
+#endif
+
 	catch (Poco::Exception& exception)
 	{
 		delete http_client_session_;
@@ -357,6 +371,18 @@ int bgLiveBoxBusiness::UpdateRooms(const char *app_id, const char *app_name)
 		return errCode;
 
 	//OutputDebugStringA(result.c_str());
+
+#ifdef _HANDLE_DOT_
+	//// 这里处理一下多余的逗号的情况
+	//// 寻找最后一个逗号
+	//pos = result.find_last_of(",");
+	//if (pos > 0)
+	//{
+	//	std::string head = result.substr(0, pos);
+	//	std::string tail = result.substr(pos + 1, -1);
+	//	result = head + tail;
+	//}
+#endif
 
 	// 转为Json
 	Poco::JSON::Parser parser;
