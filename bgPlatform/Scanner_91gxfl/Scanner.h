@@ -8,8 +8,12 @@
 #include "Poco/Data/SQLite/SQLite.h"
 
 //#define ROOT_URL	"www.2018gxfl.com"
-//#define ROOT_URL	"www.157zhubo.com"
-#define ROOT_URL	"www.zhubo157.com"
+//#define ROOT_URL	"www.157zhibo.com"
+//#define ROOT_URL	"www.zhubo157.com"
+//#define ROOT_URL	"www.gongxiang51.com"
+//#define ROOT_URL	"www.1024gxfl.com"
+//#define ROOT_URL	"www.zhubofuli.info"
+#define ROOT_URL	"www.zhubo111.com"
 
 class Scanner
 {

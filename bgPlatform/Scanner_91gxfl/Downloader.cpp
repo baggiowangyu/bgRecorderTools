@@ -12,6 +12,24 @@ extern "C" {
 #endif
 
 #include <shellapi.h>
+#include <WinInet.h>
+
+#include "Poco/StreamCopier.h"
+#include "Poco/UTF8Encoding.h"
+#include "Poco/ASCIIEncoding.h"
+#include "Poco/TextConverter.h"
+#include "Poco/Net/MediaType.h"
+#include "Poco/JSON/JSON.h"
+#include "Poco/JSON/Parser.h"
+#include "Poco/Data/SQLite/Connector.h"
+#include "Poco/Data/Session.h"
+#include "Poco/Data/Statement.h"
+#include "Poco/Exception.h"
+#include <istream>
+#include <ostream>
+#include <sstream>
+
+#include "curl/curl.h"
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -19,8 +37,15 @@ extern "C" {
 class MyRunnable : public Poco::Runnable
 {
 public:
-	MyRunnable() {};
-	~MyRunnable() {};
+	MyRunnable()
+	{
+		Poco::Data::SQLite::Connector::registerConnector();
+	};
+
+	~MyRunnable()
+	{
+		Poco::Data::SQLite::Connector::unregisterConnector();
+	};
 
 public:
 	void SetParam(Poco::Data::Session *session, const char *id, const char *name, const char *url, const char *path) {
@@ -41,6 +66,38 @@ public:
 	}
 
 public:
+	static size_t GetFirstM3u8Content(void *ptr, size_t size, size_t nmemb, void *stream)
+	{
+		MyRunnable *object = (MyRunnable *)stream;
+		object->first_m3u8_content_ += (char *)ptr;
+
+		return size * nmemb;
+	}
+
+	static size_t GetSecondM3u8Content(void *ptr, size_t size, size_t nmemb, void *stream)
+	{
+		MyRunnable *object = (MyRunnable *)stream;
+		object->second_m3u8_content_ += (char *)ptr;
+
+		return size * nmemb;
+	}
+
+	static size_t DownloadVideoFile(void *ptr, size_t size, size_t nmemb, void *stream)
+	{
+		MyRunnable *object = (MyRunnable *)stream;
+		object->second_m3u8_content_ += (char *)ptr;
+
+		DWORD written = 0;
+		BOOL bret = WriteFile(object->video_file_, ptr, size * nmemb, &written, NULL);
+		if (!bret)
+		{
+			int errCode = GetLastError();
+			std::cout<<"写入文件失败！错误码："<<errCode<<std::endl;
+		}
+
+		return size * nmemb;
+	}
+
 	virtual void run() {
 		Poco::Thread *ptr_thread = Poco::Thread::current();
 
@@ -54,245 +111,202 @@ public:
 		std::string path = path_.c_str();
 		std::string ffmpeg = ffmpeg_.c_str();
 
-		if (ffmpeg.empty())
+		int errCode = 0;
+
+		//if (ffmpeg.empty())
 		{
-			// 使用SDK下载
+			// 分析URL，找到HOST和PORT，考虑了以下，为了方便，这里还是用CURL吧
 			//////////////////////////////////////////////////////////////////////////
 			//
-			// 预处理输入文件
+			int pos = url.find("2100/");
+			std::string object = url.substr(pos + 4);
 
-			AVFormatContext *input_fmtctx_ = NULL;
-			int errCode = avformat_open_input(&input_fmtctx_, url.c_str(), NULL, NULL);
-			if (errCode < 0)
+			CURLcode curl_code;
+			CURL *curl = curl_easy_init();
+			if (!curl)
 			{
-				errCode = -2;
-				goto end;
+				std::cout<<"初始化CURL失败！"<<std::endl;
+				return ;
 			}
 
-			errCode = avformat_find_stream_info(input_fmtctx_, NULL);
-			if (errCode < 0)
+			// 设置参数
+			curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+			curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, false); // if want to use https  
+			curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, false); // set peer and host verify false  
+			curl_easy_setopt(curl, CURLOPT_VERBOSE, 0);  
+			curl_easy_setopt(curl, CURLOPT_READFUNCTION, NULL);  
+			curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, GetFirstM3u8Content);  
+			curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)this);  
+			curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);  
+			curl_easy_setopt(curl, CURLOPT_HEADER, 0);  
+			curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 3); // set transport and time out time  
+			curl_easy_setopt(curl, CURLOPT_TIMEOUT, 3);  
+
+			first_m3u8_content_ = "";
+			// start req 
+			curl_code = curl_easy_perform(curl);
+
+			// 这里应该是可以得到一个完整的结果了
+			//std::cout<<first_m3u8_content_.c_str()<<std::endl;
+
+			// 逐行分析M3U8文件内容，或者....直接读取换行符试试，一般读取第二个换行符到第三个换行符之间就可以了
+			int first_pos = first_m3u8_content_.find("\n");
+			std::string tmp_result = first_m3u8_content_.substr(first_pos + 1, -1);
+			int second_pos = tmp_result.find("\n");
+			tmp_result = tmp_result.substr(second_pos + 1, -1);
+			int third_pos = tmp_result.find("\n");
+			std::string second_m3u8_object = tmp_result.substr(0, third_pos);
+
+			// 重新构建URL
+			std::string real_m3u8_url;
+			if (memcmp("http", second_m3u8_object.c_str(), 4) == 0)
 			{
-				errCode = -3;
-				goto end;
+				// 这是一个带有http头部的链接
+				real_m3u8_url = second_m3u8_object;
+			}
+			else
+			{
+				// 不带头部，则添加头部
+				real_m3u8_url = "http://www.91gxflvip.com:2100";
+				real_m3u8_url += second_m3u8_object;
 			}
 
-			// 准备过滤器
-			AVBitStreamFilterContext* h264bsfc =  av_bitstream_filter_init("h264_mp4toannexb");
-			AVBitStreamFilterContext* adtstoasc =  av_bitstream_filter_init("aac_adtstoasc");
+			// 设置参数
+			curl_easy_setopt(curl, CURLOPT_URL, real_m3u8_url.c_str());
+			curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, false); // if want to use https  
+			curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, false); // set peer and host verify false  
+			curl_easy_setopt(curl, CURLOPT_VERBOSE, 0);  
+			curl_easy_setopt(curl, CURLOPT_READFUNCTION, NULL);  
+			curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, GetSecondM3u8Content);  
+			curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)this);  
+			curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);  
+			curl_easy_setopt(curl, CURLOPT_HEADER, 0);  
+			curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 3); // set transport and time out time  
+			curl_easy_setopt(curl, CURLOPT_TIMEOUT, 3);  
 
-			//////////////////////////////////////////////////////////////////////////
-			//
-			// 预处理输出文件
+			second_m3u8_content_ = "";
+			curl_code = curl_easy_perform(curl);
 
-			AVFormatContext *output_fmtctx_ = NULL;
-			errCode = avformat_alloc_output_context2(&output_fmtctx_, NULL, NULL, path.c_str());
-			if (!output_fmtctx_)
+			//std::cout<<second_m3u8_content_.c_str()<<std::endl;
+			if (second_m3u8_content_.empty())
+				return;
+
+			// 打开文件
+			video_file_ = CreateFileA(path.c_str(), GENERIC_ALL, FILE_SHARE_READ|FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+			if (video_file_ == INVALID_HANDLE_VALUE)
 			{
-				errCode = -4;
-				goto end;
+				errCode = GetLastError();
+				std::cout<<"打开文件"<<path.c_str()<<"失败！错误码："<<errCode<<std::endl;
+				return ;
 			}
 
-			AVOutputFormat *ofmt = output_fmtctx_->oformat;
+			std::cout<<"打开文件"<<path.c_str()<<"成功！错误码："<<errCode<<std::endl;
 
-			//////////////////////////////////////////////////////////////////////////
-			AVStream *video_stream = NULL;
-			AVStream *audio_stream = NULL;
-			int video_index = -1;
-			int audio_index = -1;
-
-			AVStream *video_output_stream = NULL;
-			AVStream *audio_output_stream = NULL;
-
-			AVCodecContext *audio_output_codecctx_ = NULL;
-			AVCodec *audio_encoder_ = NULL;
-
-			AVCodecContext *audio_input_codecctx_ = NULL;
-			AVCodec *audio_decoder_ = NULL;
-
-			AVFrame *audio_frame_ = NULL;
-			int buffer_size = 0;
-			uint8_t *frame_buffer = NULL;
-
-			for (int index = 0; index < input_fmtctx_->nb_streams; ++index)
-			{
-				AVStream *in_stream = input_fmtctx_->streams[index];
-				AVCodecParameters *in_codecpar = in_stream->codecpar;
-
-				if (in_codecpar->codec_type == AVMEDIA_TYPE_VIDEO)
-				{
-					video_index = index;
-					video_stream = in_stream;
-
-					// 这里就是copy了原来的流信息，包括codec这一类的数据
-					video_output_stream = avformat_new_stream(output_fmtctx_, NULL);
-					if (video_output_stream == NULL)
-					{
-						printf("创建视频输出流失败！\n");
-						errCode = AVERROR_UNKNOWN;
-						goto end;
-					}
-
-					// 复制参数
-					errCode = avcodec_parameters_copy(video_output_stream->codecpar, in_codecpar);
-					if (errCode < 0)
-					{
-						printf("复制流参数失败！\n");
-						errCode = AVERROR_UNKNOWN;
-						goto end;
-					}
-
-					video_output_stream->codecpar->codec_tag = 0;
-				}
-				else if (in_codecpar->codec_type == AVMEDIA_TYPE_AUDIO)
-				{
-					audio_index = index;
-					audio_stream = in_stream;
-
-					audio_input_codecctx_ = audio_stream->codec;
-
-					//////////////////////////////////////////////////////////////////////////
-					// 创建输出流
-					audio_output_stream = avformat_new_stream(output_fmtctx_, NULL);
-					if (audio_output_stream == NULL)
-					{
-						printf("创建音频输出流失败！\n");
-						errCode = AVERROR_UNKNOWN;
-						goto end;
-					}
-
-					// 复制参数
-					errCode = avcodec_parameters_copy(audio_output_stream->codecpar, in_codecpar);
-					if (errCode < 0)
-					{
-						printf("复制流参数失败！\n");
-						errCode = AVERROR_UNKNOWN;
-						goto end;
-					}
-
-					audio_output_stream->codecpar->codec_tag = 0;
-
-				}
-			}
-
-			//////////////////////////////////////////////////////////////////////////
-			if (!(output_fmtctx_->flags & AVFMT_NOFILE))
-			{
-				errCode = avio_open(&output_fmtctx_->pb, path.c_str(), AVIO_FLAG_WRITE);
-				if (errCode < 0)
-				{
-					errCode = -5;
-					goto end;
-				}
-			}
-
-			errCode = avformat_write_header(output_fmtctx_, NULL);
-			if (errCode < 0)
-			{
-				errCode = -6;
-				goto end;
-			}
-
-			int total = 0;
-			int tmp_pts = 0;
+			// 开始循环分析,结束符为
+			bool succeed = true;
+			std::string content = second_m3u8_content_;
 			while (true)
 			{
-				AVPacket pkt;
-				errCode = av_read_frame(input_fmtctx_, &pkt);
-				if (errCode < 0)
+				int next_line_flag_pos = content.find("\n");
+				if (next_line_flag_pos < 0)
+				{
 					break;
-
-				AVStream *in_stream = input_fmtctx_->streams[pkt.stream_index];
-				AVStream *out_stream = output_fmtctx_->streams[pkt.stream_index];
-
-				//
-				pkt.pts = av_rescale_q_rnd(pkt.pts, in_stream->time_base, out_stream->time_base, (AVRounding)(AV_ROUND_NEAR_INF|AV_ROUND_PASS_MINMAX));
-				pkt.dts = av_rescale_q_rnd(pkt.dts, in_stream->time_base, out_stream->time_base, (AVRounding)(AV_ROUND_NEAR_INF|AV_ROUND_PASS_MINMAX));
-				pkt.duration = av_rescale_q(pkt.duration, in_stream->time_base, out_stream->time_base);
-				pkt.pos = -1;
-				++tmp_pts;
-
-				if (in_stream->codec->codec_id == AV_CODEC_ID_H264)
-				{
-					// 需要进行H264过滤
-					av_bitstream_filter_filter(h264bsfc, in_stream->codec, NULL, &pkt.data, &pkt.size, pkt.data, pkt.size, 0);
-				}
-				else if (in_stream->codec->codec_id == AV_CODEC_ID_AAC)
-				{
-					// 需要进行AAC过滤
-					av_bitstream_filter_filter(adtstoasc, in_stream->codec, NULL, &pkt.data, &pkt.size, pkt.data, pkt.size, 0);
 				}
 
-				errCode = av_interleaved_write_frame(output_fmtctx_, &pkt);
-				//errCode = av_write_frame(output_fmtctx_, &pkt);
-				if (errCode < 0)
+				std::string line_content = content.substr(0, next_line_flag_pos);
+				int ts_flag = line_content.find(".ts");
+				if (ts_flag < 0)
 				{
-					printf("写入帧失败！\n");
-					char msg[AV_ERROR_MAX_STRING_SIZE] = {0};
-					char *err = av_make_error_string(msg, AV_ERROR_MAX_STRING_SIZE, errCode);
-					goto end;
+					content = content.substr(next_line_flag_pos + 1, -1);
+					continue;
+				}
+
+				std::string ts_url;
+				if (memcmp("http", line_content.c_str(), 4) == 0)
+				{
+					// 这是一个带有http头部的链接
+					ts_url = line_content;
 				}
 				else
 				{
-					total += pkt.size;
-					//printf("正在下载：%s号文件，已下载：%d 字节数据...\n", id, total);
+					// 不带头部，则添加头部
+					ts_url = "http://www.91gxflvip.com:2100";
+					ts_url += line_content;
 				}
 
-				av_packet_unref(&pkt);
+				// 下载这个文件
+				curl_easy_setopt(curl, CURLOPT_URL, ts_url.c_str());
+				curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, false); // if want to use https  
+				curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, false); // set peer and host verify false  
+				curl_easy_setopt(curl, CURLOPT_VERBOSE, 0);  
+				curl_easy_setopt(curl, CURLOPT_READFUNCTION, NULL);  
+				curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, DownloadVideoFile);  
+				curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)this);  
+				curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);  
+				curl_easy_setopt(curl, CURLOPT_HEADER, 0);  
+				curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 30); // set transport and time out time  
+				curl_easy_setopt(curl, CURLOPT_TIMEOUT, 30);
+
+				curl_code = curl_easy_perform(curl);
+				if (CURLE_OK != curl_code)
+				{
+					std::cout<<"=====下载文件"<<path.c_str()<<"失败！"<<std::endl;
+					succeed = false;
+					break;
+				}
+
+				content = content.substr(next_line_flag_pos + 1, -1);
 			}
 
-			av_write_trailer(output_fmtctx_);
-end:
+			FlushFileBuffers(video_file_);
+			CloseHandle(video_file_);
 
-			av_bitstream_filter_close(h264bsfc);
-			av_bitstream_filter_close(adtstoasc);
-
-			avformat_close_input(&input_fmtctx_);
-
-			if (output_fmtctx_)
+			curl_easy_cleanup(curl);
+			if (succeed)
 			{
-				if (output_fmtctx_->flags & AVFMT_NOFILE)
-					avio_closep(&output_fmtctx_->pb);
-
-				avformat_free_context(output_fmtctx_);
+				// 这里更新数据库信息
+				std::cout<<"下载："<<path.c_str()<<"成功！"<<std::endl;
+				Poco::Data::Statement update_(*session);
+				char sql[4096] = {0};
+				sprintf_s(sql, 4096, "UPDATE 'data' SET is_download = 1 WHERE id = %s", id.c_str());
+				update_ << sql, Poco::Data::Keywords::now;
+				update_.reset(*session);
 			}
+			
 
-			if (errCode < 0 && errCode != AVERROR_EOF)
-			{
-				//printf("发生了错误！%s\n", (av_err2str(errCode)));
-				return ;
-			}
+			//delete http_client_session_;
 		}
-		else
-		{
-			// 使用ffmpeg下载
-			char param[4096] = {0};
-			sprintf_s(param, 4096, "-i \"%s\" -codec copy \"%s\"", url.c_str(), path.c_str());
+		//else
+		//{
+	//		// 使用ffmpeg下载
+	//		char param[4096] = {0};
+	//		sprintf_s(param, 4096, "-i \"%s\" -codec copy \"%s\"", url.c_str(), path.c_str());
 
-			SHELLEXECUTEINFOA exeinfo;
-			ZeroMemory(&exeinfo, sizeof(SHELLEXECUTEINFOA));
-			exeinfo.cbSize = sizeof(SHELLEXECUTEINFOA);
-			exeinfo.lpVerb = "open";
-			exeinfo.lpFile = ffmpeg.c_str();
-			exeinfo.lpParameters = param;
-			exeinfo.fMask = SEE_MASK_FLAG_NO_UI | SEE_MASK_NOCLOSEPROCESS;
-			exeinfo.nShow = SW_MINIMIZE;
-			BOOL bret = ShellExecuteExA(&exeinfo);
-			if (!bret)
-			{
-				std::cout<<"下载："<<path.c_str()<<"失败！错误码："<<GetLastError()<<std::endl;
-				return ;
-			}
+	//		SHELLEXECUTEINFOA exeinfo;
+	//		ZeroMemory(&exeinfo, sizeof(SHELLEXECUTEINFOA));
+	//		exeinfo.cbSize = sizeof(SHELLEXECUTEINFOA);
+	//		exeinfo.lpVerb = "open";
+	//		exeinfo.lpFile = ffmpeg.c_str();
+	//		exeinfo.lpParameters = param;
+	//		exeinfo.fMask = SEE_MASK_FLAG_NO_UI | SEE_MASK_NOCLOSEPROCESS;
+	//		exeinfo.nShow = SW_MINIMIZE;
+	//		BOOL bret = ShellExecuteExA(&exeinfo);
+	//		if (!bret)
+	//		{
+	//			std::cout<<"下载："<<path.c_str()<<"失败！错误码："<<GetLastError()<<std::endl;
+	//			return ;
+	//		}
 
-			WaitForSingleObject(exeinfo.hProcess, INFINITE);
-		}
+	//		WaitForSingleObject(exeinfo.hProcess, INFINITE);
+	//	}
 
-		// 这里更新数据库信息
-		std::cout<<"下载："<<path.c_str()<<"成功！"<<std::endl;
-		Poco::Data::Statement update_(*session);
-		char sql[4096] = {0};
-		sprintf_s(sql, 4096, "UPDATE 'data' SET is_download = 1 WHERE id = %s", id.c_str());
-		update_ << sql, Poco::Data::Keywords::now;
-		update_.reset(*session);
+	//	// 这里更新数据库信息
+	//	std::cout<<"下载："<<path.c_str()<<"成功！"<<std::endl;
+	//	Poco::Data::Statement update_(*session);
+	//	char sql[4096] = {0};
+	//	sprintf_s(sql, 4096, "UPDATE 'data' SET is_download = 1 WHERE id = %s", id.c_str());
+	//	update_ << sql, Poco::Data::Keywords::now;
+	//	update_.reset(*session);
 	}
 
 private:
@@ -302,9 +316,15 @@ private:
 	std::string path_;
 	std::string ffmpeg_;
 	Poco::Data::Session *session_;
+
+	std::string first_m3u8_content_;
+	std::string second_m3u8_content_;
+
+	HANDLE video_file_;
 };
 
 Downloader::Downloader()
+//: threadpool_(new Poco::ThreadPool(1, 1))
 : threadpool_(new Poco::ThreadPool())
 {
 	// 初始化数据库

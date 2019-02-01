@@ -41,8 +41,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\ext\POCO\include;..\ext\ffmpeg\include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;__STDC_CONSTANT_MACROS"
+				AdditionalIncludeDirectories="..\ext\POCO\include;..\ext\ffmpeg\include;..\ext\CURL\include"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;__STDC_CONSTANT_MACROS;CURL_STATICLIB"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -61,10 +61,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="PocoFoundationd.lib PocoNetd.lib PocoDatad.lib PocoDataSQLited.lib avformat.lib avcodec.lib avutil.lib shell32.lib"
+				AdditionalDependencies="PocoFoundationd.lib PocoNetd.lib PocoDatad.lib PocoDataSQLited.lib avformat.lib avcodec.lib avutil.lib shell32.lib wininet.lib crypt32.lib ws2_32.lib wldap32.lib libcurl-d.lib"
 				OutputFile="$(OutDir)\$(ProjectName)_v1.3.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\ext\POCO\lib\x86\Debug;..\ext\ffmpeg\lib\x86"
+				AdditionalLibraryDirectories="..\ext\POCO\lib\x86\Debug;..\ext\ffmpeg\lib\x86;..\ext\CURL\lib"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				TargetMachine="1"
@@ -265,6 +265,10 @@
 				RelativePath=".\StringExchange.h"
 				>
 			</File>
+		</Filter>
+		<Filter
+			Name="HTTPÐ­ÒéÕ»"
+			>
 		</Filter>
 		<File
 			RelativePath=".\ReadMe.txt"

@@ -120,7 +120,7 @@ int Scanner::DoScan()
 	select_.reset(*session);
 
 	int begin_index = indexs.size() == 0 ? 1810 : atoi(indexs[0].c_str()) + 1;
-	int max_index = 30000;
+	int max_index = 100000;
 
 	// 这里可以考虑用任务池来执行，看看如何增加任务池
 
@@ -129,10 +129,11 @@ int Scanner::DoScan()
 
 SEND_REQUEST:
 		char body[4096] = {0};
-		sprintf_s(body, 4096, "id=%d&surePlay=1&isTrySee=false", index);
+		//sprintf_s(body, 4096, "id=%d&surePlay=1&isTrySee=false", index);
+		sprintf_s(body, 4096, "id=%d", index);
 
 		char referrer[4096] = {0};
-		sprintf_s(referrer, 4096, "http://www.2018gxfl.com/video/play/id/%d.html", index);
+		sprintf_s(referrer, 4096, "http://www.157zhibo.com/video/play/id/%d.html", index);
 
 		Poco::Net::HTTPRequest request(Poco::Net::HTTPRequest::HTTP_POST, "/api/payvideo.html");
 		request.setVersion("HTTP/1.1");
@@ -140,13 +141,14 @@ SEND_REQUEST:
 		request.setHost(ROOT_URL, 80);
 		request.add("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
 		request.add("Accept", "application/json, text/javascript, */*; q=0.01");
-		request.add("Origin", "http://www.2018gxfl.com");
+		request.add("Origin", "http://www.157zhibo.com");
 		request.add("X-Requested-With", "XMLHttpRequest");
 		request.add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36");
 		request.add("Referer", referrer);
 		request.add("Accept-Language", "zh-CN,zh;q=0.9");
 		//request.add("Accept-Encoding", "gzip, deflate");
-		request.add("Cookie", "__cfduid=d4127cc07c4b6bddb5d34fd276032e0b41526484179; UM_distinctid=163698c14c6c98-02c67dba2d55c8-f373567-1fa400-163698c14c729; PHPSESSID=f2ds0o0hta6r4hkps4u01155b6");
+		//request.add("Cookie", "__cfduid=d4127cc07c4b6bddb5d34fd276032e0b41526484179; UM_distinctid=163698c14c6c98-02c67dba2d55c8-f373567-1fa400-163698c14c729; PHPSESSID=f2ds0o0hta6r4hkps4u01155b6");
+		request.add("Cookie", "__cfduid=d5ba59e8900faa0ba2e5f69c8dbb329ac1536250065; PHPSESSID=3951ln2a57dvo1vu4dvd3hv3l1; UM_distinctid=165afa3c091173-0e3a0d7434e8d8-47e1137-1fa400-165afa3c092738; CNZZDATA1261529694=309508932-1536249667-%7C1536249667");
 
 		std::string http_body(body);
 		request.setContentLength((int)http_body.length());

@@ -45,7 +45,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\ext\Poco\include;..\ext\openssl\build\include"
+				AdditionalIncludeDirectories="..\ext\Poco\include;..\ext\openssl\build\include;..\ext\CURL\include"
 				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -68,8 +68,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="libcurl-d.lib"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\ext\Poco\lib"
+				AdditionalLibraryDirectories="..\ext\Poco\lib;..\ext\CURL"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				TargetMachine="1"

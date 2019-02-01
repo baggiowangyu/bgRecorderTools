@@ -14,6 +14,11 @@
 #include "Poco/Timestamp.h"
 #include "Poco/Timespan.h"
 
+#include "Poco/Net/HTTPClientSession.h"
+#include "Poco/Net/HTTPRequest.h"
+#include "Poco/Net/HTTPResponse.h"
+
+
 #include <string>
 
 class Downloader
@@ -36,6 +41,7 @@ private:
 	std::string ffmpeg_;
 	std::string file_name_;
 	std::string url_;
+
 };
 
 #endif//_Downloader_H_

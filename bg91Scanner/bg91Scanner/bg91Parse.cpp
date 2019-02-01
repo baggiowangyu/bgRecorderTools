@@ -27,18 +27,18 @@ int bg91Parse::Initialize(const char *root_url)
 	{
 		if (_stricmp(schame_.c_str(), "https") == 0)
 		{
-			Poco::Net::Context::Ptr context = new Poco::Net::Context(Poco::Net::Context::CLIENT_USE, "", "", "", Poco::Net::Context::VERIFY_NONE, 9, false);
-			https_client_session_ = new Poco::Net::HTTPSClientSession(host_.c_str(), uri.getPort(), context);
-			if (https_client_session_ == NULL)
-				errCode = -1;
+			//Poco::Net::Context::Ptr context = new Poco::Net::Context(Poco::Net::Context::CLIENT_USE, "", "", "", Poco::Net::Context::VERIFY_NONE, 9, false);
+			//https_client_session_ = new Poco::Net::HTTPSClientSession(host_.c_str(), uri.getPort(), context);
+			//if (https_client_session_ == NULL)
+			//	errCode = -1;
 
 			use_ssl_ = true;
 		}
 		else
 		{
-			http_client_session_ = new Poco::Net::HTTPClientSession(host_.c_str(), uri.getPort());
-			if (http_client_session_ == NULL)
-				errCode = -2;
+			//http_client_session_ = new Poco::Net::HTTPClientSession(host_.c_str(), uri.getPort());
+			//if (http_client_session_ == NULL)
+			//	errCode = -2;
 
 			use_ssl_ = false;
 		}
@@ -57,6 +57,26 @@ int bg91Parse::ScanFirstPage()
 {
 	int errCode = 0;
 	std::string errstr;
+
+	CURLcode res; 
+	CURL *curl = curl_easy_init();
+
+	std::string url = schame_ + "://" + host_ + "/v.php?next=watch";
+
+	// set params
+	curl_easy_setopt(curl, CURLOPT_URL, url.c_str()); // url  
+	curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, false); // if want to use https  
+	curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, false); // set peer and host verify false  
+	curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);  
+	curl_easy_setopt(curl, CURLOPT_READFUNCTION, NULL);  
+	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, req_reply);  
+	curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&response);  
+	curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);  
+	curl_easy_setopt(curl, CURLOPT_HEADER, 1);  
+	curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 3); // set transport and time out time  
+	curl_easy_setopt(curl, CURLOPT_TIMEOUT, 3);  
+	// start req  
+	res = curl_easy_perform(curl);  
 
 	try
 	{

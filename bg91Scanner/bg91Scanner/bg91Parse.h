@@ -19,6 +19,8 @@
 #include "Poco/Net/HTTPResponse.h"
 #include "Poco/Net/Context.h"
 
+#include "curl/curl.h"
+
 typedef struct _VIDEO_INFO_
 {
 	std::string video_name_;		// Ãû³Æ
@@ -54,8 +56,8 @@ public:
 	std::vector<VIDEO_INFO> videos_;
 
 public:
-	Poco::Net::HTTPClientSession *http_client_session_;
-	Poco::Net::HTTPSClientSession *https_client_session_;
+	//Poco::Net::HTTPClientSession *http_client_session_;
+	//Poco::Net::HTTPSClientSession *https_client_session_;
 };
 
 #endif//_bg91Parse_H_
