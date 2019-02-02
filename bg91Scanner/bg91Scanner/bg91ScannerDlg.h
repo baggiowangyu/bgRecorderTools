@@ -39,4 +39,6 @@ public:
 	CListCtrl m_cVideoList;
 
 	bg91Parse parse_;
+	afx_msg void OnBnClickedBtnPrevious();
+	afx_msg void OnBnClickedBtnNext();
 };

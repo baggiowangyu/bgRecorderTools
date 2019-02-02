@@ -66,6 +66,8 @@ BEGIN_MESSAGE_MAP(Cbg91ScannerDlg, CDialog)
 	ON_WM_QUERYDRAGICON()
 	//}}AFX_MSG_MAP
 	ON_BN_CLICKED(IDC_BTN_START_SCAN, &Cbg91ScannerDlg::OnBnClickedBtnStartScan)
+	ON_BN_CLICKED(IDC_BTN_PREVIOUS, &Cbg91ScannerDlg::OnBnClickedBtnPrevious)
+	ON_BN_CLICKED(IDC_BTN_NEXT, &Cbg91ScannerDlg::OnBnClickedBtnNext)
 END_MESSAGE_MAP()
 
 
@@ -102,6 +104,11 @@ BOOL Cbg91ScannerDlg::OnInitDialog()
 
 	// TODO: 在此添加额外的初始化代码
 	m_cURL.SetWindowText(_T("https://0228.p15.rocks"));
+
+	m_cVideoList.InsertColumn(0, _T("视频名称"), LVCFMT_LEFT, 400);
+	m_cVideoList.InsertColumn(1, _T("视频时长"), LVCFMT_LEFT, 80);
+	m_cVideoList.InsertColumn(2, _T("视频作者"), LVCFMT_LEFT, 100);
+	m_cVideoList.InsertColumn(3, _T("视频地址"), LVCFMT_LEFT, 700);
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -172,4 +179,25 @@ void Cbg91ScannerDlg::OnBnClickedBtnStartScan()
 	errCode = parse_.ScanFirstPage();
 
 	// 展示第一页
+	m_cVideoList.DeleteAllItems();
+	std::vector<VIDEO_INFO>::iterator iter;
+	for (iter = parse_.videos_.begin(); iter != parse_.videos_.end(); ++iter)
+	{
+		int count = m_cVideoList.GetItemCount();
+
+		m_cVideoList.InsertItem(count, A2T(iter->video_name_.c_str()));
+		m_cVideoList.SetItemText(count, 1, A2T(iter->video_duration_.c_str()));
+		m_cVideoList.SetItemText(count, 2, A2T(iter->video_author_.c_str()));
+		m_cVideoList.SetItemText(count, 3, A2T(iter->video_page_.c_str()));
+	}
+}
+
+void Cbg91ScannerDlg::OnBnClickedBtnPrevious()
+{
+	// TODO: 在此添加控件通知处理程序代码
+}
+
+void Cbg91ScannerDlg::OnBnClickedBtnNext()
+{
+	// TODO: 在此添加控件通知处理程序代码
 }

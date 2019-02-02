@@ -46,7 +46,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\ext\Poco\include;..\ext\openssl\build\include;..\ext\CURL\include"
-				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG"
+				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;BUILDING_LIBCURL;HTTP_ONLY"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -68,7 +68,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libcurl-d.lib"
+				AdditionalDependencies="libcurl-d.lib ws2_32.lib winmm.lib wldap32.lib Crypt32.lib"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\ext\Poco\lib;..\ext\CURL"
 				GenerateDebugInformation="true"

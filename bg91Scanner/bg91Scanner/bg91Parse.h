@@ -46,6 +46,10 @@ public:
 	int ScanPreviousPage();
 	int Scan(int page_index);
 
+private:
+	void UTF8ToACP(std::string &convert_string);
+	int AnalyzeListPage(std::string &page_data);
+
 public:
 	std::string schame_;
 	std::string host_;
